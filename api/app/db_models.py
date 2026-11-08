@@ -5,7 +5,7 @@ Supports Postgres JSONB and SQLite JSON fallback seamlessly.
 
 from datetime import datetime, timezone
 from uuid import uuid4
-from sqlalchemy import Column, String, DateTime, Index
+from sqlalchemy import Column, String, DateTime, Index, Integer
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID, JSONB
 from sqlalchemy.types import JSON, TypeDecorator, CHAR
 import uuid
@@ -75,4 +75,30 @@ class EventRecord(Base):
         Index("ix_events_source_severity", "source", "severity"),
         Index("ix_events_ts_severity", "ts", "severity"),
     )
+
+
+class IncidentRecord(Base):
+    """Correlated attack campaigns with lifecycle states (ACTIVE, CONTAINED, RESOLVED)."""
+    __tablename__ = "incidents"
+
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    incident_id = Column(String(50), nullable=False, unique=True, index=True)
+    created_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc), index=True)
+    updated_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    source_ip = Column(String(100), nullable=False, index=True)
+    severity = Column(String(20), nullable=False, index=True)
+    status = Column(String(30), nullable=False, default="ACTIVE", index=True)
+    event_count = Column(Integer, nullable=False, default=0)
+    summary_en = Column(String(1000), nullable=True)
+    summary_bn = Column(String(1000), nullable=True)
+    first_seen = Column(DateTime(timezone=True), nullable=True)
+    last_seen = Column(DateTime(timezone=True), nullable=True)
+    event_ids = Column(CompatibleJSON(), nullable=False, default=list)
+    metadata_json = Column(CompatibleJSON(), nullable=True, default=dict)
+
+    __table_args__ = (
+        Index("ix_incidents_ip_status", "source_ip", "status"),
+        Index("ix_incidents_severity_status", "severity", "status"),
+    )
+
 

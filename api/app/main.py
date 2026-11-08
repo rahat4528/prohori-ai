@@ -34,15 +34,17 @@ from .audit import record_audit_entry
 
 from analyst.agents.triage import triage_agent
 from analyst.agents.advisor import response_advisor
+from knowledge.retriever import kb_retriever
 
 
 
 try:
-    from sensors.ratelimiter.limiter import SlidingWindowRateLimiter
+    from sensors.ratelimiter.limiter import SlidingWindowRateLimiter, default_limiter
     from sensors.ratelimiter.middleware import RateLimitMiddleware
     HAS_RATE_LIMITER = True
 except ImportError:
     HAS_RATE_LIMITER = False
+
 
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
@@ -113,19 +115,13 @@ async def on_rate_limit_block(event_data: dict):
 
 # Attach API Abuse Guard middleware if available
 if HAS_RATE_LIMITER:
-    api_limiter = SlidingWindowRateLimiter(
-        window_seconds=10,
-        max_requests=25,  # Higher limit for standard API calls, blocks on flood
-        temp_block_seconds=30,
-        extended_block_seconds=180
-    )
-    # Allow local seeding scripts by default if configured
     app.add_middleware(
         RateLimitMiddleware,
-        limiter=api_limiter,
+        limiter=default_limiter,
         event_callback=on_rate_limit_block,
         exempt_paths=["/healthz", "/docs", "/openapi.json", "/stream"]
     )
+
 
 
 
@@ -147,6 +143,16 @@ async def healthz():
         "database": "connected" if db_ok else "unreachable",
         "version": settings.APP_VERSION
     }
+
+
+@app.get("/knowledge/{doc_id}", tags=["Knowledge Base Grounding"])
+async def get_root_knowledge_doc(doc_id: str):
+    """Retrieve full grounding document by technique or vulnerability ID (e.g. T1110.001, CVE-2023-38606)."""
+    doc = kb_retriever.get_document_by_id(doc_id)
+    if not doc:
+        raise HTTPException(status_code=404, detail=f"Document '{doc_id}' not found")
+    return doc
+
 
 
 @app.post(

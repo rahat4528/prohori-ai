@@ -2,7 +2,7 @@
 
 **International AI Builders Congress 2026 · Domain: InfraSphere AI &rarr; SecureAI**
 
-[![Tests](https://img.shields.io/badge/pytest-28%20passed-brightgreen.svg)](#testing--verification)
+[![Tests](https://img.shields.io/badge/pytest-32%20passed-brightgreen.svg)](#testing--verification)
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
 [![React](https://img.shields.io/badge/React-19%20%2B%20Vite-61dafb.svg)](https://react.dev/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg)](https://fastapi.tiangolo.com/)
@@ -144,11 +144,10 @@ Fires real HTTP attacks against your local honeypot and rate limiter, tripping d
 Comprehensive test suites covering the Event API, Deception sensor, Rate Limiter, AI Analyst, Allowlist Guard, and Data Sovereignty mode:
 
 ```bash
-$env:PYTHONPATH="api;."
 pytest api/tests sensors/deception/tests sensors/ratelimiter/tests analyst/tests sensors/discovery/tests -v
 ```
 
-**Results**: `28 passed in ~5.0s` (100% pass rate).
+**Results**: `32 passed in ~6.5s` (100% pass rate).
 
 ---
 

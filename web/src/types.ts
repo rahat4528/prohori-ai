@@ -39,6 +39,7 @@ export interface Incident {
   incident_id: string;
   source_ip: string;
   severity: EventSeverity;
+  status?: "ACTIVE" | "CONTAINED" | "RESOLVED";
   event_count: number;
   events: SecurityEvent[];
   summary_en: string;
@@ -46,6 +47,16 @@ export interface Incident {
   first_seen?: string;
   last_seen?: string;
 }
+
+export interface KnowledgeDoc {
+  id: string;
+  type: string;
+  title: string;
+  content: string;
+  mitigation: string;
+  metadata?: Record<string, any>;
+}
+
 
 export interface AskResponse {
   question: string;

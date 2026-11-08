@@ -18,11 +18,15 @@ from app.database import init_db, engine, Base
 
 @pytest_asyncio.fixture(autouse=True)
 async def setup_test_db():
+    from sensors.ratelimiter.limiter import default_limiter
+    default_limiter.reset()
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     yield
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
+    await engine.dispose()
+
 
 
 @pytest.mark.asyncio

@@ -19,11 +19,15 @@ from app.database import engine, Base
 
 @pytest_asyncio.fixture
 async def setup_analyst_db():
+    from sensors.ratelimiter.limiter import default_limiter
+    default_limiter.reset()
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     yield
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
+    await engine.dispose()
+
 
 
 def test_pii_and_secret_redaction():

@@ -172,8 +172,61 @@ export const App: React.FC = () => {
     }
   };
 
-  const handleApproveIncidentAction = (incidentId: string) => {
-    setApprovedIncidents((prev) => ({ ...prev, [incidentId]: true }));
+  const handleApproveIncidentAction = async (incidentId: string) => {
+    const inc = incidents.find((i) => i.incident_id === incidentId);
+    if (!inc) return;
+
+    try {
+      // 1. Approve countermeasure which adds IP to active perimeter denylist and audit log
+      await fetch(`${API_BASE}/audit/approve`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action_id: `ACT-INC-${incidentId}`,
+          target: inc.source_ip,
+          action_type: "PERIMETER_FIREWALL_DROP",
+          operator_id: "SOC_CONSOLE_OPERATOR"
+        })
+      });
+
+      // 2. Patch incident status to CONTAINED
+      await fetch(`${API_BASE}/analyst/incidents/${incidentId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          status: "CONTAINED",
+          operator_id: "SOC_CONSOLE_OPERATOR",
+          notes: "Approved firewall drop via incident timeline"
+        })
+      });
+
+      setApprovedIncidents((prev) => ({ ...prev, [incidentId]: true }));
+      setIncidents((prev) =>
+        prev.map((i) => (i.incident_id === incidentId ? { ...i, status: "CONTAINED" } : i))
+      );
+    } catch (err) {
+      console.error("Failed to approve incident action:", err);
+    }
+  };
+
+  const handleResolveIncidentAction = async (incidentId: string) => {
+    try {
+      await fetch(`${API_BASE}/analyst/incidents/${incidentId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          status: "RESOLVED",
+          operator_id: "SOC_CONSOLE_OPERATOR",
+          notes: "Incident remediated and marked closed"
+        })
+      });
+
+      setIncidents((prev) =>
+        prev.map((i) => (i.incident_id === incidentId ? { ...i, status: "RESOLVED" } : i))
+      );
+    } catch (err) {
+      console.error("Failed to resolve incident:", err);
+    }
   };
 
   return (
@@ -210,6 +263,7 @@ export const App: React.FC = () => {
             incidents={incidents}
             globalLanguage={globalLanguage}
             onApproveIncidentAction={handleApproveIncidentAction}
+            onResolveIncidentAction={handleResolveIncidentAction}
             approvedIncidents={approvedIncidents}
           />
         </div>

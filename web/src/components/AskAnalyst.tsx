@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Bot, Send, Sparkles, CheckCircle, ExternalLink, ShieldAlert } from "lucide-react";
-import type { AskResponse } from "../types";
-
+import { Bot, Send, Sparkles, CheckCircle, ExternalLink, ShieldAlert, X, BookOpen, ShieldCheck } from "lucide-react";
+import type { AskResponse, KnowledgeDoc } from "../types";
 
 interface AskAnalystProps {
   apiBase: string;
@@ -18,17 +17,33 @@ const SAMPLE_QUERIES = [
 export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage }) => {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
+  const [streaming, setStreaming] = useState(false);
   const [response, setResponse] = useState<AskResponse | null>(null);
   const [approvedAction, setApprovedAction] = useState<boolean>(false);
+  const [selectedCitationDoc, setSelectedCitationDoc] = useState<KnowledgeDoc | null>(null);
+  const [citationLoading, setCitationLoading] = useState<boolean>(false);
 
   const handleAsk = async (questionText?: string, langOverride?: "en" | "bn") => {
     const textToSend = questionText || query;
     if (!textToSend.trim()) return;
 
     setLoading(true);
+    setStreaming(true);
     setApprovedAction(false);
+
+    // Initialize blank response structure for streaming
+    setResponse({
+      question: textToSend,
+      answer: "",
+      language: (langOverride || globalLanguage) as "en" | "bn",
+      citations: [],
+      referenced_event_ids: [],
+      provider: "AI SOC Engine"
+    });
+
     try {
-      const resp = await fetch(`${apiBase}/analyst/ask`, {
+      // Attempt SSE streaming first
+      const resp = await fetch(`${apiBase}/analyst/ask/stream`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -36,16 +51,109 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
           language: langOverride || globalLanguage
         })
       });
-      if (resp.ok) {
-        const data: AskResponse = await resp.json();
-        setResponse(data);
+
+      if (resp.ok && resp.body) {
+        const reader = resp.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+
+          const lines = buffer.split("\n\n");
+          buffer = lines.pop() || "";
+
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (trimmed.startsWith("data:")) {
+              try {
+                const payload = JSON.parse(trimmed.replace(/^data:\s*/, ""));
+                if (payload.chunk) {
+                  setResponse((prev) =>
+                    prev ? { ...prev, answer: prev.answer + payload.chunk } : prev
+                  );
+                }
+                if (payload.done) {
+                  setResponse({
+                    question: payload.question || textToSend,
+                    answer: payload.answer,
+                    language: payload.language || (langOverride || globalLanguage),
+                    citations: payload.citations || [],
+                    referenced_event_ids: payload.referenced_event_ids || [],
+                    provider: payload.provider || "Local-LLM"
+                  });
+                  setStreaming(false);
+                }
+              } catch (e) {
+                console.error("Error parsing SSE chunk:", e);
+              }
+            }
+          }
+        }
       } else {
-        console.error("Ask endpoint error:", resp.status);
+        // Fallback to non-streaming POST /analyst/ask
+        const fallbackResp = await fetch(`${apiBase}/analyst/ask`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            query: textToSend,
+            language: langOverride || globalLanguage
+          })
+        });
+        if (fallbackResp.ok) {
+          const data: AskResponse = await fallbackResp.json();
+          setResponse(data);
+        }
       }
     } catch (err) {
       console.error("Failed to query analyst:", err);
     } finally {
       setLoading(false);
+      setStreaming(false);
+    }
+  };
+
+  const handleOpenCitation = async (citationId: string) => {
+    setCitationLoading(true);
+    try {
+      const resp = await fetch(`${apiBase}/analyst/knowledge/${encodeURIComponent(citationId)}`);
+      if (resp.ok) {
+        const doc: KnowledgeDoc = await resp.json();
+        setSelectedCitationDoc(doc);
+      } else {
+        // Fallback root path
+        const rootResp = await fetch(`${apiBase}/knowledge/${encodeURIComponent(citationId)}`);
+        if (rootResp.ok) {
+          const doc: KnowledgeDoc = await rootResp.json();
+          setSelectedCitationDoc(doc);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch knowledge document:", err);
+    } finally {
+      setCitationLoading(false);
+    }
+  };
+
+  const handleApproveAction = async () => {
+    try {
+      const resp = await fetch(`${apiBase}/audit/approve`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action_id: `ACT-DEF-${Date.now()}`,
+          target: "192.168.1.189",
+          action_type: "PERIMETER_FIREWALL_DROP",
+          operator_id: "SOC_CONSOLE_OPERATOR"
+        })
+      });
+      if (resp.ok) {
+        setApprovedAction(true);
+      }
+    } catch (e) {
+      console.error("Failed to approve countermeasure:", e);
     }
   };
 
@@ -173,25 +281,38 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
               <span className="badge" style={{ background: "rgba(168, 85, 247, 0.15)", color: "#d8b4fe", border: "1px solid rgba(168, 85, 247, 0.3)" }}>
                 Model: {response.provider}
               </span>
+              {streaming && (
+                <span className="badge" style={{ background: "rgba(56, 189, 248, 0.15)", color: "#38bdf8" }}>
+                  Streaming Live...
+                </span>
+              )}
             </div>
             {response.citations && response.citations.length > 0 && (
               <div style={{ display: "flex", gap: "4px" }}>
                 {response.citations.map((cite, i) => (
-                  <span
+                  <button
                     key={i}
+                    onClick={() => handleOpenCitation(cite)}
                     className="badge"
-                    style={{ background: "rgba(56, 189, 248, 0.2)", color: "#38bdf8", border: "1px solid rgba(56, 189, 248, 0.4)", cursor: "pointer" }}
-                    title="Grounded Knowledge Base Citation"
+                    style={{
+                      background: "rgba(56, 189, 248, 0.2)",
+                      color: "#38bdf8",
+                      border: "1px solid rgba(56, 189, 248, 0.4)",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center"
+                    }}
+                    title="Click to view verified MITRE / CVE knowledge entry"
                   >
                     <ExternalLink size={10} style={{ marginRight: "2px" }} />
                     {cite}
-                  </span>
+                  </button>
                 ))}
               </div>
             )}
           </div>
 
-          {/* Answer Text */}
+          {/* Answer Text with Typewriter Stream Cursor */}
           <div style={{
             fontSize: "13px",
             lineHeight: 1.6,
@@ -202,6 +323,9 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
             marginBottom: "12px"
           }}>
             {response.answer}
+            {streaming && (
+              <span style={{ display: "inline-block", width: "8px", height: "13px", background: "#38bdf8", marginLeft: "4px", verticalAlign: "middle" }} className="pulse-active" />
+            )}
           </div>
 
           {/* Human-in-the-Loop Countermeasure Action */}
@@ -227,11 +351,11 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
             {approvedAction ? (
               <div style={{ display: "flex", alignItems: "center", gap: "4px", color: "#34d399", fontSize: "11px", fontWeight: 600 }}>
                 <CheckCircle size={14} />
-                <span>APPROVED & AUDITED</span>
+                <span>APPROVED & ACTIVE IN DENYLIST</span>
               </div>
             ) : (
               <button
-                onClick={() => setApprovedAction(true)}
+                onClick={handleApproveAction}
                 style={{
                   background: "#059669",
                   color: "#fff",
@@ -248,6 +372,106 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
             )}
           </div>
         </div>
+      )}
+
+      {/* Grounded Citation Modal */}
+      {selectedCitationDoc && (
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          background: "rgba(3, 7, 18, 0.8)",
+          backdropFilter: "blur(6px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1000,
+          padding: "20px"
+        }}>
+          <div style={{
+            background: "#0c1322",
+            border: "1px solid #38bdf8",
+            borderRadius: "10px",
+            maxWidth: "600px",
+            width: "100%",
+            boxShadow: "0 0 30px rgba(56, 189, 248, 0.25)",
+            padding: "20px",
+            position: "relative"
+          }}>
+            {/* Modal header */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                  <BookOpen size={18} color="#38bdf8" />
+                  <span className="font-mono" style={{ fontSize: "16px", fontWeight: 700, color: "#f8fafc" }}>
+                    {selectedCitationDoc.id}
+                  </span>
+                  <span className="badge" style={{ background: "rgba(56, 189, 248, 0.15)", color: "#38bdf8", textTransform: "uppercase" }}>
+                    {selectedCitationDoc.type}
+                  </span>
+                </div>
+                <h3 style={{ margin: 0, fontSize: "15px", color: "#93c5fd", fontWeight: 600 }}>
+                  {selectedCitationDoc.title}
+                </h3>
+              </div>
+              <button
+                onClick={() => setSelectedCitationDoc(null)}
+                style={{ background: "transparent", border: "none", color: "#94a3b8", cursor: "pointer" }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Description */}
+            <div style={{ marginBottom: "16px" }}>
+              <div style={{ fontSize: "11px", color: "#64748b", textTransform: "uppercase", fontWeight: 700, marginBottom: "4px" }}>
+                ATT&CK / Threat Context
+              </div>
+              <p style={{ fontSize: "13px", color: "#cbd5e1", lineHeight: 1.6, margin: 0 }}>
+                {selectedCitationDoc.content}
+              </p>
+            </div>
+
+            {/* Authoritative Mitigation */}
+            <div style={{
+              background: "#08121f",
+              border: "1px solid #1e3a5f",
+              borderRadius: "6px",
+              padding: "12px",
+              marginBottom: "16px"
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px" }}>
+                <ShieldCheck size={16} color="#34d399" />
+                <span style={{ fontSize: "12px", fontWeight: 700, color: "#34d399" }}>
+                  Verified Defensive Mitigation
+                </span>
+              </div>
+              <p style={{ fontSize: "12px", color: "#e2e8f0", lineHeight: 1.5, margin: 0 }}>
+                {selectedCitationDoc.mitigation}
+              </p>
+            </div>
+
+            {/* Close Button */}
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <button
+                onClick={() => setSelectedCitationDoc(null)}
+                style={{
+                  background: "#1e293b",
+                  color: "#f8fafc",
+                  border: "1px solid #334155",
+                  borderRadius: "6px",
+                  padding: "6px 14px",
+                  fontSize: "12px",
+                  cursor: "pointer"
+                }}
+              >
+                Close (বন্ধ করুন)
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {citationLoading && (
+        <div style={{ fontSize: "11px", color: "#38bdf8", marginTop: "4px" }}>Loading citation context...</div>
       )}
     </div>
   );

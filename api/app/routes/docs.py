@@ -137,3 +137,4 @@ async def get_data_page():
 async def get_security_page():
     md = read_doc_file("SECURITY.md")
     return HTMLResponse(content=f"<html><body style='background:#070a0f;color:#f1f5f9;font-family:sans-serif;padding:30px;'><pre style='white-space:pre-wrap;'>{md}</pre></body></html>")
+

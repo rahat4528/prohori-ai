@@ -362,3 +362,4 @@ export const PitchDeckModal: React.FC<PitchDeckModalProps> = ({
     </div>
   );
 };
+

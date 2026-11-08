@@ -110,6 +110,22 @@ class KnowledgeRetriever:
             })
         return results
 
+    def get_document_by_id(self, doc_id: str) -> Optional[Dict[str, Any]]:
+        """Direct lookup of MITRE ATT&CK technique, CVE, or CWE by ID."""
+        doc_id_clean = doc_id.strip().upper()
+        for doc in self.documents:
+            if doc.doc_id.upper() == doc_id_clean:
+                return {
+                    "id": doc.doc_id,
+                    "type": doc.doc_type,
+                    "title": doc.title,
+                    "content": doc.content,
+                    "mitigation": doc.mitigation,
+                    "metadata": doc.metadata
+                }
+        return None
+
+
 
 # Global singleton instance
 kb_retriever = KnowledgeRetriever()

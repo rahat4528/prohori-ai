@@ -46,3 +46,4 @@ class GeminiProvider(LLMProvider):
             if not candidates:
                 return "No analysis candidate generated."
             return candidates[0]["content"]["parts"][0]["text"]
+

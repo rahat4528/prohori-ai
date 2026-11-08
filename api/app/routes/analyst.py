@@ -158,3 +158,4 @@ async def list_incidents(
         "total_incidents": len(incidents),
         "incidents": incidents
     }
+

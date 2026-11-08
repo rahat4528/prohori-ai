@@ -86,3 +86,4 @@ async def test_allowlist_view():
         data = resp.json()
         assert data["status"] == "enforced"
         assert "DEFENSIVE_LAB_ONLY" in data["policy"]
+

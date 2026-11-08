@@ -64,3 +64,4 @@ def sanitize_for_analyst(event_dict: Dict[str, Any]) -> Dict[str, Any]:
     if "details" in clean_copy and isinstance(clean_copy["details"], dict):
         clean_copy["details"] = redact_data(clean_copy["details"])
     return clean_copy
+

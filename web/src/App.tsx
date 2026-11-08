@@ -6,7 +6,9 @@ import { EventFeed } from "./components/EventFeed";
 import { IncidentTimeline } from "./components/IncidentTimeline";
 import { EventDetailDrawer } from "./components/EventDetailDrawer";
 import { AuditLogDrawer } from "./components/AuditLogDrawer";
+import { PitchDeckModal } from "./components/PitchDeckModal";
 import type { SecurityEvent, Incident } from "./types";
+
 
 
 
@@ -21,6 +23,25 @@ export const App: React.FC = () => {
   const [globalLanguage, setGlobalLanguage] = useState<"en" | "bn">("en");
   const [approvedIncidents, setApprovedIncidents] = useState<Record<string, boolean>>({});
   const [isAuditOpen, setIsAuditOpen] = useState<boolean>(false);
+  const [isPitchDeckOpen, setIsPitchDeckOpen] = useState<boolean>(false);
+  const [isLocalSovereignty, setIsLocalSovereignty] = useState<boolean>(true);
+
+  const handleToggleSovereignty = async () => {
+    const nextMode = isLocalSovereignty ? "cloud" : "local";
+    try {
+      const resp = await fetch(`${API_BASE}/sovereignty/toggle`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: nextMode })
+      });
+      if (resp.ok) {
+        setIsLocalSovereignty(!isLocalSovereignty);
+      }
+    } catch (e) {
+      console.error("Failed to toggle sovereignty:", e);
+    }
+  };
+
 
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -165,7 +186,11 @@ export const App: React.FC = () => {
         setGlobalLanguage={setGlobalLanguage}
         onTriggerDemo={handleTriggerDemo}
         onOpenAudit={() => setIsAuditOpen(true)}
+        onOpenPitchDeck={() => setIsPitchDeckOpen(true)}
+        isLocalSovereignty={isLocalSovereignty}
+        onToggleSovereignty={handleToggleSovereignty}
       />
+
 
 
       {/* Top Telemetry KPI Counters */}
@@ -210,9 +235,16 @@ export const App: React.FC = () => {
         apiBase={API_BASE}
       />
 
+      {/* 8-Slide Pitch Deck Presentation Modal */}
+      <PitchDeckModal
+        isOpen={isPitchDeckOpen}
+        onClose={() => setIsPitchDeckOpen(false)}
+        globalLanguage={globalLanguage}
+      />
     </div>
   );
 };
+
 
 
 export default App;

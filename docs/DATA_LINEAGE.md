@@ -53,3 +53,4 @@ Judges evaluate explainability and factuality:
 1. Every claim made by the Analyst must cite a verified knowledge item (`[T1110.001]`, `[CVE-2021-44228]`, etc.).
 2. If an event cannot be mapped to an existing technique or vulnerability, the Analyst explicitly states lack of grounding rather than fabricating tactics.
 3. Every citation is exposed as an interactive badge on the dashboard for instant operator verification.
+

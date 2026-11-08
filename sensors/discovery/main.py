@@ -125,3 +125,4 @@ async def get_allowlist():
 @app.get("/healthz")
 async def healthz():
     return {"status": "ok", "sensor": "discovery", "allowlist_enforced": True}
+

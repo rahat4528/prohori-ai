@@ -28,7 +28,9 @@ from .db_models import EventRecord
 from .connection_mgr import ws_manager
 from .routes.analyst import router as analyst_router
 from .routes.sovereignty import router as sovereignty_router
+from .routes.docs import router as docs_router
 from .audit import record_audit_entry
+
 
 from analyst.agents.triage import triage_agent
 from analyst.agents.advisor import response_advisor
@@ -127,9 +129,11 @@ if HAS_RATE_LIMITER:
 
 
 
-# Include Analyst & Sovereignty Routes
+# Include Analyst, Sovereignty & Docs Routes
 app.include_router(analyst_router)
 app.include_router(sovereignty_router)
+app.include_router(docs_router)
+
 
 
 

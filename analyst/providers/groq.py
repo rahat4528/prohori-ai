@@ -43,3 +43,4 @@ class GroqProvider(LLMProvider):
                 raise RuntimeError(f"Groq API returned {resp.status_code}: {resp.text}")
             data = resp.json()
             return data["choices"][0]["message"]["content"]
+

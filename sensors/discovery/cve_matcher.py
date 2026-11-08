@@ -70,3 +70,4 @@ class CVEMatcher:
 
 
 cve_matcher = CVEMatcher()
+

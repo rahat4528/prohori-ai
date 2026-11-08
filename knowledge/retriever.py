@@ -113,3 +113,4 @@ class KnowledgeRetriever:
 
 # Global singleton instance
 kb_retriever = KnowledgeRetriever()
+

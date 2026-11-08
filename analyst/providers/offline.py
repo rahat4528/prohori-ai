@@ -116,3 +116,4 @@ class DeterministicOfflineProvider(LLMProvider):
             return f"**প্রহরী এআই বিশ্লেষণ:**\n\n{bn_narrative}\n\n**উদ্ধৃতি (Citation):** {mitre_id}\n**প্রস্তাবিত পদক্ষেপ:** {recommendation}"
         else:
             return f"**Prohori Analyst Verdict:**\n\n{en_narrative}\n\n**Knowledge Citation:** [{mitre_id}]\n**Recommended Action:** {recommendation}"
+

@@ -17,3 +17,4 @@ class LLMProvider(ABC):
     def provider_name(self) -> str:
         """Name of the provider (e.g. 'gemini', 'groq', 'ollama', 'offline')."""
         pass
+

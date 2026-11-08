@@ -37,3 +37,4 @@ class OllamaProvider(LLMProvider):
                 raise RuntimeError(f"Ollama returned {resp.status_code}: {resp.text}")
             data = resp.json()
             return data.get("response", "")
+

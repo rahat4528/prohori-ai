@@ -105,3 +105,4 @@ Do not hallucinate facts outside the telemetry and knowledge base.
 
 
 analyst_assistant = AnalystAssistant()
+

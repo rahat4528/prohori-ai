@@ -71,3 +71,4 @@ Prohori AI is an AI-native, self-hostable Security Operations Center. It replace
 5. **Bilingual Synthesis**: High-fidelity narratives are produced simultaneously in fluent English and native Bengali (বাংলা).
 6. **Live Streaming**: The enriched event is broadcast via WebSocket to connected operator consoles.
 7. **Immutable Audit Log**: Every verdict, model choice, citation, and human approval is permanently appended to `audit_logs`.
+

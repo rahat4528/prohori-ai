@@ -94,3 +94,4 @@ async def record_audit_entry(
     await session.refresh(entry)
     logger.info(f"AUDIT LOGGED: [{action_type}] by {actor} (Model: {model_used})")
     return entry
+

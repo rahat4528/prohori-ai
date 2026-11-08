@@ -1,6 +1,5 @@
 import React from "react";
-import { ShieldAlert, Radio, Database, Terminal } from "lucide-react";
-
+import { ShieldAlert, Radio, Database, Terminal, Presentation, Lock, Cloud } from "lucide-react";
 
 interface HeaderProps {
   wsConnected: boolean;
@@ -9,6 +8,9 @@ interface HeaderProps {
   setGlobalLanguage: (lang: "en" | "bn") => void;
   onTriggerDemo: () => void;
   onOpenAudit: () => void;
+  onOpenPitchDeck: () => void;
+  isLocalSovereignty: boolean;
+  onToggleSovereignty: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -16,8 +18,12 @@ export const Header: React.FC<HeaderProps> = ({
   globalLanguage,
   setGlobalLanguage,
   onTriggerDemo,
-  onOpenAudit
+  onOpenAudit,
+  onOpenPitchDeck,
+  isLocalSovereignty,
+  onToggleSovereignty
 }) => {
+
 
   return (
     <header style={{
@@ -64,22 +70,27 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Operational Indicators */}
       <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-        {/* Data Sovereignty indicator */}
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "6px",
-          padding: "4px 10px",
-          background: "rgba(16, 185, 129, 0.1)",
-          border: "1px solid rgba(16, 185, 129, 0.3)",
-          borderRadius: "6px",
-          fontSize: "11px",
-          color: "#6ee7b7",
-          fontFamily: "monospace"
-        }}>
-          <Database size={13} />
-          <span>DATA SOVEREIGNTY: ON-PREM</span>
-        </div>
+        {/* Data Sovereignty interactive toggle */}
+        <button
+          onClick={onToggleSovereignty}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            padding: "4px 10px",
+            background: isLocalSovereignty ? "rgba(16, 185, 129, 0.15)" : "rgba(56, 189, 248, 0.15)",
+            border: `1px solid ${isLocalSovereignty ? "rgba(16, 185, 129, 0.4)" : "rgba(56, 189, 248, 0.4)"}`,
+            borderRadius: "6px",
+            fontSize: "11px",
+            color: isLocalSovereignty ? "#6ee7b7" : "#7dd3fc",
+            fontFamily: "monospace",
+            cursor: "pointer"
+          }}
+          title="Click to toggle Data Sovereignty mode (Ollama local vs Cloud)"
+        >
+          {isLocalSovereignty ? <Lock size={12} /> : <Cloud size={12} />}
+          <span>{isLocalSovereignty ? "SOVEREIGNTY: ON-PREM" : "MODE: CLOUD HYBRID"}</span>
+        </button>
 
         {/* WebSocket Stream Indicator */}
         <div style={{
@@ -97,6 +108,29 @@ export const Header: React.FC<HeaderProps> = ({
           <Radio size={13} className={wsConnected ? "pulse-active" : ""} />
           <span>{wsConnected ? "STREAM LIVE" : "OFFLINE"}</span>
         </div>
+
+        {/* Pitch Deck Button */}
+        <button
+          onClick={onOpenPitchDeck}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            background: "linear-gradient(135deg, #1e293b, #0f172a)",
+            color: "#f8fafc",
+            border: "1px solid #38bdf8",
+            padding: "5px 12px",
+            borderRadius: "6px",
+            fontSize: "11px",
+            fontWeight: 600,
+            cursor: "pointer"
+          }}
+          title="View 8-Slide Hackathon Pitch Deck"
+        >
+          <Presentation size={13} color="#38bdf8" />
+          <span>Pitch Deck</span>
+        </button>
+
 
         {/* Trigger Demo Traffic Button */}
         <button

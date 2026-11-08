@@ -138,3 +138,4 @@ async def toggle_sovereignty(payload: ToggleSovereigntyRequest):
         "sovereignty_state": SOVEREIGNTY_STATE,
         "message": message
     }
+

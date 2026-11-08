@@ -93,3 +93,4 @@ async def scan_target(host: str, ports: Optional[List[int]] = None) -> Dict[str,
         "open_ports_count": len(open_services),
         "services": open_services
     }
+

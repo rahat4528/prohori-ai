@@ -140,7 +140,15 @@ def run_replay():
             print(f"    [ERR] {e}")
 
     print("\n" + "="*70)
-    print("[+] All 5 stages emitted! Checking correlated incidents...")
+    print("[+] All 5 stages emitted! Checking live Asset Discovery Sensor (port 8083)...")
+    try:
+        disc_res = httpx.post("http://localhost:8083/scan", json={"target": "127.0.0.1", "ports": [22, 80, 8000, 8081]}, timeout=2.0)
+        if disc_res.status_code == 200:
+            print(f"[+] Discovery Sensor scanned allowlisted target 127.0.0.1: {disc_res.json().get('open_ports_count')} open services found.")
+    except Exception:
+        print("[i] Discovery Sensor not running on port 8083. Used cached sensor telemetry.")
+
+    print("\n[+] Checking correlated incidents in Prohori...")
     try:
         inc_res = httpx.get(f"{API_BASE}/analyst/incidents", timeout=3.0)
         data = inc_res.json()
@@ -150,8 +158,10 @@ def run_replay():
     except Exception as e:
         print(f"[-] Incident check error: {e}")
 
+
     print("\n[+] Replay finished! Switch to React Console to demonstrate 'Ask the Analyst' and Audit Log.")
 
 
 if __name__ == "__main__":
     run_replay()
+

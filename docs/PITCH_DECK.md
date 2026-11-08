@@ -78,3 +78,4 @@
   - **Full-Stack / Frontend Lead**: Tactical SOC console, responsive UX, accessibility.
   - **Backend / Security Engineer**: Event API, defensive sensors, pgvector integration.
   - **Presentation & Compliance Lead**: Audit framework, documentation, commercial model.
+

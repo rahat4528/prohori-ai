@@ -182,3 +182,4 @@ Prohori AI is engineered solely for defensive cybersecurity operations within au
 2. Simulated deception environments that never execute arbitrary shell commands.
 3. Strict Human-in-the-Loop gating on all countermeasure actions.
 4. Cryptographic, append-only audit logging for verifiable operational transparency.
+

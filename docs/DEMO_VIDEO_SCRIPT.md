@@ -52,3 +52,4 @@
 | `1:41 - 1:55` | Event Detail Drawer | Click event, show raw scrubbed JSON, click "Approve Defense (HITL)", open Audit Log Drawer to show verified entry. |
 | `1:56 - 2:20` | Technical diagram | Highlight PII redaction pipeline & local Ollama sovereignty toggle. |
 | `2:21 - 3:00` | Presentation slide | Business model, impact metrics, and team closing slide. |
+

@@ -42,3 +42,4 @@ Under NO circumstances does Prohori AI execute destructive counter-attacks or au
 - When `DATA_SOVEREIGNTY_MODE=True`, all external cloud API calls are disabled.
 - The AI SOC Analyst operates either on local **Ollama (Llama 3.2 / Qwen)** or the deterministic offline RAG engine.
 - Sensitive security event logs never leave the local machine or national borders.
+

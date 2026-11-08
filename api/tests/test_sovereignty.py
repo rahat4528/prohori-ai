@@ -80,3 +80,4 @@ async def test_audit_log_records_triage_and_human_approval(setup_sovereignty_db)
         assert len(approved_entries) == 1
         assert approved_entries[0]["human_approved"] is True
         assert approved_entries[0]["operator_id"] == "operator-sakib-01"
+

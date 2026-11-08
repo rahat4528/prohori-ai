@@ -21,8 +21,8 @@ services:
 
   api:
     build:
-      context: ../api
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: api/Dockerfile
     container_name: prohori-api
     restart: unless-stopped
     ports:
@@ -37,6 +37,46 @@ services:
       HOST: 0.0.0.0
     volumes:
       - ../api/app:/app/app
+      - ../sensors:/app/sensors
+
+  deception:
+    build:
+      context: ../sensors/deception
+      dockerfile: Dockerfile
+    container_name: prohori-deception-sensor
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    depends_on:
+      - api
+    environment:
+      PORT: 8081
+      HOST: 0.0.0.0
+      EVENT_API_URL: http://api:8000
+    volumes:
+      - ../sensors/deception:/app
+
+  ratelimiter:
+    build:
+      context: ..
+      dockerfile: sensors/ratelimiter/Dockerfile
+    container_name: prohori-ratelimiter-guard
+    restart: unless-stopped
+    ports:
+      - "8082:8082"
+    depends_on:
+      - api
+    environment:
+      PORT: 8082
+      HOST: 0.0.0.0
+      EVENT_API_URL: http://api:8000
+      UPSTREAM_URL: http://api:8000
+      RATE_LIMIT_WINDOW_SEC: 10
+      RATE_LIMIT_MAX_REQUESTS: 10
+      TEMP_BLOCK_SEC: 30
+      EXTENDED_BLOCK_SEC: 180
+    volumes:
+      - ../sensors/ratelimiter:/app
 
 volumes:
   prohori_pgdata:

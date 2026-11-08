@@ -66,3 +66,4 @@ class EventListResponse(BaseModel):
     limit: int
     offset: int
     events: list[Event]
+

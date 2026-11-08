@@ -6,6 +6,8 @@ Defensive Security Operations Center Event Bus
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 import logging
+from pathlib import Path
+import sys
 from typing import Optional
 from uuid import UUID
 
@@ -14,11 +16,24 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, desc
 
+# Ensure project root is available for sensor imports
+root_dir = Path(__file__).resolve().parent.parent.parent
+if str(root_dir) not in sys.path:
+    sys.path.insert(0, str(root_dir))
+
 from .config import settings
-from .database import init_db, check_db_health, get_db
+from .database import init_db, check_db_health, get_db, AsyncSessionLocal
 from .models import Event, EventCreate, EventFilter, EventListResponse, EventSource, EventSeverity
 from .db_models import EventRecord
 from .connection_mgr import ws_manager
+
+try:
+    from sensors.ratelimiter.limiter import SlidingWindowRateLimiter
+    from sensors.ratelimiter.middleware import RateLimitMiddleware
+    HAS_RATE_LIMITER = True
+except ImportError:
+    HAS_RATE_LIMITER = False
+
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger("prohori.api")
@@ -51,6 +66,57 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+async def on_rate_limit_block(event_data: dict):
+    """Direct persistence and broadcast when RateLimitMiddleware triggers on API."""
+    try:
+        async with AsyncSessionLocal() as session:
+            record = EventRecord(
+                source=event_data["source"],
+                severity=event_data["severity"],
+                type=event_data["type"],
+                details=event_data["details"],
+                analyst=None
+            )
+            session.add(record)
+            await session.commit()
+            await session.refresh(record)
+
+            event_out = Event(
+                id=record.id,
+                ts=record.ts,
+                source=EventSource(record.source),
+                severity=EventSeverity(record.severity),
+                type=record.type,
+                details=record.details or {},
+                analyst=None
+            )
+            await ws_manager.broadcast({
+                "type": "new_event",
+                "event": event_out.model_dump(mode="json")
+            })
+            logger.info(f"API RateLimiter blocked request from {event_data['details'].get('source_ip')} and broadcasted event.")
+    except Exception as e:
+        logger.warning(f"Error persisting rate limit event: {e}")
+
+
+# Attach API Abuse Guard middleware if available
+if HAS_RATE_LIMITER:
+    api_limiter = SlidingWindowRateLimiter(
+        window_seconds=10,
+        max_requests=25,  # Higher limit for standard API calls, blocks on flood
+        temp_block_seconds=30,
+        extended_block_seconds=180
+    )
+    # Allow local seeding scripts by default if configured
+    app.add_middleware(
+        RateLimitMiddleware,
+        limiter=api_limiter,
+        event_callback=on_rate_limit_block,
+        exempt_paths=["/healthz", "/docs", "/openapi.json", "/stream"]
+    )
+
 
 
 @app.get("/healthz", summary="Health check")
@@ -220,3 +286,4 @@ async def event_stream(websocket: WebSocket):
     except Exception as e:
         logger.debug(f"WebSocket client error: {e}")
         ws_manager.disconnect(websocket)
+

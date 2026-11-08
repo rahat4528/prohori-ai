@@ -75,3 +75,4 @@ class EventRecord(Base):
         Index("ix_events_source_severity", "source", "severity"),
         Index("ix_events_ts_severity", "ts", "severity"),
     )
+

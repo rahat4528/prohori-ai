@@ -8,14 +8,17 @@ interface HeaderProps {
   globalLanguage: "en" | "bn";
   setGlobalLanguage: (lang: "en" | "bn") => void;
   onTriggerDemo: () => void;
+  onOpenAudit: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   wsConnected,
   globalLanguage,
   setGlobalLanguage,
-  onTriggerDemo
+  onTriggerDemo,
+  onOpenAudit
 }) => {
+
   return (
     <header style={{
       display: "flex",
@@ -116,6 +119,29 @@ export const Header: React.FC<HeaderProps> = ({
           <Terminal size={13} color="#38bdf8" />
           <span>Simulate Attack</span>
         </button>
+
+        {/* Audit Log Button */}
+        <button
+          onClick={onOpenAudit}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            background: "#1e293b",
+            color: "#34d399",
+            border: "1px solid rgba(16, 185, 129, 0.4)",
+            padding: "5px 12px",
+            borderRadius: "6px",
+            fontSize: "11px",
+            fontWeight: 600,
+            cursor: "pointer"
+          }}
+          title="View immutable responsible AI audit trail"
+        >
+          <Database size={13} />
+          <span>Audit Log</span>
+        </button>
+
 
         {/* Language Toggle (EN / বাংলা) */}
         <div style={{

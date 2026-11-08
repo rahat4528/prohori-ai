@@ -27,9 +27,12 @@ from .models import Event, EventCreate, EventFilter, EventListResponse, EventSou
 from .db_models import EventRecord
 from .connection_mgr import ws_manager
 from .routes.analyst import router as analyst_router
+from .routes.sovereignty import router as sovereignty_router
+from .audit import record_audit_entry
 
 from analyst.agents.triage import triage_agent
 from analyst.agents.advisor import response_advisor
+
 
 
 try:
@@ -124,8 +127,10 @@ if HAS_RATE_LIMITER:
 
 
 
-# Include Analyst Routes
+# Include Analyst & Sovereignty Routes
 app.include_router(analyst_router)
+app.include_router(sovereignty_router)
+
 
 
 @app.get("/healthz", summary="Health check")
@@ -174,8 +179,28 @@ async def ingest_event(
             # Reconcile severity if analyst upgraded it
             if triage_result.get("severity"):
                 severity_val = triage_result["severity"]
+
+            # Record in immutable audit trail
+            try:
+                await record_audit_entry(
+                    session=db,
+                    action_type="AI_TRIAGE_PERFORMED",
+                    actor="AI_SOC_ANALYST",
+                    model_used=triage_result.get("provider", "local-rag"),
+                    verdict={
+                        "summary_en": triage_result.get("narrative_en"),
+                        "severity": severity_val,
+                        "mitre": triage_result.get("mitre_technique")
+                    },
+                    input_event_id=event_in.id,
+                    citations=triage_result.get("citations", []),
+                    human_approved=False
+                )
+            except Exception as audit_err:
+                logger.warning(f"Failed to record audit entry: {audit_err}")
         except Exception as e:
             logger.warning(f"Auto-triage on ingest skipped due to error: {e}")
+
 
     record = EventRecord(
         id=event_in.id,

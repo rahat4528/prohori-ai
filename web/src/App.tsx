@@ -5,7 +5,9 @@ import { AskAnalyst } from "./components/AskAnalyst";
 import { EventFeed } from "./components/EventFeed";
 import { IncidentTimeline } from "./components/IncidentTimeline";
 import { EventDetailDrawer } from "./components/EventDetailDrawer";
+import { AuditLogDrawer } from "./components/AuditLogDrawer";
 import type { SecurityEvent, Incident } from "./types";
+
 
 
 const API_BASE = "http://localhost:8000";
@@ -18,6 +20,8 @@ export const App: React.FC = () => {
   const [wsConnected, setWsConnected] = useState<boolean>(false);
   const [globalLanguage, setGlobalLanguage] = useState<"en" | "bn">("en");
   const [approvedIncidents, setApprovedIncidents] = useState<Record<string, boolean>>({});
+  const [isAuditOpen, setIsAuditOpen] = useState<boolean>(false);
+
 
   const wsRef = useRef<WebSocket | null>(null);
 
@@ -160,7 +164,9 @@ export const App: React.FC = () => {
         globalLanguage={globalLanguage}
         setGlobalLanguage={setGlobalLanguage}
         onTriggerDemo={handleTriggerDemo}
+        onOpenAudit={() => setIsAuditOpen(true)}
       />
+
 
       {/* Top Telemetry KPI Counters */}
       <TopCounters events={events} incidentCount={incidents.length} />
@@ -196,8 +202,17 @@ export const App: React.FC = () => {
         onRetriage={handleRetriage}
         globalLanguage={globalLanguage}
       />
+
+      {/* Immutable Audit Log Modal */}
+      <AuditLogDrawer
+        isOpen={isAuditOpen}
+        onClose={() => setIsAuditOpen(false)}
+        apiBase={API_BASE}
+      />
+
     </div>
   );
 };
+
 
 export default App;

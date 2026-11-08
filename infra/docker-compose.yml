@@ -78,10 +78,29 @@ services:
     volumes:
       - ../sensors/ratelimiter:/app
 
+  discovery:
+    build:
+      context: ..
+      dockerfile: sensors/discovery/Dockerfile
+    container_name: prohori-discovery-sensor
+    restart: unless-stopped
+    ports:
+      - "8083:8083"
+    depends_on:
+      - api
+    environment:
+      PORT: 8083
+      HOST: 0.0.0.0
+      EVENT_API_URL: http://api:8000
+      DISCOVERY_ALLOWLIST: "127.0.0.1,localhost,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,api,db,deception,ratelimiter"
+    volumes:
+      - ../sensors/discovery:/app
+
   web:
     build:
       context: ../web
       dockerfile: Dockerfile
+
     container_name: prohori-web-console
     restart: unless-stopped
     ports:

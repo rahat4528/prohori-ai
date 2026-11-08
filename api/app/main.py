@@ -1,0 +1,222 @@
+"""
+Prohori AI - Event Ingestion & Streaming API
+Defensive Security Operations Center Event Bus
+"""
+
+from contextlib import asynccontextmanager
+from datetime import datetime, timezone
+import logging
+from typing import Optional
+from uuid import UUID
+
+from fastapi import FastAPI, Depends, HTTPException, Query, WebSocket, WebSocketDisconnect, status
+from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, func, desc
+
+from .config import settings
+from .database import init_db, check_db_health, get_db
+from .models import Event, EventCreate, EventFilter, EventListResponse, EventSource, EventSeverity
+from .db_models import EventRecord
+from .connection_mgr import ws_manager
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
+logger = logging.getLogger("prohori.api")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifespan manager to initialize DB on startup."""
+    logger.info("Initializing Prohori Event API...")
+    try:
+        await init_db()
+    except Exception as e:
+        logger.warning(f"Initial DB connection could not be established: {e}. Will retry on requests.")
+    yield
+    logger.info("Shutting down Prohori Event API...")
+
+
+app = FastAPI(
+    title=settings.APP_NAME,
+    version=settings.APP_VERSION,
+    description="Defensive AI-native Security Operations Center Event Bus",
+    lifespan=lifespan
+)
+
+# CORS configuration
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.CORS_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.get("/healthz", summary="Health check")
+async def healthz():
+    """Health check endpoint indicating API and DB status."""
+    db_ok = await check_db_health()
+    return {
+        "status": "healthy" if db_ok else "degraded",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "database": "connected" if db_ok else "unreachable",
+        "version": settings.APP_VERSION
+    }
+
+
+@app.post(
+    "/events",
+    response_model=Event,
+    status_code=status.HTTP_201_CREATED,
+    summary="Ingest a new security event"
+)
+async def ingest_event(
+    event_in: EventCreate,
+    db: AsyncSession = Depends(get_db)
+):
+    """Ingest a security event from a sensor or analyst, persist to Postgres,
+
+    and broadcast to connected WebSocket listeners.
+    """
+    record = EventRecord(
+        id=event_in.id,
+        ts=event_in.ts,
+        source=event_in.source.value,
+        severity=event_in.severity.value,
+        type=event_in.type,
+        details=event_in.details,
+        analyst=event_in.analyst
+    )
+
+    db.add(record)
+    await db.commit()
+    await db.refresh(record)
+
+    event_out = Event(
+        id=record.id,
+        ts=record.ts,
+        source=EventSource(record.source),
+        severity=EventSeverity(record.severity),
+        type=record.type,
+        details=record.details or {},
+        analyst=record.analyst
+    )
+
+    # Broadcast to live WebSocket clients
+    event_dict = event_out.model_dump(mode="json")
+    await ws_manager.broadcast({
+        "type": "new_event",
+        "event": event_dict
+    })
+
+    return event_out
+
+
+@app.get(
+    "/events",
+    response_model=EventListResponse,
+    summary="List and filter security events"
+)
+async def list_events(
+    source: Optional[EventSource] = Query(None, description="Filter by event source"),
+    severity: Optional[EventSeverity] = Query(None, description="Filter by severity level"),
+    event_type: Optional[str] = Query(None, alias="type", description="Filter by event type"),
+    start_time: Optional[datetime] = Query(None, description="Filter events ts >= start_time (ISO 8601)"),
+    end_time: Optional[datetime] = Query(None, description="Filter events ts <= end_time (ISO 8601)"),
+    limit: int = Query(50, ge=1, le=500, description="Page limit"),
+    offset: int = Query(0, ge=0, description="Page offset"),
+    db: AsyncSession = Depends(get_db)
+):
+    """Query and filter paginated events from Postgres."""
+    # Build query
+    query = select(EventRecord)
+
+    if source:
+        query = query.where(EventRecord.source == source.value)
+    if severity:
+        query = query.where(EventRecord.severity == severity.value)
+    if event_type:
+        query = query.where(EventRecord.type == event_type)
+    if start_time:
+        query = query.where(EventRecord.ts >= start_time)
+    if end_time:
+        query = query.where(EventRecord.ts <= end_time)
+
+    # Count total matching
+    count_query = select(func.count()).select_from(query.subquery())
+    total_result = await db.execute(count_query)
+    total = total_result.scalar_one()
+
+    # Retrieve paginated items ordered newest first
+    items_query = query.order_by(desc(EventRecord.ts)).limit(limit).offset(offset)
+    result = await db.execute(items_query)
+    records = result.scalars().all()
+
+    events = [
+        Event(
+            id=rec.id,
+            ts=rec.ts,
+            source=EventSource(rec.source),
+            severity=EventSeverity(rec.severity),
+            type=rec.type,
+            details=rec.details or {},
+            analyst=rec.analyst
+        )
+        for rec in records
+    ]
+
+    return EventListResponse(
+        total=total,
+        limit=limit,
+        offset=offset,
+        events=events
+    )
+
+
+@app.get(
+    "/events/{event_id}",
+    response_model=Event,
+    summary="Retrieve a single event by UUID"
+)
+async def get_event(
+    event_id: UUID,
+    db: AsyncSession = Depends(get_db)
+):
+    """Fetch event details by ID."""
+    stmt = select(EventRecord).where(EventRecord.id == event_id)
+    result = await db.execute(stmt)
+    record = result.scalar_one_or_none()
+
+    if not record:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Event with id '{event_id}' not found"
+        )
+
+    return Event(
+        id=record.id,
+        ts=record.ts,
+        source=EventSource(record.source),
+        severity=EventSeverity(record.severity),
+        type=record.type,
+        details=record.details or {},
+        analyst=record.analyst
+    )
+
+
+@app.websocket("/stream")
+async def event_stream(websocket: WebSocket):
+    """WebSocket endpoint broadcasting newly ingested events in real-time."""
+    await ws_manager.connect(websocket)
+    try:
+        while True:
+            # Keep connection alive; client can send pings
+            data = await websocket.receive_text()
+            if data == "ping":
+                await websocket.send_text("pong")
+    except WebSocketDisconnect:
+        ws_manager.disconnect(websocket)
+    except Exception as e:
+        logger.debug(f"WebSocket client error: {e}")
+        ws_manager.disconnect(websocket)

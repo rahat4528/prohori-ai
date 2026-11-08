@@ -19,10 +19,10 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
   approvedIncidents
 }) => {
   const [selectedChartBar, setSelectedChartBar] = useState<number | null>(null);
+  const [statusFilter, setStatusFilter] = useState<"ALL" | "ACTIVE" | "CONTAINED" | "RESOLVED">("ALL");
 
   // Compute temporal volume buckets for SVG chart
   const timelineBuckets = useMemo(() => {
-    // Collect all events from incidents or generate 8 recent time intervals
     const now = Date.now();
     const bucketIntervalMs = 2 * 60 * 1000; // 2-minute slices
     const buckets: Array<{
@@ -47,7 +47,6 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
       });
     }
 
-    // Populate counts from incident events
     incidents.forEach((inc) => {
       (inc.events || []).forEach((ev) => {
         const evTime = ev.ts ? new Date(ev.ts).getTime() : now;
@@ -64,7 +63,6 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
       });
     });
 
-    // Provide default fallback counts if events are sparse so the chart renders vividly
     const totalCount = buckets.reduce((acc, b) => acc + b.total, 0);
     if (totalCount === 0 && incidents.length > 0) {
       buckets[5].medium = 2;
@@ -80,32 +78,69 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
 
   const maxBucketCount = Math.max(...timelineBuckets.map((b) => b.total), 5);
 
+  const filteredIncidents = useMemo(() => {
+    return incidents.filter((inc) => {
+      const isApproved = approvedIncidents[inc.incident_id] || inc.status === "CONTAINED";
+      const isResolved = inc.status === "RESOLVED";
+      const effectiveStatus = isResolved ? "RESOLVED" : isApproved ? "CONTAINED" : "ACTIVE";
+
+      if (statusFilter === "ALL") return true;
+      return effectiveStatus === statusFilter;
+    });
+  }, [incidents, approvedIncidents, statusFilter]);
+
   return (
     <div className="soc-card">
+      {/* Header with Title & Status Filter */}
       <div className="soc-card-header">
         <div className="soc-title">
           <GitCommit size={16} color="#34d399" />
           <span>ATTACK CAMPAIGNS & CORRELATION (সমন্বিত আক্রমণ টাইমলাইন)</span>
-          <span style={{ fontSize: "11px", color: "#64748b" }}>({incidents.length} correlated)</span>
+          <span className="badge" style={{ background: "rgba(16, 185, 129, 0.12)", color: "#6ee7b7" }}>
+            {filteredIncidents.length} / {incidents.length}
+          </span>
+        </div>
+
+        {/* Filter Tabs */}
+        <div style={{ display: "flex", gap: "4px", background: "var(--bg-elevated)", padding: "2px", borderRadius: "6px", border: "1px solid var(--border-subtle)" }}>
+          {(["ALL", "ACTIVE", "CONTAINED", "RESOLVED"] as const).map((st) => (
+            <button
+              key={st}
+              onClick={() => setStatusFilter(st)}
+              style={{
+                background: statusFilter === st ? "#2563eb" : "transparent",
+                color: statusFilter === st ? "#ffffff" : "var(--text-secondary)",
+                border: "none",
+                borderRadius: "4px",
+                padding: "3px 8px",
+                fontSize: "10px",
+                fontWeight: 700,
+                cursor: "pointer",
+                transition: "all 0.15s ease"
+              }}
+            >
+              {st}
+            </button>
+          ))}
         </div>
       </div>
 
       {/* Temporal Volume SVG Timeline Chart */}
       <div style={{
-        background: "#080c14",
-        border: "1px solid #1e293b",
-        borderRadius: "6px",
-        padding: "12px",
-        marginBottom: "14px"
+        background: "#080d16",
+        border: "1px solid var(--border-subtle)",
+        borderRadius: "8px",
+        padding: "14px",
+        marginBottom: "16px"
       }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px", flexWrap: "wrap", gap: "6px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <BarChart2 size={13} color="#38bdf8" />
-            <span style={{ fontSize: "11px", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase" }}>
-              Event Velocity & Kill-Chain Temporal Volume (ইভেন্ট প্রবাহ গতি)
+            <BarChart2 size={14} color="#38bdf8" />
+            <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--text-secondary)", textTransform: "uppercase" }}>
+              Event Velocity & Kill-Chain Volume (ইভেন্ট প্রবাহ গতি)
             </span>
           </div>
-          <div style={{ display: "flex", gap: "8px", fontSize: "10px" }}>
+          <div style={{ display: "flex", gap: "8px", fontSize: "10px", flexWrap: "wrap" }}>
             <span style={{ color: "#ef4444" }}>&bull; Critical</span>
             <span style={{ color: "#f97316" }}>&bull; High</span>
             <span style={{ color: "#eab308" }}>&bull; Medium</span>
@@ -113,10 +148,10 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
           </div>
         </div>
 
-        {/* SVG Chart */}
-        <div style={{ height: "70px", width: "100%", display: "flex", alignItems: "flex-end", gap: "8px", paddingBottom: "4px" }}>
+        {/* SVG Chart Bars */}
+        <div style={{ height: "75px", width: "100%", display: "flex", alignItems: "flex-end", gap: "8px", paddingBottom: "4px" }}>
           {timelineBuckets.map((bucket, idx) => {
-            const chartHeight = 55;
+            const chartHeight = 58;
             const barHeight = Math.max((bucket.total / maxBucketCount) * chartHeight, bucket.total > 0 ? 6 : 2);
             const critH = bucket.total > 0 ? (bucket.critical / bucket.total) * barHeight : 0;
             const highH = bucket.total > 0 ? (bucket.high / bucket.total) * barHeight : 0;
@@ -143,14 +178,15 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
                 {/* Stacked Bar */}
                 <div style={{
                   width: "100%",
-                  maxWidth: "24px",
+                  maxWidth: "26px",
                   height: `${barHeight}px`,
                   display: "flex",
                   flexDirection: "column-reverse",
-                  borderRadius: "3px",
+                  borderRadius: "4px",
                   overflow: "hidden",
-                  background: bucket.total === 0 ? "#1e293b" : "transparent",
-                  outline: isHovered ? "1px solid #38bdf8" : "none"
+                  background: bucket.total === 0 ? "var(--border-subtle)" : "transparent",
+                  outline: isHovered ? "2px solid #38bdf8" : "none",
+                  transition: "all 0.15s ease"
                 }}>
                   {lowH > 0 && <div style={{ height: `${lowH}px`, background: "#10b981" }} />}
                   {medH > 0 && <div style={{ height: `${medH}px`, background: "#eab308" }} />}
@@ -158,7 +194,7 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
                   {critH > 0 && <div style={{ height: `${critH}px`, background: "#ef4444" }} />}
                 </div>
                 {/* Time Axis Label */}
-                <span style={{ fontSize: "9px", color: isHovered ? "#38bdf8" : "#64748b", marginTop: "4px" }} className="font-mono">
+                <span style={{ fontSize: "9px", color: isHovered ? "#38bdf8" : "var(--text-tertiary)", marginTop: "4px" }} className="font-mono">
                   {bucket.label}
                 </span>
               </div>
@@ -170,27 +206,28 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
           <div style={{
             fontSize: "11px",
             color: "#93c5fd",
-            background: "#0c1322",
-            padding: "4px 8px",
-            borderRadius: "4px",
-            marginTop: "4px",
+            background: "var(--bg-elevated)",
+            padding: "5px 10px",
+            borderRadius: "5px",
+            marginTop: "6px",
             display: "flex",
-            justifyContent: "space-between"
+            justifyContent: "space-between",
+            border: "1px solid var(--border-medium)"
           }}>
-            <span>Time: {timelineBuckets[selectedChartBar].label}</span>
+            <span>Time Window: {timelineBuckets[selectedChartBar].label}</span>
             <span>Total Events: {timelineBuckets[selectedChartBar].total} (Critical: {timelineBuckets[selectedChartBar].critical}, High: {timelineBuckets[selectedChartBar].high})</span>
           </div>
         )}
       </div>
 
       {/* Incidents List */}
-      {incidents.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "20px", color: "#64748b", fontSize: "12px" }}>
-          No multi-stage attack campaigns correlated yet. Single events are streaming in feed.
+      {filteredIncidents.length === 0 ? (
+        <div style={{ textAlign: "center", padding: "30px 20px", color: "var(--text-tertiary)", fontSize: "12px" }}>
+          No attack campaigns matching "{statusFilter}". Single events continue streaming in the live feed.
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          {incidents.map((inc) => {
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          {filteredIncidents.map((inc) => {
             const isApproved = approvedIncidents[inc.incident_id] || inc.status === "CONTAINED";
             const isResolved = inc.status === "RESOLVED";
             const summary = globalLanguage === "bn" ? inc.summary_bn : inc.summary_en;
@@ -199,9 +236,9 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
               <div
                 key={inc.incident_id}
                 style={{
-                  background: "#080d16",
-                  border: "1px solid #1e293b",
-                  borderLeft: `3px solid ${
+                  background: "var(--bg-card-subtle)",
+                  border: "1px solid var(--border-subtle)",
+                  borderLeft: `4px solid ${
                     isResolved
                       ? "#10b981"
                       : isApproved
@@ -210,27 +247,27 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
                       ? "#ef4444"
                       : "#f97316"
                   }`,
-                  borderRadius: "6px",
-                  padding: "12px"
+                  borderRadius: "8px",
+                  padding: "14px",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.3)"
                 }}
               >
-                {/* Header row */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                {/* Header Row */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px", flexWrap: "wrap", gap: "6px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <span style={{ fontWeight: 800, color: "#f8fafc", fontSize: "12px" }} className="font-mono">
+                    <span style={{ fontWeight: 800, color: "#f8fafc", fontSize: "13px" }} className="font-mono">
                       {inc.incident_id}
                     </span>
-                    <span className="badge font-mono" style={{ background: "rgba(59, 130, 246, 0.2)", color: "#93c5fd" }}>
+                    <span className="badge font-mono" style={{ background: "rgba(59, 130, 246, 0.15)", color: "#93c5fd" }}>
                       IP: {inc.source_ip}
                     </span>
-
                     <span className={`badge badge-${inc.severity}`}>
                       {inc.severity}
                     </span>
 
-                    {/* Status badge */}
+                    {/* Status Pill */}
                     <span
-                      className="badge"
+                      className="badge font-mono"
                       style={{
                         background: isResolved
                           ? "rgba(16, 185, 129, 0.15)"
@@ -241,18 +278,18 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
                         border: `1px solid ${isResolved ? "rgba(16, 185, 129, 0.3)" : isApproved ? "rgba(59, 130, 246, 0.3)" : "rgba(239, 68, 68, 0.3)"}`
                       }}
                     >
-                      {isResolved ? "RESOLVED" : isApproved ? "CONTAINED" : "ACTIVE"}
+                      {isResolved ? "RESOLVED" : isApproved ? "CONTAINED" : "ACTIVE CAMPAIGN"}
                     </span>
                   </div>
 
-                  <span style={{ fontSize: "11px", color: "#94a3b8" }}>
+                  <span style={{ fontSize: "11px", color: "var(--text-tertiary)" }} className="font-mono">
                     {inc.event_count} correlated events
                   </span>
                 </div>
 
                 {/* Kill-Chain Progression Chips */}
-                <div style={{ display: "flex", alignItems: "center", gap: "6px", margin: "6px 0", flexWrap: "wrap" }}>
-                  <span style={{ fontSize: "10px", color: "#64748b", textTransform: "uppercase", fontWeight: 700 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px", margin: "8px 0", flexWrap: "wrap" }}>
+                  <span style={{ fontSize: "10px", color: "var(--text-tertiary)", textTransform: "uppercase", fontWeight: 700 }}>
                     Kill Chain:
                   </span>
                   <span className="badge" style={{ background: "#111827", color: "#94a3b8", fontSize: "10px" }}>
@@ -268,41 +305,33 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
                   </span>
                 </div>
 
-                {/* Summary */}
-                <p style={{ fontSize: "12px", color: "#cbd5e1", lineHeight: 1.5, marginBottom: "8px" }}>
+                {/* Incident Narrative Summary */}
+                <p style={{ fontSize: "12px", color: "#cbd5e1", lineHeight: 1.55, margin: "8px 0 10px 0" }}>
                   {summary}
                 </p>
 
-                {/* Action button row */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "6px", borderTop: "1px solid #131b29" }}>
-                  <span style={{ fontSize: "11px", color: "#64748b" }}>
+                {/* Action Row */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "8px", borderTop: "1px solid var(--border-subtle)", flexWrap: "wrap", gap: "8px" }}>
+                  <span style={{ fontSize: "11px", color: "var(--text-tertiary)" }}>
                     Human-in-the-Loop Countermeasure:
                   </span>
                   <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
                     {isResolved ? (
-                      <div style={{ display: "flex", alignItems: "center", gap: "4px", color: "#34d399", fontSize: "11px", fontWeight: 600 }}>
-                        <ShieldCheck size={13} />
-                        <span>INCIDENT RESOLVED</span>
+                      <div style={{ display: "flex", alignItems: "center", gap: "4px", color: "#34d399", fontSize: "11px", fontWeight: 700 }}>
+                        <ShieldCheck size={14} />
+                        <span>INCIDENT RESOLVED & CLOSED</span>
                       </div>
                     ) : isApproved ? (
                       <>
-                        <div style={{ display: "flex", alignItems: "center", gap: "4px", color: "#60a5fa", fontSize: "11px", fontWeight: 600 }}>
-                          <CheckCircle2 size={13} />
+                        <div style={{ display: "flex", alignItems: "center", gap: "4px", color: "#60a5fa", fontSize: "11px", fontWeight: 700 }}>
+                          <CheckCircle2 size={14} />
                           <span>FIREWALL DROP ACTIVE</span>
                         </div>
                         {onResolveIncidentAction && (
                           <button
                             onClick={() => onResolveIncidentAction(inc.incident_id)}
-                            style={{
-                              background: "#065f46",
-                              color: "#fff",
-                              border: "none",
-                              borderRadius: "4px",
-                              padding: "3px 8px",
-                              fontSize: "11px",
-                              fontWeight: 600,
-                              cursor: "pointer"
-                            }}
+                            className="btn btn-secondary"
+                            style={{ padding: "3px 9px", fontSize: "11px", color: "#34d399", borderColor: "rgba(16, 185, 129, 0.4)" }}
                           >
                             Mark Resolved
                           </button>
@@ -311,21 +340,10 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
                     ) : (
                       <button
                         onClick={() => onApproveIncidentAction(inc.incident_id)}
-                        style={{
-                          background: "#dc2626",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: "4px",
-                          padding: "3px 8px",
-                          fontSize: "11px",
-                          fontWeight: 600,
-                          cursor: "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "4px"
-                        }}
+                        className="btn btn-danger"
+                        style={{ padding: "4px 10px", fontSize: "11px" }}
                       >
-                        <ShieldAlert size={12} />
+                        <ShieldAlert size={13} />
                         <span>{globalLanguage === "bn" ? "আইপি ব্লক অনুমোদন করুন" : "Approve Firewall Block"}</span>
                       </button>
                     )}

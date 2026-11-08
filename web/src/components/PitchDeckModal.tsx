@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X, ChevronLeft, ChevronRight, Award, ShieldAlert, Cpu, Database, DollarSign, TrendingUp, Users } from "lucide-react";
 
 interface PitchDeckModalProps {
@@ -60,115 +60,107 @@ const SLIDES = [
       "5. Operator clicks 'Approve Defense' (HITL): Firewall block enforced and cryptographically audited."
     ],
     bulletPointsBn: [
-      "১. কৃত্রিম আক্রমণ ট্র্যাফিক ডিকয় সারফেসে আঘাত করে।",
-      "২. লাইভ ওয়েবসকেট তাত্ক্ষণিকভাবে অ্যালার্ট পাঠায়: 'BRUTE FORCE SUSPECTED'।",
-      "৩. অপারেটর বাংলায় প্রশ্ন করেন: 'কী ঘটেছে? কতটা বিপজ্জনক?'",
-      "৪. এআই অ্যানালিস্ট MITRE [T1110.001] এবং [CWE-307] উদ্ধৃত করে সাবলীল বাংলায় ব্যাখ্যা দেয়।",
-      "৫. অপারেটর 'অনুমোদন করুন' ক্লিক করেন: ফায়ারওয়াল ব্লক প্রয়োগ ও অপরিবর্তনীয় অডিট ট্রেইলে সংরক্ষিত হয়।"
+      "১. ডিকয় ট্র্যাপে আক্রমণ শনাক্ত: 'BRUTE FORCE SUSPECTED' এলার্ট সৃষ্টি।",
+      "২. লাইভ ওয়েবসকেটে রিয়েল-টাইম ইভেন্ট ব্রডকাস্ট।",
+      "৩. অপারেটরের মাতৃভাষায় প্রশ্ন: 'কী ঘটেছে? কতটা বিপজ্জনক?'",
+      "৪. এআই অ্যানালিস্টের বাংলা ভাষায় উদ্ধৃতিসহ উত্তর ([T1110.001], [CWE-307])।",
+      "৫. হিউম্যান-ইন-দ্য-লুপ অনুমোদন: তাত্ক্ষণিক ফায়ারওয়াল ব্লক ও অপরিবর্তনীয় অডিট লগ সংরক্ষণ।"
     ],
-    highlight: "Mean-Time-To-Understand drops from 45 minutes to 3 seconds."
+    highlight: "Under 60 seconds from alert to bilingual explanation and human-approved defense."
   },
   {
     number: 4,
-    titleEn: "AI-Native Reference Architecture",
-    titleBn: "এআই-নেটিভ রেফারেন্স আর্কিটেকচার",
+    titleEn: "Architecture & Data Lineage",
+    titleBn: "সিস্টেম আর্কিটেকচার ও ডেটা প্রবাহ",
     icon: Database,
     color: "#a855f7",
     bulletPointsEn: [
-      "Sensors: Deception Honeypot (isolated), API Abuse Guard (429 limiter), Allowlisted Asset Scanner.",
-      "Data Engine: FastAPI + PostgreSQL + pgvector for dense similarity search.",
-      "Multi-Agent Core: Triage Agent (severity reconciliation), Correlation Agent (kill chain), Response Advisor.",
-      "Pre-LLM PII Redaction: Passwords, tokens, and keys scrubbed before reaching models."
+      "Defensive Layer: Deception Honeypot (Port 8081), API Abuse Guard (Port 8082), Asset Discovery (Port 8083).",
+      "Core Ingestion Bus: FastAPI + PostgreSQL (pgvector embeddings for ATT&CK techniques & CVEs).",
+      "Intelligence Core: Redaction engine -> Retrieval -> Autonomous Triage -> Kill-Chain Correlation -> Human-in-the-Loop Advisor.",
+      "Local-First Sovereignty: Hot-swappable between Ollama (Llama 3.2), Gemini API, and Deterministic Offline Engine."
     ],
     bulletPointsBn: [
-      "সেন্সরসমূহ: আইসোলেটেড হানিপট, এপিআই অ্যাবিউজ গার্ড (রেট লিমিটার), অ্যালাউলিস্টেড অ্যাসেট স্ক্যানার।",
-      "ডেটা ইঞ্জিন: ভেক্টর সার্চের জন্য FastAPI + PostgreSQL + pgvector।",
-      "মাল্টি-এজেন্ট কোর: ট্রায়াজ এজেন্ট, কোরিলেশন এজেন্ট এবং রেসপন্স অ্যাডভাইজর।",
-      "মডেলের পূর্বে PII স্ক্রাবিং: পাসওয়ার্ড, টোকেন ও সিক্রেট তথ্য মডেলের নিকট পাঠানোর পূর্বেই মুছে ফেলা হয়।"
+      "ডিফেন্সিভ সেন্সর: ডিসেপশন হানিপট (পোর্ট ৮০৮১), রেট লিমিটার (পোর্ট ৮০৮২), এসেট স্ক্যানার (পোর্ট ৮০৮৩)।",
+      "কোর বাস: FastAPI + PostgreSQL (MITRE ও CVE এর জন্য pgvector এম্বেডিং)।",
+      "ইন্টেলিজেন্স ইঞ্জিন: রিডাকশন -> রিট্রিভাল -> স্বয়ংক্রিয় ট্রায়াজ -> কিল-চেইন কোরিলেশন -> রেসপন্স অ্যাডভাইজর।",
+      "সার্বভৌমত্ব: লোকাল Ollama (Llama 3.2), জেমিনি এবং অফলাইন ইঞ্জিনের মধ্যে হট-সোয়াপ।"
     ],
-    highlight: "Compliant with Congress 2026 Reference Architecture Layer 1 to 7."
+    highlight: "Grounded RAG architecture with 100% data lineage from sensor to citation."
   },
   {
     number: 5,
-    titleEn: "Responsible AI & Data Sovereignty",
-    titleBn: "দায়িত্বশীল এআই ও তথ্য সার্বভৌমত্ব",
+    titleEn: "Responsible AI, Safety & Sovereignty",
+    titleBn: "দায়িত্বশীল এআই, নিরাপত্তা ও ডেটা সার্বভৌমত্ব",
     icon: ShieldAlert,
     color: "#f59e0b",
     bulletPointsEn: [
-      "Defensive Boundaries in Code: Asset Discovery strictly refuses off-list targets with HTTP 403.",
-      "Human-in-the-Loop (HITL): AI only advises countermeasures; human approval is mandatory.",
-      "Data Sovereignty Mode: One-click switch to Ollama offline; cloud egress fully blocked.",
-      "Immutable Audit Trail: Every verdict, retrieved citation, and operator sign-off is permanently logged."
+      "Zero Hallucination: AI reasoning strictly grounded in MITRE ATT&CK & CVE knowledge vectors.",
+      "Zero Offensive Execution: Honeypot is simulated; never executes commands; Scanner strictly limited to allowlisted targets.",
+      "Mandatory PII Scrubbing: Redacts credentials, tokens, and emails before model processing.",
+      "Human-in-the-Loop & Immutable Audit: Countermeasures require human approval; all actions logged to append-only database."
     ],
     bulletPointsBn: [
-      "কোডে সুরক্ষিত সীমানা: অনুমোদিত তালিকা বহির্ভূত যেকোনো স্ক্যান অনুরোধ ৪০৩ কোডে প্রত্যাখ্যাত হয়।",
-      "হিউম্যান-ইন-দ্য-লুপ (HITL): এআই শুধুমাত্র সুপারিশ করে; মানুষের চূড়ান্ত অনুমোদন ছাড়া কোনো ব্যবস্থা নেওয়া হয় না।",
-      "তথ্য সার্বভৌমত্ব মোড: ওলামা অফলাইন ব্যাকএন্ড দিয়ে ইন্টারনেটের অনুপস্থিতিতেও নির্বিঘ্নে চলে।",
-      "অপরিবর্তনীয় অডিট ট্রেইল: এআই-এর প্রতিটি সিদ্ধান্ত এবং অপারেটরের অনুমোদন স্থায়ীভাবে সংরক্ষিত থাকে।"
+      "শূন্য হ্যালুসিনেশন: এআই সিদ্ধান্ত ১০০% MITRE ATT&CK এবং CVE ভেক্টরের উপর গ্রাউন্ডেড।",
+      "নিরাপদ ডিফেন্স: হানিপট সম্পূর্ণ বিচ্ছিন্ন ও নিয়ন্ত্রিত; স্ক্যানার অনুমোদিত ল্যাব সীমার বাইরে স্ক্যান করতে পারে না।",
+      "স্বয়ংক্রিয় পিআইআই স্ক্রাবিং: মডেল প্রসেসিংয়ের পূর্বে সব পাসওয়ার্ড ও টোকেন ফিল্টার করা হয়।",
+      "হিউম্যান-ইন-দ্য-লুপ ও অডিট লগ: কাউন্টারমেজার অনুমোদনে মানব নজরদারি বাধ্যতামূলক এবং প্রতিটি সিদ্ধান্ত অপরিবর্তনীয় অডিটে সংরক্ষিত।"
     ],
-    highlight: "Directly satisfies Responsible AI, Data Ownership, & Governance score rubric."
+    highlight: "Meets NIST AI Risk Management Framework & Bangladesh Cyber Security standards."
   },
   {
     number: 6,
-    titleEn: "Commercial Viability & Business Model",
-    titleBn: "বাণিজ্যিক সম্ভাব্যতা ও ব্যবসায়িক মডেল",
-    icon: DollarSign,
-    color: "#10b981",
+    titleEn: "Competitive Advantage",
+    titleBn: "প্রতিযোগিতামূলক সুবিধা",
+    icon: TrendingUp,
+    color: "#06b6d4",
     bulletPointsEn: [
-      "Market: 100,000+ SMEs, 60+ Commercial Banks, and regional public sector bodies in Bangladesh.",
-      "Tier 1: Community Edition (Free & Open Source) for universities and startups.",
-      "Tier 2: Enterprise On-Prem License ($1,200/node/year) for banks and critical infrastructure.",
-      "Tier 3: Managed Multi-Tenant SOC SaaS ($99/month/organization) for SMEs."
+      "Enterprise SOC (Splunk / CrowdStrike): $150K+/yr, complex setup, foreign cloud egress, English-only.",
+      "Generic GenAI Wrappers: High hallucination, no defensive telemetry bus, leaks prompts to 3rd-party clouds.",
+      "PROHORI AI: $0 software license, runs on a $500 local mini-PC or existing servers, native Bengali (বাংলা), fully auditable."
     ],
     bulletPointsBn: [
-      "বাজার: বাংলাদেশে ১,০০,০০০+ SME, ৬০+ বাণিজ্যিক ব্যাংক এবং বিভিন্ন সরকারি সংস্থা।",
-      "স্তর ১: বিশ্ববিদ্যালয় ও স্টার্টআপদের জন্য উন্মুক্ত কমিউনিটি সংস্করণ।",
-      "স্তর ২: ব্যাংক ও গুরুত্বপূর্ণ প্রতিষ্ঠানের জন্য অন-প্রেমিসেস লাইসেন্স (প্রতি বছর $১,২০০)।",
-      "স্তর ৩: এসএমই প্রতিষ্ঠানের জন্য ক্লাউড ম্যানেজড এসওসি সাবস্ক্রিপশন (প্রতি মাসে $৯৯)।"
+      "ঐতিহ্যগত এসওসি: বছরে কোটি টাকার বেশি খরচ, বিদেশি সার্ভার নির্ভরতা, শুধুমাত্র ইংরেজি নির্ভর।",
+      "সাধারণ জেন-এআই র‍্যাপার: হ্যালুসিনেশন বেশি, কোনো সেন্সর বাস নেই, ক্লাউডে ডেটা লিক হওয়ার ঝুঁকি।",
+      "প্রহরী এআই: কোনো লাইসেন্স ফি নেই, সাধারণ সার্ভারেই চলে, মাতৃভাষা বাংলায় কার্যকর, ১০০% অডিটেবল।"
     ],
-    highlight: "Clear path to recurring ARR with massive local market need."
+    highlight: "10x cheaper, 100% sovereign, and native Bangla support."
   },
   {
     number: 7,
-    titleEn: "Global Scalability & Societal Impact",
-    titleBn: "গ্লোবাল স্কেলেবিলিটি ও সামাজিক প্রভাব",
-    icon: TrendingUp,
-    color: "#6366f1",
+    titleEn: "Cost & Sustainability Model",
+    titleBn: "বাজেট ও টেকসই ব্যবসায়িক মডেল",
+    icon: DollarSign,
+    color: "#10b981",
     bulletPointsEn: [
-      "Stateless microservice architecture; horizontally scales across Docker / Kubernetes clusters.",
-      "Bilingual democratization: allows non-native English speakers to operate cyber defenses in Bengali.",
-      "Universal Applicability: Threat sensors and MITRE RAG engine scale globally to any language.",
-      "National Security: Safeguards national critical infrastructure without reliance on foreign telemetry exports."
+      "Built entirely on free-tier, open-source building blocks: FastAPI, PostgreSQL, Ollama, React + Vite.",
+      "Zero-cost baseline: Operates fully offline on consumer hardware with zero cloud API bills.",
+      "Scalable Commercial Model: Open-source community core + Paid Enterprise Support, Custom Model Tuning & Compliance Reporting for Banks."
     ],
     bulletPointsBn: [
-      "ডকার ও কুবারনেটিসে সহজে অনুভূমিকভাবে স্কেলযোগ্য মাইক্রোসার্ভিস আর্কিটেকচার।",
-      "ভাষাগত ক্ষমতায়ন: মাতৃভাষা বাংলায় সাইবার নিরাপত্তা পরিচালনার সুযোগ।",
-      "বৈশ্বিক প্রযোজ্যতা: MITRE ATT&CK গ্রাউন্ডিং যেকোনো আন্তর্জাতিক অবকাঠামোতে কার্যকর।",
-      "জাতীয় নিরাপত্তা: বিদেশী ক্লাউডের ওপর নির্ভরতা কমিয়ে সার্বভৌম ডিজিটাল প্রতিরক্ষা নিশ্চিত করে।"
+      "সম্পূর্ণ ফ্রি ও ওপেন সোর্স প্রযুক্তির ভিত্তি: FastAPI, PostgreSQL, Ollama, React + Vite।",
+      "শূন্য ক্লাউড খরচ: কোনো ক্লাউড এপিআই ছাড়াই লোকাল কম্পিউটারে সম্পূর্ণ সক্ষমতায় চালনাযোগ্য।",
+      "বাণিজ্যিক মডেল: উন্মুক্ত কোর প্ল্যাটফর্ম + ব্যাংক ও এন্টারপ্রাইজের জন্য কাস্টম সাপোর্ট ও কমপ্লায়েন্স চুক্তি।"
     ],
-    highlight: "Built in Bangladesh for emerging nations worldwide."
+    highlight: "$0 operational cost to start; scalable enterprise support model."
   },
   {
     number: 8,
-    titleEn: "Team Roles & Execution Discipline",
-    titleBn: "দলীয় ভূমিকা ও দায়িত্ব বণ্টন",
+    titleEn: "The Team & Vision",
+    titleBn: "আমাদের দল ও লক্ষ্য",
     icon: Users,
-    color: "#ec4899",
+    color: "#38bdf8",
     bulletPointsEn: [
-      "Team Leader / Coordinator: Overall vision, milestone delivery, and live pitch orchestration.",
-      "AI & Data Scientist: RAG knowledge base engineering, MITRE grounding, and prompt accuracy.",
-      "Full-Stack / Frontend Lead: Tactical operator console, accessibility, and Bengali localization.",
-      "Backend & Security Engineer: Event bus, defensive sensors, pgvector, and rate-limit guardrails.",
-      "Presentation & Compliance Lead: Pitch narrative, audit framework, and commercial packaging."
+      "Vision: Democratize enterprise-grade cybersecurity for emerging digital nations.",
+      "Every SME, school, hospital, and municipality deserves real-time threat intelligence and autonomous defense.",
+      "Prohori Sentinel ('প্রহরী') represents national cyber resilience powered by sovereign, responsible AI."
     ],
     bulletPointsBn: [
-      "দলনেতা ও সমন্বয়ক: সামগ্রিক পরিকল্পনা, সময়রেখা এবং লাইভ পিচ পরিচালনা।",
-      "এআই ও ডেটা সায়েন্টিস্ট: RAG নলেজ বেস ইঞ্জিনিয়ারিং, MITRE গ্রাউন্ডিং এবং প্রম্পট টিউনিং।",
-      "ফ্রন্টএন্ড লিড: ট্যাকটিক্যাল এসওসি কনসোল, অ্যাক্সেসিবিলিটি এবং বাংলা লোকালাইজেশন।",
-      "ব্যাকএন্ড ও সিকিউরিটি ইঞ্জিনিয়ার: ইভেন্ট বাস, ডিফেন্সিভ সেন্সর, pgvector এবং সেফটি গার্ডরেইল।",
-      "কমপ্লায়েন্স ও প্রেজেন্টেশন লিড: পিচ উপস্থাপনা, অডিট ফ্রেমওয়ার্ক এবং ব্যবসায়িক মডেল।"
+      "লক্ষ্য: বাংলাদেশের প্রতিটি প্রতিষ্ঠানের জন্য বিশ্বমানের সাইবার নিরাপত্তা সহজলভ্য করা।",
+      "প্রতিটি ক্ষুদ্র ব্যবসা, হাসপাতাল, স্কুল ও ব্যাংকের জন্য রিয়েল-টাইম থ্রেট ইন্টেলিজেন্স ও এআই প্রতিরোধ।",
+      "প্রহরী এআই — দেশের সার্বভৌমিকতা রক্ষায় ডিজিটাল পাহারাদার।"
     ],
-    highlight: "Cross-functional execution built to win the 100-point Congress score sheet."
+    highlight: "Protecting Bangladesh's digital frontiers with sovereign, bilingual AI."
   }
 ];
 
@@ -178,76 +170,141 @@ export const PitchDeckModal: React.FC<PitchDeckModalProps> = ({
   globalLanguage
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [deckLang, setDeckLang] = useState<"en" | "bn">(globalLanguage);
+
+  useEffect(() => {
+    setDeckLang(globalLanguage);
+  }, [globalLanguage]);
+
+  // Keyboard navigation: Arrow keys & Escape
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isOpen) return;
+      if (e.key === "Escape") {
+        onClose();
+      } else if (e.key === "ArrowRight") {
+        setCurrentSlide((prev) => Math.min(SLIDES.length - 1, prev + 1));
+      } else if (e.key === "ArrowLeft") {
+        setCurrentSlide((prev) => Math.max(0, prev - 1));
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
   const slide = SLIDES[currentSlide];
   const Icon = slide.icon;
-  const title = globalLanguage === "bn" ? slide.titleBn : slide.titleEn;
-  const bullets = globalLanguage === "bn" ? slide.bulletPointsBn : slide.bulletPointsEn;
+  const title = deckLang === "bn" ? slide.titleBn : slide.titleEn;
+  const bullets = deckLang === "bn" ? slide.bulletPointsBn : slide.bulletPointsEn;
 
   return (
-    <div style={{
-      position: "fixed",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background: "rgba(0,0,0,0.85)",
-      backdropFilter: "blur(6px)",
-      zIndex: 2500,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: "20px"
-    }}>
-      <div style={{
-        background: "#0a0f18",
-        border: "1px solid #1e293b",
-        borderRadius: "12px",
-        width: "920px",
-        maxWidth: "96vw",
-        height: "560px",
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(3, 7, 18, 0.85)",
+        backdropFilter: "blur(8px)",
+        zIndex: 2000,
         display: "flex",
-        flexDirection: "column",
-        boxShadow: "0 24px 50px rgba(0,0,0,0.9)",
-        overflow: "hidden"
-      }}>
-        {/* Top Bar */}
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "20px"
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: "var(--bg-surface)",
+          border: "1px solid var(--border-medium)",
+          borderRadius: "14px",
+          width: "880px",
+          maxWidth: "96vw",
+          minHeight: "520px",
+          display: "flex",
+          flexDirection: "column",
+          boxShadow: "0 24px 60px rgba(0, 0, 0, 0.85)",
+          overflow: "hidden"
+        }}
+        className="animate-fade-in"
+      >
+        {/* Header Bar */}
         <div style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          padding: "14px 24px",
-          borderBottom: "1px solid #1e293b",
-          background: "#080c14"
+          padding: "16px 24px",
+          borderBottom: "1px solid var(--border-subtle)",
+          background: "var(--bg-canvas)",
+          flexWrap: "wrap",
+          gap: "10px"
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <span className="badge" style={{ background: "rgba(56, 189, 248, 0.2)", color: "#38bdf8" }}>
+            <span className="badge" style={{ background: "rgba(56, 189, 248, 0.15)", color: "#38bdf8", border: "1px solid rgba(56, 189, 248, 0.35)" }}>
               CONGRESS 2026 PITCH DECK
             </span>
-            <span style={{ fontSize: "12px", color: "#64748b" }}>
+            <span style={{ fontSize: "12px", color: "var(--text-tertiary)" }} className="font-mono">
               Slide {slide.number} of {SLIDES.length}
             </span>
           </div>
 
-          <button
-            onClick={onClose}
-            style={{ background: "transparent", border: "none", color: "#64748b", cursor: "pointer" }}
-          >
-            <X size={18} />
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            {/* In-Deck Language Toggle */}
+            <div style={{ display: "flex", background: "var(--bg-elevated)", borderRadius: "4px", border: "1px solid var(--border-subtle)", padding: "2px" }}>
+              <button
+                onClick={() => setDeckLang("en")}
+                style={{
+                  background: deckLang === "en" ? "#2563eb" : "transparent",
+                  color: "#ffffff",
+                  border: "none",
+                  borderRadius: "3px",
+                  fontSize: "10px",
+                  fontWeight: 700,
+                  padding: "2px 8px",
+                  cursor: "pointer"
+                }}
+              >
+                EN
+              </button>
+              <button
+                onClick={() => setDeckLang("bn")}
+                style={{
+                  background: deckLang === "bn" ? "#2563eb" : "transparent",
+                  color: "#ffffff",
+                  border: "none",
+                  borderRadius: "3px",
+                  fontSize: "10px",
+                  fontWeight: 700,
+                  padding: "2px 8px",
+                  cursor: "pointer"
+                }}
+              >
+                বাংলা
+              </button>
+            </div>
+
+            <button
+              onClick={onClose}
+              className="btn btn-ghost"
+              style={{ padding: "6px" }}
+              title="Close presentation (Esc)"
+            >
+              <X size={18} />
+            </button>
+          </div>
         </div>
 
         {/* Slide Body */}
-        <div style={{ flex: 1, padding: "32px 40px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <div style={{ flex: 1, padding: "32px 36px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
           <div>
             {/* Slide Title */}
-            <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "22px" }}>
               <div style={{
                 background: `${slide.color}20`,
                 border: `1px solid ${slide.color}50`,
-                borderRadius: "8px",
+                borderRadius: "10px",
                 padding: "10px",
                 display: "flex",
                 alignItems: "center",
@@ -256,7 +313,7 @@ export const PitchDeckModal: React.FC<PitchDeckModalProps> = ({
               }}>
                 <Icon size={26} />
               </div>
-              <h2 style={{ fontSize: "20px", fontWeight: 800, color: "#f8fafc" }}>
+              <h2 style={{ fontSize: "20px", fontWeight: 800, color: "#f8fafc", margin: 0, letterSpacing: "-0.01em" }}>
                 {title}
               </h2>
             </div>
@@ -274,14 +331,15 @@ export const PitchDeckModal: React.FC<PitchDeckModalProps> = ({
 
           {/* Highlight Callout */}
           <div style={{
-            background: "#0f172a",
-            border: `1px solid ${slide.color}40`,
+            background: "var(--bg-card-subtle)",
+            border: `1px solid ${slide.color}35`,
             borderLeft: `4px solid ${slide.color}`,
             borderRadius: "6px",
-            padding: "12px 16px",
+            padding: "12px 18px",
             fontSize: "13px",
             fontWeight: 600,
-            color: "#e2e8f0"
+            color: "#e2e8f0",
+            marginTop: "20px"
           }}>
             {slide.highlight}
           </div>
@@ -292,46 +350,35 @@ export const PitchDeckModal: React.FC<PitchDeckModalProps> = ({
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          padding: "12px 24px",
-          borderTop: "1px solid #1e293b",
-          background: "#080c14"
+          padding: "14px 24px",
+          borderTop: "1px solid var(--border-subtle)",
+          background: "var(--bg-canvas)"
         }}>
           <button
             onClick={() => setCurrentSlide((prev) => Math.max(0, prev - 1))}
             disabled={currentSlide === 0}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "4px",
-              background: "#1e293b",
-              color: "#f8fafc",
-              border: "1px solid #334155",
-              borderRadius: "6px",
-              padding: "6px 14px",
-              fontSize: "12px",
-              fontWeight: 600,
-              cursor: currentSlide === 0 ? "not-allowed" : "pointer",
-              opacity: currentSlide === 0 ? 0.4 : 1
-            }}
+            className="btn btn-secondary"
+            style={{ fontSize: "12px" }}
           >
-            <ChevronLeft size={14} />
+            <ChevronLeft size={15} />
             <span>Previous</span>
           </button>
 
           {/* Slide dots */}
-          <div style={{ display: "flex", gap: "8px" }}>
+          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
             {SLIDES.map((_, i) => (
               <div
                 key={i}
                 onClick={() => setCurrentSlide(i)}
                 style={{
-                  width: i === currentSlide ? "24px" : "8px",
+                  width: i === currentSlide ? "26px" : "8px",
                   height: "8px",
                   borderRadius: "4px",
-                  background: i === currentSlide ? "#38bdf8" : "#1e293b",
+                  background: i === currentSlide ? "#38bdf8" : "var(--border-subtle)",
                   cursor: "pointer",
                   transition: "all 0.2s ease"
                 }}
+                title={`Go to slide ${i + 1}`}
               />
             ))}
           </div>
@@ -339,27 +386,14 @@ export const PitchDeckModal: React.FC<PitchDeckModalProps> = ({
           <button
             onClick={() => setCurrentSlide((prev) => Math.min(SLIDES.length - 1, prev + 1))}
             disabled={currentSlide === SLIDES.length - 1}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "4px",
-              background: "#2563eb",
-              color: "#fff",
-              border: "none",
-              borderRadius: "6px",
-              padding: "6px 14px",
-              fontSize: "12px",
-              fontWeight: 600,
-              cursor: currentSlide === SLIDES.length - 1 ? "not-allowed" : "pointer",
-              opacity: currentSlide === SLIDES.length - 1 ? 0.4 : 1
-            }}
+            className="btn btn-primary"
+            style={{ fontSize: "12px" }}
           >
             <span>Next</span>
-            <ChevronRight size={14} />
+            <ChevronRight size={15} />
           </button>
         </div>
       </div>
     </div>
   );
 };
-

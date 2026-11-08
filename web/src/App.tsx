@@ -8,9 +8,7 @@ import { EventDetailDrawer } from "./components/EventDetailDrawer";
 import { AuditLogDrawer } from "./components/AuditLogDrawer";
 import { PitchDeckModal } from "./components/PitchDeckModal";
 import type { SecurityEvent, Incident } from "./types";
-
-
-
+import { Shield, BookOpen, Lock, Cpu } from "lucide-react";
 
 const API_BASE = "http://localhost:8000";
 const WS_URL = "ws://localhost:8000/stream";
@@ -25,6 +23,12 @@ export const App: React.FC = () => {
   const [isAuditOpen, setIsAuditOpen] = useState<boolean>(false);
   const [isPitchDeckOpen, setIsPitchDeckOpen] = useState<boolean>(false);
   const [isLocalSovereignty, setIsLocalSovereignty] = useState<boolean>(true);
+
+  // Synchronized Filter State between TopCounters and EventFeed
+  const [sourceFilter, setSourceFilter] = useState<string>("all");
+  const [severityFilter, setSeverityFilter] = useState<string>("all");
+
+  const wsRef = useRef<WebSocket | null>(null);
 
   const handleToggleSovereignty = async () => {
     const nextMode = isLocalSovereignty ? "cloud" : "local";
@@ -42,16 +46,13 @@ export const App: React.FC = () => {
     }
   };
 
-
-
-  const wsRef = useRef<WebSocket | null>(null);
-
-  // 1. Fetch initial events and incidents
+  // 1. Fetch initial events, incidents, and sovereignty status
   const fetchTelemetry = async () => {
     try {
-      const [eventsRes, incRes] = await Promise.all([
+      const [eventsRes, incRes, sovRes] = await Promise.all([
         fetch(`${API_BASE}/events?limit=100`),
-        fetch(`${API_BASE}/analyst/incidents`)
+        fetch(`${API_BASE}/analyst/incidents`),
+        fetch(`${API_BASE}/sovereignty/status`).catch(() => null)
       ]);
 
       if (eventsRes.ok) {
@@ -62,12 +63,16 @@ export const App: React.FC = () => {
         const data = await incRes.json();
         setIncidents(data.incidents || []);
       }
+      if (sovRes && sovRes.ok) {
+        const sovData = await sovRes.json();
+        setIsLocalSovereignty(sovData.sovereignty_mode === "LOCAL_SOVEREIGNTY");
+      }
     } catch (err) {
       console.warn("Could not fetch initial telemetry from API:", err);
     }
   };
 
-  // 2. Establish live WebSocket stream with reconnect
+  // 2. Establish live WebSocket stream with automatic reconnection
   useEffect(() => {
     fetchTelemetry();
 
@@ -87,7 +92,7 @@ export const App: React.FC = () => {
             const data = JSON.parse(event.data);
             if (data.type === "new_event" && data.event) {
               setEvents((prev) => [data.event, ...prev.filter((e) => e.id !== data.event.id)]);
-              // Trigger incident refresh
+              // Refresh incidents when new events stream in
               fetch(`${API_BASE}/analyst/incidents`)
                 .then((r) => r.json())
                 .then((d) => setIncidents(d.incidents || []))
@@ -99,6 +104,12 @@ export const App: React.FC = () => {
               if (selectedEvent?.id === data.event.id) {
                 setSelectedEvent(data.event);
               }
+            } else if (data.type === "incident_status_changed" && data.incident_id) {
+              setIncidents((prev) =>
+                prev.map((i) =>
+                  i.incident_id === data.incident_id ? { ...i, status: data.status } : i
+                )
+              );
             }
           } catch (e) {
             console.error("Error processing websocket message:", e);
@@ -121,7 +132,6 @@ export const App: React.FC = () => {
 
     connectWs();
 
-    // Periodic heartbeat/refresh
     const interval = setInterval(fetchTelemetry, 10000);
 
     return () => {
@@ -129,6 +139,24 @@ export const App: React.FC = () => {
       clearInterval(interval);
       if (wsRef.current) wsRef.current.close();
     };
+  }, []);
+
+  // Global Keyboard Shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+      if (e.key === "P" && e.shiftKey) {
+        setIsPitchDeckOpen((prev) => !prev);
+      } else if (e.key === "A" && e.shiftKey) {
+        setIsAuditOpen((prev) => !prev);
+      } else if (e.key === "S" && e.shiftKey) {
+        handleTriggerDemo();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   // 3. Handler for Retriage
@@ -149,7 +177,6 @@ export const App: React.FC = () => {
 
   // 4. Trigger simulated attack telemetry directly
   const handleTriggerDemo = async () => {
-    // Ingest a high-impact demo honeypot burst
     try {
       await fetch(`${API_BASE}/events`, {
         method: "POST",
@@ -162,7 +189,7 @@ export const App: React.FC = () => {
             source_ip: "192.168.1.189",
             username_tried: "admin",
             password_tried: "toor",
-            attempts_in_window: 6,
+            attempts_in_window: 7,
             simulated_surface: "fake_admin_login"
           }
         })
@@ -172,12 +199,12 @@ export const App: React.FC = () => {
     }
   };
 
+  // 5. Human-in-the-Loop Countermeasure Approval for Incidents
   const handleApproveIncidentAction = async (incidentId: string) => {
     const inc = incidents.find((i) => i.incident_id === incidentId);
     if (!inc) return;
 
     try {
-      // 1. Approve countermeasure which adds IP to active perimeter denylist and audit log
       await fetch(`${API_BASE}/audit/approve`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -189,7 +216,6 @@ export const App: React.FC = () => {
         })
       });
 
-      // 2. Patch incident status to CONTAINED
       await fetch(`${API_BASE}/analyst/incidents/${incidentId}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -209,6 +235,7 @@ export const App: React.FC = () => {
     }
   };
 
+  // 6. Resolve Incident Action
   const handleResolveIncidentAction = async (incidentId: string) => {
     try {
       await fetch(`${API_BASE}/analyst/incidents/${incidentId}/status`, {
@@ -244,20 +271,29 @@ export const App: React.FC = () => {
         onToggleSovereignty={handleToggleSovereignty}
       />
 
-
-
       {/* Top Telemetry KPI Counters */}
-      <TopCounters events={events} incidentCount={incidents.length} />
+      <TopCounters
+        events={events}
+        incidentCount={incidents.length}
+        onSelectSeverityFilter={(sev) => setSeverityFilter(sev)}
+        onSelectSourceFilter={(src) => setSourceFilter(src)}
+        selectedSeverity={severityFilter}
+        selectedSource={sourceFilter}
+      />
 
       {/* Main SOC Layout Grid */}
       <div className="soc-grid">
         {/* Left Column: Live Event Feed & Incident Timeline */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           <EventFeed
             events={events}
             onSelectEvent={(ev) => setSelectedEvent(ev)}
             selectedEventId={selectedEvent?.id}
             globalLanguage={globalLanguage}
+            sourceFilter={sourceFilter}
+            setSourceFilter={setSourceFilter}
+            severityFilter={severityFilter}
+            setSeverityFilter={setSeverityFilter}
           />
           <IncidentTimeline
             incidents={incidents}
@@ -265,6 +301,7 @@ export const App: React.FC = () => {
             onApproveIncidentAction={handleApproveIncidentAction}
             onResolveIncidentAction={handleResolveIncidentAction}
             approvedIncidents={approvedIncidents}
+            apiBase={API_BASE}
           />
         </div>
 
@@ -274,12 +311,83 @@ export const App: React.FC = () => {
         </div>
       </div>
 
+      {/* Footer Ribbon */}
+      <footer style={{
+        marginTop: "32px",
+        padding: "16px 20px",
+        background: "var(--bg-surface)",
+        border: "1px solid var(--border-subtle)",
+        borderRadius: "10px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        flexWrap: "wrap",
+        gap: "12px",
+        fontSize: "11px",
+        color: "var(--text-tertiary)"
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap" }}>
+          <span style={{ display: "flex", alignItems: "center", gap: "5px", color: "var(--text-secondary)" }}>
+            <Shield size={13} color="#38bdf8" />
+            <strong>Prohori Sentinel</strong> &bull; International AI Builders Congress 2026
+          </span>
+          <span className="badge" style={{ background: "rgba(16, 185, 129, 0.12)", color: "#34d399" }}>
+            <Lock size={10} style={{ marginRight: "3px" }} />
+            Zero Cloud Egress Guaranteed
+          </span>
+          <span className="badge" style={{ background: "rgba(56, 189, 248, 0.12)", color: "#38bdf8" }}>
+            <Cpu size={10} style={{ marginRight: "3px" }} />
+            Local Model: Llama 3.2 / Qwen
+          </span>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap" }}>
+          <a
+            href={`${API_BASE}/docs`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "#38bdf8", textDecoration: "none", display: "flex", alignItems: "center", gap: "4px" }}
+          >
+            <BookOpen size={11} />
+            <span>Interactive API Docs</span>
+          </a>
+          <a
+            href={`${API_BASE}/docs/architecture`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "#94a3b8", textDecoration: "none" }}
+          >
+            Architecture
+          </a>
+          <a
+            href={`${API_BASE}/docs/security`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "#94a3b8", textDecoration: "none" }}
+          >
+            Security Scope
+          </a>
+          <a
+            href={`${API_BASE}/docs/lineage`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "#94a3b8", textDecoration: "none" }}
+          >
+            Data Lineage
+          </a>
+          <span className="font-mono" style={{ color: "var(--text-muted)" }}>
+            [Shift+P: Pitch Deck | Shift+A: Audit Log | Shift+S: Simulate]
+          </span>
+        </div>
+      </footer>
+
       {/* Detailed Event Inspector Drawer */}
       <EventDetailDrawer
         event={selectedEvent}
         onClose={() => setSelectedEvent(null)}
         onRetriage={handleRetriage}
         globalLanguage={globalLanguage}
+        apiBase={API_BASE}
       />
 
       {/* Immutable Audit Log Modal */}
@@ -298,7 +406,5 @@ export const App: React.FC = () => {
     </div>
   );
 };
-
-
 
 export default App;

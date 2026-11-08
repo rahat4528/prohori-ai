@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Bot, Send, Sparkles, CheckCircle, ExternalLink, ShieldAlert, X, BookOpen, ShieldCheck } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Bot, Send, Sparkles, CheckCircle, ExternalLink, ShieldAlert, X, BookOpen, ShieldCheck, Copy, Check, RotateCcw } from "lucide-react";
 import type { AskResponse, KnowledgeDoc } from "../types";
 
 interface AskAnalystProps {
@@ -22,6 +22,18 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
   const [approvedAction, setApprovedAction] = useState<boolean>(false);
   const [selectedCitationDoc, setSelectedCitationDoc] = useState<KnowledgeDoc | null>(null);
   const [citationLoading, setCitationLoading] = useState<boolean>(false);
+  const [copied, setCopied] = useState<boolean>(false);
+
+  // Close citation modal with ESC key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && selectedCitationDoc) {
+        setSelectedCitationDoc(null);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedCitationDoc]);
 
   const handleAsk = async (questionText?: string, langOverride?: "en" | "bn") => {
     const textToSend = questionText || query;
@@ -30,6 +42,7 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
     setLoading(true);
     setStreaming(true);
     setApprovedAction(false);
+    setCopied(false);
 
     // Initialize blank response structure for streaming
     setResponse({
@@ -123,7 +136,6 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
         const doc: KnowledgeDoc = await resp.json();
         setSelectedCitationDoc(doc);
       } else {
-        // Fallback root path
         const rootResp = await fetch(`${apiBase}/knowledge/${encodeURIComponent(citationId)}`);
         if (rootResp.ok) {
           const doc: KnowledgeDoc = await rootResp.json();
@@ -157,8 +169,16 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
     }
   };
 
+  const handleCopyAnswer = () => {
+    if (response?.answer) {
+      navigator.clipboard.writeText(response.answer);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   return (
-    <div className="soc-card" style={{ borderColor: "#3b82f6", boxShadow: "0 0 25px rgba(59, 130, 246, 0.15)" }}>
+    <div className="soc-card" style={{ borderColor: "#2563eb", boxShadow: "0 0 30px rgba(37, 99, 235, 0.15)" }}>
       {/* Header */}
       <div className="soc-card-header">
         <div className="soc-title" style={{ color: "#38bdf8" }}>
@@ -170,7 +190,7 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
         </span>
       </div>
 
-      {/* Suggested Quick Queries */}
+      {/* Suggested Quick Queries Chips */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "12px" }}>
         {SAMPLE_QUERIES.map((sample, i) => (
           <button
@@ -180,31 +200,36 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
               handleAsk(sample.query, sample.lang);
             }}
             style={{
-              background: "#162032",
-              border: "1px solid #23334d",
+              background: "#131d2e",
+              border: "1px solid #1e2e46",
               color: "#94a3b8",
               fontSize: "11px",
-              padding: "4px 8px",
-              borderRadius: "4px",
+              padding: "5px 10px",
+              borderRadius: "5px",
               cursor: "pointer",
-              transition: "all 0.15s ease"
+              transition: "all 0.15s ease",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "5px"
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.borderColor = "#38bdf8";
               e.currentTarget.style.color = "#f8fafc";
+              e.currentTarget.style.background = "#19273c";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "#23334d";
+              e.currentTarget.style.borderColor = "#1e2e46";
               e.currentTarget.style.color = "#94a3b8";
+              e.currentTarget.style.background = "#131d2e";
             }}
           >
-            <Sparkles size={11} style={{ display: "inline", marginRight: "4px", color: "#38bdf8" }} />
-            {sample.label}
+            <Sparkles size={11} color="#38bdf8" />
+            <span>{sample.label}</span>
           </button>
         ))}
       </div>
 
-      {/* Input Field */}
+      {/* Input Field Form */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -219,38 +244,20 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
           placeholder={
             globalLanguage === "bn"
               ? "যেকোনো নিরাপত্তা ঘটনা সম্পর্কে প্রশ্ন করুন (যেমন: 'কী ঘটেছে? কতটা বিপজ্জনক?')..."
-              : "Ask about any event (e.g. 'Explain the last critical incident and citations')..."
+              : "Ask about any event (e.g. 'Explain the last critical incident and attacker behavior')..."
           }
+          className="input-control"
           style={{
             flex: 1,
-            background: "#080c14",
-            border: "1px solid #1e293b",
-            color: "#f8fafc",
-            borderRadius: "6px",
             padding: "10px 14px",
-            fontSize: "13px",
-            outline: "none"
+            fontSize: "13px"
           }}
-          onFocus={(e) => (e.target.style.borderColor = "#38bdf8")}
-          onBlur={(e) => (e.target.style.borderColor = "#1e293b")}
         />
         <button
           type="submit"
           disabled={loading || !query.trim()}
-          style={{
-            background: "#2563eb",
-            color: "#fff",
-            border: "none",
-            borderRadius: "6px",
-            padding: "0 18px",
-            fontSize: "13px",
-            fontWeight: 600,
-            cursor: loading ? "wait" : "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
-            opacity: loading || !query.trim() ? 0.6 : 1
-          }}
+          className="btn btn-primary"
+          style={{ padding: "0 18px", height: "40px" }}
         >
           {loading ? (
             <span className="pulse-active">Analyzing...</span>
@@ -266,14 +273,17 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
       {/* Answer Presentation Card */}
       {response && (
         <div style={{
-          background: "#090e17",
-          border: "1px solid #1e293b",
-          borderRadius: "6px",
-          padding: "14px",
-          marginTop: "10px"
-        }}>
-          {/* Metadata bar */}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+          background: "#080e18",
+          border: "1px solid #1c2b40",
+          borderRadius: "8px",
+          padding: "16px",
+          marginTop: "10px",
+          boxShadow: "0 4px 16px rgba(0,0,0,0.4)"
+        }}
+        className="animate-fade-in"
+        >
+          {/* Metadata Bar */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", flexWrap: "wrap", gap: "8px" }}>
             <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
               <span className="badge" style={{ background: "rgba(16, 185, 129, 0.15)", color: "#6ee7b7", border: "1px solid rgba(16, 185, 129, 0.3)" }}>
                 Language: {response.language === "bn" ? "বাংলা" : "English"}
@@ -282,49 +292,81 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
                 Model: {response.provider}
               </span>
               {streaming && (
-                <span className="badge" style={{ background: "rgba(56, 189, 248, 0.15)", color: "#38bdf8" }}>
+                <span className="badge pulse-active" style={{ background: "rgba(56, 189, 248, 0.15)", color: "#38bdf8", border: "1px solid rgba(56, 189, 248, 0.3)" }}>
                   Streaming Live...
                 </span>
               )}
             </div>
-            {response.citations && response.citations.length > 0 && (
-              <div style={{ display: "flex", gap: "4px" }}>
-                {response.citations.map((cite, i) => (
-                  <button
-                    key={i}
-                    onClick={() => handleOpenCitation(cite)}
-                    className="badge"
-                    style={{
-                      background: "rgba(56, 189, 248, 0.2)",
-                      color: "#38bdf8",
-                      border: "1px solid rgba(56, 189, 248, 0.4)",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center"
-                    }}
-                    title="Click to view verified MITRE / CVE knowledge entry"
-                  >
-                    <ExternalLink size={10} style={{ marginRight: "2px" }} />
-                    {cite}
-                  </button>
-                ))}
-              </div>
-            )}
+
+            {/* Quick Actions (Copy, Reset) */}
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <button
+                onClick={handleCopyAnswer}
+                className="btn btn-secondary"
+                style={{ padding: "3px 8px", fontSize: "11px", height: "26px" }}
+                title="Copy response to clipboard"
+              >
+                {copied ? <Check size={12} color="#34d399" /> : <Copy size={12} />}
+                <span>{copied ? "Copied!" : "Copy"}</span>
+              </button>
+              <button
+                onClick={() => setResponse(null)}
+                className="btn btn-ghost"
+                style={{ padding: "3px 8px", fontSize: "11px", height: "26px" }}
+                title="Clear current answer"
+              >
+                <RotateCcw size={12} />
+                <span>Clear</span>
+              </button>
+            </div>
           </div>
+
+          {/* Citations Row */}
+          {response.citations && response.citations.length > 0 && (
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "10px", flexWrap: "wrap" }}>
+              <span style={{ fontSize: "10px", color: "var(--text-tertiary)", textTransform: "uppercase", fontWeight: 700 }}>
+                Grounded Citations:
+              </span>
+              {response.citations.map((cite, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleOpenCitation(cite)}
+                  className="badge font-mono"
+                  style={{
+                    background: "rgba(56, 189, 248, 0.15)",
+                    color: "#38bdf8",
+                    border: "1px solid rgba(56, 189, 248, 0.35)",
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "4px"
+                  }}
+                  title="Click to inspect verified MITRE / CVE knowledge entry"
+                >
+                  <ExternalLink size={10} />
+                  <span>{cite}</span>
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Answer Text with Typewriter Stream Cursor */}
           <div style={{
             fontSize: "13px",
-            lineHeight: 1.6,
+            lineHeight: 1.65,
             color: "#e2e8f0",
             whiteSpace: "pre-line",
             borderLeft: "3px solid #38bdf8",
-            paddingLeft: "12px",
-            marginBottom: "12px"
+            paddingLeft: "14px",
+            marginBottom: "14px",
+            background: "rgba(56, 189, 248, 0.02)",
+            borderRadius: "0 6px 6px 0",
+            paddingTop: "6px",
+            paddingBottom: "6px"
           }}>
             {response.answer}
             {streaming && (
-              <span style={{ display: "inline-block", width: "8px", height: "13px", background: "#38bdf8", marginLeft: "4px", verticalAlign: "middle" }} className="pulse-active" />
+              <span style={{ display: "inline-block", width: "8px", height: "14px", background: "#38bdf8", marginLeft: "4px", verticalAlign: "middle" }} className="pulse-active" />
             )}
           </div>
 
@@ -333,11 +375,12 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            background: "#131a29",
-            border: "1px solid #23334d",
+            background: "#111827",
+            border: "1px solid #1f293d",
             borderRadius: "6px",
-            padding: "8px 12px",
-            marginTop: "8px"
+            padding: "10px 14px",
+            gap: "10px",
+            flexWrap: "wrap"
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <ShieldAlert size={16} color="#f59e0b" />
@@ -349,23 +392,15 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
             </div>
 
             {approvedAction ? (
-              <div style={{ display: "flex", alignItems: "center", gap: "4px", color: "#34d399", fontSize: "11px", fontWeight: 600 }}>
-                <CheckCircle size={14} />
+              <div style={{ display: "flex", alignItems: "center", gap: "5px", color: "#34d399", fontSize: "11px", fontWeight: 700 }}>
+                <CheckCircle size={15} />
                 <span>APPROVED & ACTIVE IN DENYLIST</span>
               </div>
             ) : (
               <button
                 onClick={handleApproveAction}
-                style={{
-                  background: "#059669",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "4px",
-                  padding: "4px 10px",
-                  fontSize: "11px",
-                  fontWeight: 600,
-                  cursor: "pointer"
-                }}
+                className="btn btn-success"
+                style={{ padding: "5px 12px", fontSize: "11px" }}
               >
                 {globalLanguage === "bn" ? "অনুমোদন করুন (Approve)" : "Approve Defense (HITL)"}
               </button>
@@ -376,28 +411,35 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
 
       {/* Grounded Citation Modal */}
       {selectedCitationDoc && (
-        <div style={{
-          position: "fixed",
-          inset: 0,
-          background: "rgba(3, 7, 18, 0.8)",
-          backdropFilter: "blur(6px)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 1000,
-          padding: "20px"
-        }}>
-          <div style={{
-            background: "#0c1322",
-            border: "1px solid #38bdf8",
-            borderRadius: "10px",
-            maxWidth: "600px",
-            width: "100%",
-            boxShadow: "0 0 30px rgba(56, 189, 248, 0.25)",
-            padding: "20px",
-            position: "relative"
-          }}>
-            {/* Modal header */}
+        <div
+          onClick={() => setSelectedCitationDoc(null)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(3, 7, 18, 0.8)",
+            backdropFilter: "blur(6px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+            padding: "20px"
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#0c1322",
+              border: "1px solid #38bdf8",
+              borderRadius: "10px",
+              maxWidth: "600px",
+              width: "100%",
+              boxShadow: "0 0 35px rgba(56, 189, 248, 0.25)",
+              padding: "22px",
+              position: "relative"
+            }}
+            className="animate-fade-in"
+          >
+            {/* Modal Header */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
               <div>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
@@ -436,7 +478,7 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
               background: "#08121f",
               border: "1px solid #1e3a5f",
               borderRadius: "6px",
-              padding: "12px",
+              padding: "14px",
               marginBottom: "16px"
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px" }}>
@@ -445,7 +487,7 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
                   Verified Defensive Mitigation
                 </span>
               </div>
-              <p style={{ fontSize: "12px", color: "#e2e8f0", lineHeight: 1.5, margin: 0 }}>
+              <p style={{ fontSize: "12px", color: "#e2e8f0", lineHeight: 1.55, margin: 0 }}>
                 {selectedCitationDoc.mitigation}
               </p>
             </div>
@@ -454,15 +496,7 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
               <button
                 onClick={() => setSelectedCitationDoc(null)}
-                style={{
-                  background: "#1e293b",
-                  color: "#f8fafc",
-                  border: "1px solid #334155",
-                  borderRadius: "6px",
-                  padding: "6px 14px",
-                  fontSize: "12px",
-                  cursor: "pointer"
-                }}
+                className="btn btn-secondary"
               >
                 Close (বন্ধ করুন)
               </button>
@@ -471,7 +505,7 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
         </div>
       )}
       {citationLoading && (
-        <div style={{ fontSize: "11px", color: "#38bdf8", marginTop: "4px" }}>Loading citation context...</div>
+        <div style={{ fontSize: "11px", color: "#38bdf8", marginTop: "6px" }}>Loading citation context...</div>
       )}
     </div>
   );

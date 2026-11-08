@@ -117,3 +117,4 @@ async def test_middleware_integration():
         assert ev["source"] == "ratelimiter"
         assert ev["type"] == "blocked_request"
         assert ev["details"]["source_ip"] == "8.8.8.8"
+

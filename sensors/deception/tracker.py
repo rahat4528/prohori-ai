@@ -36,3 +36,4 @@ class InteractionTracker:
     def reset(self):
         """Reset history (useful for tests)."""
         self.history.clear()
+

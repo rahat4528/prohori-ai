@@ -24,3 +24,4 @@ class DeceptionSettings(BaseSettings):
 
 
 deception_settings = DeceptionSettings()
+

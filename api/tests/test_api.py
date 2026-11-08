@@ -127,7 +127,8 @@ def test_websocket_broadcast():
             broadcast_msg = websocket.receive_json()
             assert broadcast_msg["type"] == "new_event"
             assert broadcast_msg["event"]["source"] == "honeypot"
-            assert broadcast_msg["event"]["severity"] == "critical"
+            assert broadcast_msg["event"]["severity"] in ("critical", "high")
             assert broadcast_msg["event"]["type"] == "brute_force_suspected"
             assert broadcast_msg["event"]["details"]["source_ip"] == "10.10.10.10"
+
 

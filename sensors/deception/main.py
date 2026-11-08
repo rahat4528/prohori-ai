@@ -202,3 +202,4 @@ async def simulated_recon_trap(request: Request):
 @app.get("/healthz")
 async def healthz():
     return {"status": "ok", "sensor": "deception", "mode": "simulated_isolated"}
+

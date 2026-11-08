@@ -82,3 +82,4 @@ async def proxy_pass(request: Request, path: str):
             status_code=502,
             media_type="application/json"
         )
+

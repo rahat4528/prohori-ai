@@ -26,6 +26,11 @@ from .database import init_db, check_db_health, get_db, AsyncSessionLocal
 from .models import Event, EventCreate, EventFilter, EventListResponse, EventSource, EventSeverity
 from .db_models import EventRecord
 from .connection_mgr import ws_manager
+from .routes.analyst import router as analyst_router
+
+from analyst.agents.triage import triage_agent
+from analyst.agents.advisor import response_advisor
+
 
 try:
     from sensors.ratelimiter.limiter import SlidingWindowRateLimiter
@@ -119,6 +124,10 @@ if HAS_RATE_LIMITER:
 
 
 
+# Include Analyst Routes
+app.include_router(analyst_router)
+
+
 @app.get("/healthz", summary="Health check")
 async def healthz():
     """Health check endpoint indicating API and DB status."""
@@ -141,23 +150,47 @@ async def ingest_event(
     event_in: EventCreate,
     db: AsyncSession = Depends(get_db)
 ):
-    """Ingest a security event from a sensor or analyst, persist to Postgres,
+    """Ingest a security event from a sensor, execute autonomous AI triage with RAG,
 
-    and broadcast to connected WebSocket listeners.
+    persist to Postgres, and broadcast to connected WebSocket listeners.
     """
+    analyst_payload = event_in.analyst
+    severity_val = event_in.severity.value
+
+    # Auto-run AI SOC Analyst triage on ingest if not already enriched
+    if analyst_payload is None and event_in.source != EventSource.ANALYST:
+        try:
+            raw_event_dict = {
+                "source": event_in.source.value,
+                "severity": event_in.severity.value,
+                "type": event_in.type,
+                "details": event_in.details
+            }
+            triage_result = await triage_agent.triage_event(raw_event_dict)
+            recommendations = response_advisor.recommend_actions(raw_event_dict)
+            triage_result["recommendations"] = recommendations
+            analyst_payload = triage_result
+
+            # Reconcile severity if analyst upgraded it
+            if triage_result.get("severity"):
+                severity_val = triage_result["severity"]
+        except Exception as e:
+            logger.warning(f"Auto-triage on ingest skipped due to error: {e}")
+
     record = EventRecord(
         id=event_in.id,
         ts=event_in.ts,
         source=event_in.source.value,
-        severity=event_in.severity.value,
+        severity=severity_val,
         type=event_in.type,
         details=event_in.details,
-        analyst=event_in.analyst
+        analyst=analyst_payload
     )
 
     db.add(record)
     await db.commit()
     await db.refresh(record)
+
 
     event_out = Event(
         id=record.id,

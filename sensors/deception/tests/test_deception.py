@@ -75,3 +75,4 @@ async def test_honeypot_recon_traps():
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         resp = await client.get("/.env")
         assert resp.status_code == 404
+

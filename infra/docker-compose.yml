@@ -78,5 +78,17 @@ services:
     volumes:
       - ../sensors/ratelimiter:/app
 
+  web:
+    build:
+      context: ../web
+      dockerfile: Dockerfile
+    container_name: prohori-web-console
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+
 volumes:
   prohori_pgdata:
+

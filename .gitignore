@@ -24,3 +24,10 @@ pgdata/
 *.db
 *.sqlite3
 
+# Video & Media
+*.mp4
+*.mov
+*.webm
+*.mkv
+
+

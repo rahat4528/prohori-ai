@@ -32,7 +32,8 @@ AsyncSessionLocal = async_sessionmaker(
 
 
 async def init_db() -> None:
-    """Initialize database schemas, extensions, and tables."""
+    """Initialize database schemas, extensions, and tables with automatic SQLite fallback."""
+    global engine, AsyncSessionLocal
     try:
         async with engine.begin() as conn:
             # If PostgreSQL, enable pgvector extension
@@ -44,8 +45,27 @@ async def init_db() -> None:
             await conn.run_sync(Base.metadata.create_all)
             logger.info("Database schema initialized successfully.")
     except Exception as e:
-        logger.error(f"Error initializing database: {e}")
-        raise e
+        err_msg = str(e).lower()
+        if "connection" in err_msg or "refused" in err_msg or "connect" in err_msg:
+            logger.warning(f"PostgreSQL unreachable at {settings.DATABASE_URL}. Falling back gracefully to local SQLite: sqlite+aiosqlite:///prohori.db")
+            engine = create_async_engine(
+                "sqlite+aiosqlite:///prohori.db",
+                echo=False,
+                future=True
+            )
+            AsyncSessionLocal = async_sessionmaker(
+                bind=engine,
+                class_=AsyncSession,
+                expire_on_commit=False,
+                autoflush=False
+            )
+            async with engine.begin() as conn:
+                await conn.run_sync(Base.metadata.create_all)
+            logger.info("SQLite database initialized successfully at prohori.db.")
+        else:
+            logger.error(f"Error initializing database: {e}")
+            raise e
+
 
 
 async def check_db_health() -> bool:

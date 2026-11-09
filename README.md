@@ -1,7 +1,8 @@
 # Prohori AI ("প্রহরী") — Self-Hostable, AI-Native SOC
 
-**International AI Builders Congress 2026 · Domain: InfraSphere AI &rarr; SecureAI**
+**Built by Team Orionids · International AI Builders Congress 2026 · Domain: InfraSphere AI &rarr; SecureAI**
 
+[![Team](https://img.shields.io/badge/Team-Orionids-blueviolet.svg)](#team-orionids)
 [![Tests](https://img.shields.io/badge/pytest-32%20passed-brightgreen.svg)](#testing--verification)
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
 [![React](https://img.shields.io/badge/React-19%20%2B%20Vite-61dafb.svg)](https://react.dev/)
@@ -9,9 +10,25 @@
 [![pgvector](https://img.shields.io/badge/PostgreSQL-pgvector-336791.svg)](https://github.com/pgvector/pgvector)
 [![Data Sovereignty](https://img.shields.io/badge/Data%20Sovereignty-On--Prem-success.svg)](#data-sovereignty--local-llm-mode)
 
-> **Prohori (প্রহরী = sentinel)** is a self-hostable, AI-native Security Operations Center. 
-> Four defensive sensors feed one unified event bus, where an **AI SOC Analyst core** autonomously triages, correlates, and explains threats in plain language (**English and Bengali / বাংলা**), grounded in an offline RAG knowledge base of MITRE ATT&CK&reg; and CVE intelligence. 
-> Everything runs on-premises with local models (Ollama / Llama 3.2), ensuring sensitive security logs **never leave the country**.
+> **Prohori (প্রহরী = sentinel)** is engineered by **Team Orionids** as a self-hostable, bilingual (Bangla + English) AI SOC analyst built to protect institutions that cannot afford a dedicated 24/7 security operations center. 
+> Three lightweight defensive sensors feed one unified event bus, where an **AI SOC Analyst core** autonomously triages, correlates, and explains threats in plain English and native Bengali (বাংলা).
+> In default offline mode (Ollama / Llama 3.2 or deterministic offline RAG), all telemetry remains 100% on-premises, ensuring sensitive organizational security logs **never leave the local infrastructure**.
+
+---
+
+## 🚀 Hackathon Submission Index & Artifacts
+
+All congress submission documents, pitch materials, and defense guides are indexed below:
+
+| Document / Asset | Description | Direct Link |
+|---|---|---|
+| **Submission Updates** | Complete audit of review items, before/after fixes, benchmark data & roadmap | [`docs/SUBMISSION_UPDATES.md`](docs/SUBMISSION_UPDATES.md) |
+| **Judge Q&A Defense** | Grounded answers to the 8 toughest judge questions | [`docs/JUDGE_QA.md`](docs/JUDGE_QA.md) |
+| **Pitch Deck (Markdown)** | Official 8-slide presentation deck with rehearsal timing & stage plan | [`docs/PITCH_DECK.md`](docs/PITCH_DECK.md) |
+| **Pitch Deck (PowerPoint)** | 16:9 widescreen dark-mode presentation file with embedded QR code | [`docs/Prohori_AI_Pitch_Deck.pptx`](docs/Prohori_AI_Pitch_Deck.pptx) |
+| **Demo & Video Script** | 3-minute pitch script (90% AI core focus) + 75s backup recording protocol | [`docs/DEMO_VIDEO_SCRIPT.md`](docs/DEMO_VIDEO_SCRIPT.md) |
+| **LinkedIn & Social Draft** | Ready-to-publish post, community retrospectives, and media checklist | [`docs/LINKEDIN_POST.md`](docs/LINKEDIN_POST.md) |
+| **Repository QR Code** | High-contrast QR code for instant mobile deck-to-repo access | [`docs/assets/repo_qr_code.png`](docs/assets/repo_qr_code.png) |
 
 ---
 
@@ -34,12 +51,13 @@
                                  ▼                                 │
                      Postgres + pgvector Database                 │
                      (Events + ATT&CK / CVE / CWE Store)          │
+                     (Auto SQLite fallback in local dev)          │
                                  │                                 │
             ┌────────────────────▼────────────────────┐           │
             │        AI SOC ANALYST (Core Engine)     │           │
             │   • Autonomous Triage Agent (Severity)  │           │
             │   • Correlation Agent (Kill Chain)      │           │
-            │   • RAG over MITRE ATT&CK, CVE, & CWE   │           │
+            │   • Grounded RAG (MITRE & CVE citations)│           │
             │   • Bilingual Narrator (English & বাংলা)│           │
             │   • Response Advisor (HITL Countermeasures)│        │
             │   • Local-LLM Mode (Data Sovereignty)   │           │
@@ -47,7 +65,7 @@
                                  ▼                                 │
                WebSocket /stream │ HTTP REST                      │
                                  ▼                                 │
-                   OPERATOR CONSOLE (React + Vite)                │
+                   OPERATOR CONSOLE (React 19 + Vite)             │
                    • Real-time color-coded event feed             │
                    • "Ask the Analyst" reasoning panel            │
                    • Attack campaign timeline                     │
@@ -59,30 +77,32 @@
 
 ## 2. Key Capabilities & Technical Differentiation
 
-1. **AI SOC Analyst (Not a Surface Dashboard)**:
-   - Evaluates incoming raw events, performs autonomous severity reconciliation, and generates natural-language incident narratives in **English and native Bengali (বাংলা)**.
-   - Grounded under **MITRE ATT&CK** (`T1110.001`, `T1499.002`, `T1595.002`) and NIST NVD CVEs. Every claim is cited; zero hallucination.
+1. **AI SOC Analyst Core (90% Value Focus)**:
+   - Ingests raw telemetry, performs autonomous severity reconciliation, and generates natural-language incident narratives in **plain English and native Bengali (বাংলা)**.
+   - Grounded in retrieved **MITRE ATT&CK** (`T1110.001`, `T1499.002`, `T1595.002`) and NIST NVD CVE records. Every claim shows its verified citation badges.
+   - Measured steady-state triage latency: **~30.44 ms** (offline RAG) with a first-alert cold-start of 2,098 ms on local commodity hardware (AMD Ryzen 7 PRO 4750U, 32 GB RAM).
 
-2. **Data Sovereignty & Offline Operational Mode**:
-   - Supports **Ollama (Llama 3.2 / Qwen)** and a deterministic offline RAG engine.
-   - Built-in data sovereignty switch blocks cloud egress, guaranteeing that sensitive telemetry never leaves the organization.
+2. **National Data Sovereignty & Offline Operational Mode**:
+   - **Default Mode**: Operates 100% on-premises via local Ollama (`llama3.2`) or our deterministic offline provider. In this default configuration, zero bytes leave the organization's network.
+   - **Optional Cloud Providers**: Cloud models (Google Gemini, Groq) can be enabled via environment configuration when high-bandwidth external API usage is explicitly authorized.
 
 3. **Mandatory PII & Secret Scrubbing**:
-   - Centralized redaction engine scrubs passwords, API keys, JWT tokens, Bearer tokens, and emails *before* data reaches any model.
+   - Centralized redaction engine scrubs passwords, API keys, JWT tokens, Bearer tokens, and emails *before* data reaches any model or database.
 
-4. **Strict Defensive Safety & Isolation**:
-   - **Simulated Deception Honeypot**: Fully isolated; never executes commands or touches host filesystems.
-   - **API Abuse Guard**: Progressive sliding-window rate limiter (warn &rarr; temp block &rarr; extended block) returning HTTP 429.
-   - **Target Allowlist Guard**: Enforced in code; strictly refuses port scans against non-allowlisted targets with HTTP 403.
+4. **Strict Defensive Safety & Sensor Isolation**:
+   - **Simulated Deception Honeypot (Port 8081)**: Fully isolated trap; never executes arbitrary shell commands and touches no host files.
+   - **API Abuse Guard (Port 8082)**: Progressive sliding-window rate limiter (warn &rarr; temp block &rarr; extended block) returning HTTP 429.
+   - **Target Allowlist Guard (Port 8083)**: Enforced in code; strictly refuses port scans against non-allowlisted targets with HTTP 403.
 
 5. **Human-in-the-Loop (HITL) & Immutable Audit Trail**:
-   - Countermeasures require operator approval. Every action is permanently recorded in an append-only audit database.
+   - Containment countermeasures (e.g., perimeter firewall blocks) require explicit operator review.
+   - When an operator clicks "Approve Defense", the action is cryptographically recorded in an append-only audit log database.
 
 ---
 
 ## 3. Quickstart Guide
 
-### Option A: Running with Docker Compose (Recommended)
+### Option A: Running with Docker Compose (Production / Full Stack)
 
 ```bash
 # Clone and enter the repository
@@ -93,8 +113,8 @@ docker compose -f infra/docker-compose.yml up --build
 ```
 Once started:
 - **Operator Console**: [http://localhost:3000](http://localhost:3000)
-- **Event API & Documentation**: [http://localhost:8000/docs](http://localhost:8000/docs)
-- **Simulated Deception Honeypot**: [http://localhost:8081](http://localhost:8081)
+- **Event API & Interactive Swagger**: [http://localhost:8000/docs](http://localhost:8000/docs)
+- **Deception Honeypot**: [http://localhost:8081](http://localhost:8081)
 - **API Abuse Guard Proxy**: [http://localhost:8082](http://localhost:8082)
 - **Asset Discovery Sensor**: [http://localhost:8083](http://localhost:8083)
 
@@ -102,16 +122,18 @@ Once started:
 
 ### Option B: Running Locally (Fast Development Mode)
 
+The API includes automatic fallback to local SQLite (`prohori.db`) if a PostgreSQL server is not running locally:
+
 ```bash
 # 1. Activate Python virtual environment
 .venv\Scripts\activate
 
 # 2. Start the Event API
 $env:PYTHONPATH="api;."
-uvicorn app.main:app --port 8000 --reload
+python -m uvicorn app.main:app --port 8000 --reload
 
 # 3. Start the Deception Honeypot (in second terminal)
-uvicorn sensors.deception.main:app --port 8081
+python -m uvicorn sensors.deception.main:app --port 8081
 
 # 4. Start the React Operator Console (in third terminal)
 cd web
@@ -129,7 +151,7 @@ We provide two automated scripts to demonstrate the end-to-end intelligence pipe
 python scripts/demo_replay.py
 ```
 Pushes a staged 5-phase attack campaign:
-`Recon Probe` &rarr; `Credential Stuffing` &rarr; `Brute Force Burst` &rarr; `API Abuse Block` &rarr; `CVE Match` &rarr; `Correlated Incident`.
+`Recon Probe` &rarr; `Credential Stuffing` &rarr; `Brute Force Burst` &rarr; `API Abuse Block` &rarr; `CVE Match` &rarr; `Correlated Incident (INC-2026-0001)`.
 
 ### 2. Live Interactive Traffic Generator
 ```bash
@@ -147,38 +169,45 @@ Comprehensive test suites covering the Event API, Deception sensor, Rate Limiter
 pytest api/tests sensors/deception/tests sensors/ratelimiter/tests analyst/tests sensors/discovery/tests -v
 ```
 
-**Results**: `32 passed in ~6.5s` (100% pass rate).
+**Results**: `32 passed in ~4.39s` (100% pass rate).
 
 ---
 
-## 6. Free-Tier Service Matrix
+## 6. Commercial Model Hypothesis
 
-| Service | Role | Cost | Why Chosen |
+> [!NOTE]
+> Commercial pricing represents an **unvalidated business hypothesis** formulated for hackathon judging criteria, pending direct discovery with enterprise customers.
+
+| Tier | Deployment | Target Users | Indicative Pricing |
 |---|---|---|---|
-| **Python / FastAPI** | Event bus & async WebSocket | \$0.00 (Open Source) | Recommended by Congress guidelines |
-| **PostgreSQL + pgvector** | Events & RAG embeddings | \$0.00 (Free Tier / Local) | Single service for relational + vectors |
-| **React 19 + Vite** | High-density SOC console | \$0.00 (Open Source) | Modern, high performance, projector-ready |
-| **Ollama / Llama 3.2** | Data sovereignty LLM | \$0.00 (Local / Offline) | Zero data leaves the machine |
-| **Google Gemini / Groq** | Cloud LLM alternative | \$0.00 (Free Tier APIs) | High-speed response generation |
-| **MITRE ATT&CK & NVD** | Threat knowledge base | \$0.00 (Public Domain) | Verified, grounded threat data |
+| **Community Edition** | Self-hosted Docker / OSS | SMEs, Universities, Devs | **$0 / Free** (Open Source) |
+| **Enterprise On-Prem** | Clustered On-Premises | Commercial Banks, RMG Exporters, Govt | **$1,200 / node / year** (Hypothesis) |
+| **Managed SOC SaaS** | Multi-tenant Cloud | Distributed Startups, Remote Orgs | **$99 / month** (Hypothesis) |
 
 ---
 
-## 7. Documentation Index
+## 7. Knowledge Base & Threat Feeds
 
-- [System Architecture](docs/ARCHITECTURE.md)
-- [Data Lineage & Knowledge Base Specification](docs/DATA_LINEAGE.md)
-- [Security & Defensive Scope Enforcement](docs/SECURITY.md)
-- [Pitch Deck (8-Slide Congress Rubric)](docs/PITCH_DECK.md)
-- [3-Minute Pitch Script & Backup Shot List](docs/DEMO_VIDEO_SCRIPT.md)
+- **Current Implementation**: Pre-seeded with curated MITRE ATT&CK STIX bundles, NIST CVEs, and CWE records via `knowledge/ingest.py`.
+- **Roadmap**: Automated scheduled synchronization with the live NIST NVD API and MITRE TAXII 2.1 feeds.
 
 ---
 
-## 8. Responsible AI & Ethical Scope Statement
+## 8. Responsible AI & Defensive Scope
 
-Prohori AI is engineered solely for defensive cybersecurity operations within authorized university lab and enterprise networks. It strictly enforces:
-1. Target allowlisting to prevent unauthorized scanning.
+Prohori AI is engineered solely for defensive cybersecurity operations within authorized organizational networks. It strictly enforces:
+1. Target allowlisting in code to prevent unauthorized scanning.
 2. Simulated deception environments that never execute arbitrary shell commands.
 3. Strict Human-in-the-Loop gating on all countermeasure actions.
 4. Cryptographic, append-only audit logging for verifiable operational transparency.
+
+---
+
+## 9. Team Orionids
+
+Prohori AI was built by **Team Orionids** for the **International AI Builders Congress 2026** (Track: InfraSphere AI &rarr; SecureAI).
+
+- **Team**: Team Orionids
+- **Vision**: Sovereign, explainable, and accessible cybersecurity defense for emerging digital economies.
+- **Documentation**: See [`docs/PITCH_DECK.md`](docs/PITCH_DECK.md) and [`docs/SUBMISSION_UPDATES.md`](docs/SUBMISSION_UPDATES.md) for full team rosters and presentation guides.
 

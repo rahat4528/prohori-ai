@@ -89,7 +89,7 @@ export const Header: React.FC<HeaderProps> = ({
             </span>
           </div>
           <p style={{ fontSize: "11px", color: "#64748b", margin: 0 }}>
-            Autonomous AI-Native SOC &bull; InfraSphere AI &rarr; SecureAI
+            Autonomous AI-Native SOC &bull; Team Orionids &bull; SecureAI
           </p>
         </div>
       </div>

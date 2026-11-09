@@ -146,21 +146,23 @@ const SLIDES = [
   },
   {
     number: 8,
-    titleEn: "The Team & Vision",
-    titleBn: "আমাদের দল ও লক্ষ্য",
+    titleEn: "Team Orionids — The Mission & Execution",
+    titleBn: "টিম ওরিওনিডস — লক্ষ্য ও বাস্তবায়ন",
     icon: Users,
     color: "#38bdf8",
     bulletPointsEn: [
+      "Built with pride by Team Orionids for the International AI Builders Congress 2026.",
       "Vision: Democratize enterprise-grade cybersecurity for emerging digital nations.",
       "Every SME, school, hospital, and municipality deserves real-time threat intelligence and autonomous defense.",
       "Prohori Sentinel ('প্রহরী') represents national cyber resilience powered by sovereign, responsible AI."
     ],
     bulletPointsBn: [
+      "ইন্টারন্যাশনাল এআই বিল্ডার্স কংগ্রেস ২০২৬-এর জন্য টিম ওরিওনিডস (Team Orionids) কর্তৃক গর্বের সাথে নির্মিত।",
       "লক্ষ্য: বাংলাদেশের প্রতিটি প্রতিষ্ঠানের জন্য বিশ্বমানের সাইবার নিরাপত্তা সহজলভ্য করা।",
       "প্রতিটি ক্ষুদ্র ব্যবসা, হাসপাতাল, স্কুল ও ব্যাংকের জন্য রিয়েল-টাইম থ্রেট ইন্টেলিজেন্স ও এআই প্রতিরোধ।",
       "প্রহরী এআই — দেশের সার্বভৌমিকতা রক্ষায় ডিজিটাল পাহারাদার।"
     ],
-    highlight: "Protecting Bangladesh's digital frontiers with sovereign, bilingual AI."
+    highlight: "Team Orionids: Protecting Bangladesh's digital frontiers with sovereign, bilingual AI."
   }
 ];
 

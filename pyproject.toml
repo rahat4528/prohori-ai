@@ -1,0 +1,37 @@
+[project]
+name = "prohori-ai"
+version = "0.1.0"
+description = "Bilingual AI-Native SOC Analyst for Bangladesh & Emerging Nations"
+readme = "README.md"
+requires-python = ">=3.11"
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+ignore = [
+    "E501",   # line too long (handled by formatter)
+    "E402",   # Module level import not at top of file (sys.path setup)
+    "E741",   # Ambiguous variable name
+    "UP042",  # StrEnum inheritance (keep str, Enum for compatibility)
+    "B008",   # FastAPI Depends() in function default arguments
+    "BLE001", # Blind exception catching in defensive network retry loops
+]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["api/tests", "analyst/tests", "sensors"]
+python_files = ["test_*.py"]
+asyncio_mode = "strict"
+filterwarnings = [
+    "ignore::starlette.testclient.StarletteDeprecationWarning",
+]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+check_untyped_defs = false

@@ -97,8 +97,7 @@ To maintain absolute integrity, no facts or identities were fabricated. Before s
 
 ### A. Team & Organization Details
 1. **GitHub Repository URL**:
-   - Files: `docs/PITCH_DECK.md`, `docs/DEMO_VIDEO_SCRIPT.md`, `docs/LINKEDIN_POST.md`, `scripts/generate_pitch_deck.py`
-   - Needs: The live URL of your GitHub repository. (Note: once updated, re-run `python scripts/generate_pitch_deck.py` to update the slide).
+   - **Live Repository**: [https://github.com/rahat4528/prohori-ai](https://github.com/rahat4528/prohori-ai) (Created as private repository and linked as `origin`).
 2. **Team Member Names, Roles & Social Handles**:
    - Files: `docs/PITCH_DECK.md` (Section 5), `docs/LINKEDIN_POST.md` (Section 1)
    - Needs: Real names, academic enrollments (e.g., Daffodil International University / DIU), specific technical contributions, and LinkedIn handles.

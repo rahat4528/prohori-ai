@@ -38,7 +38,7 @@ And deep gratitude to our mentors who guided our architecture and focus:
 🙏 [FILL: Mentor 2 Name] — [FILL: @LinkedInHandle]
 
 Check out our open-source repository, pitch deck, and architecture docs here:
-🔗 [FILL: GitHub Repository URL]
+🔗 https://github.com/rahat4528/prohori-ai
 
 #TeamOrionids #Cybersecurity #ArtificialIntelligence #ResponsibleAI #DataSovereignty #BilingualAI #InfraSphere #BanglaNLP #MITREAttack #GovTech #AIBuildersCongress2026
 ```
@@ -102,7 +102,7 @@ The prototype is live with 32 passing tests and a working React console. If you 
 1. Does our on-premises Ollama mode clearly address public sector data sovereignty concerns?
 2. How can we make our live bilingual triage demo even more impactful for the judging panel?
 
-Repository & docs: [FILL: GitHub URL]
+Repository & docs: https://github.com/rahat4528/prohori-ai
 Console preview: [FILL: Quick Loom / Screenshot link]
 
 Thank you for your time!
@@ -116,7 +116,7 @@ Thank you for your time!
 🛡️ The Solution: Prohori AI — a self-hostable, bilingual AI SOC analyst that ingests data from 3 lightweight defensive sensors, triages incidents in 30ms, and explains threats in clear Bengali and English with verified MITRE citations.
 🔒 Sovereign by design: Runs 100% on-premises via local Ollama. Zero cloud data egress.
 
-Check out our repo & pitch deck: [FILL: GitHub URL]
+Check out our repo & pitch deck: https://github.com/rahat4528/prohori-ai
 Looking forward to sharing our live demo!
 ```
 

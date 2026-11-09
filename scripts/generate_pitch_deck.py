@@ -445,9 +445,9 @@ def create_deck(output_path="docs/Prohori_AI_Pitch_Deck.pptx"):
         s8.shapes.add_picture(qr_path, Inches(9.2), Inches(2.6), Inches(2.8), Inches(2.8))
 
     p_url = tf_qr.add_paragraph()
-    p_url.text = "\n\n\n\n\n\n\n\n[FILL: GitHub Repo URL]\nTested with 32 Passing Tests"
+    p_url.text = "\n\n\n\n\n\n\n\ngithub.com/rahat4528/prohori-ai\nTested with 32 Passing Tests"
     p_url.font.size = Pt(10)
-    p_url.font.color.rgb = TEXT_MUTED
+    p_url.font.color.rgb = CYAN_ACCENT
     p_url.alignment = PP_ALIGN.CENTER
 
     add_notes(s8, "Our rollout strategy centers on a dual-tier model: a free, self-hostable Community Edition to empower local universities and SMEs, alongside a commercial hypothesis of $1,200 per node annually for regulated institutions requiring custom compliance support. Prohori AI transforms cybersecurity from an exclusive luxury into an accessible, sovereign shield. Scan the QR code to review our repository and live demo. Thank you.")

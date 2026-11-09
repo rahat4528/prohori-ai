@@ -4,7 +4,7 @@
 **Event**: International AI Builders Congress 2026  
 **Track**: InfraSphere AI &rarr; SecureAI  
 **Target Duration**: [FILL: Total Presentation Slot, e.g., 3 minutes (180s) or 5 minutes (300s)]  
-**Repository**: [FILL: GitHub Repository URL]  
+**Repository**: [https://github.com/rahat4528/prohori-ai](https://github.com/rahat4528/prohori-ai)  
 **Companion Artifacts**:
 - Visual Deck: [`docs/Prohori_AI_Pitch_Deck.pptx`](file:///c:/diu/docs/Prohori_AI_Pitch_Deck.pptx)
 - Judge Q&A Defense Guide: [`docs/JUDGE_QA.md`](file:///c:/diu/docs/JUDGE_QA.md)

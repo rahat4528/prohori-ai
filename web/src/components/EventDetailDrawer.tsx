@@ -17,15 +17,11 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
   globalLanguage,
   apiBase = "http://localhost:8000"
 }) => {
-  const [langTab, setLangTab] = useState<"en" | "bn">(globalLanguage);
+  const [langTabOverride, setLangTabOverride] = useState<"en" | "bn" | null>(null);
+  const langTab = langTabOverride ?? globalLanguage;
   const [retriaging, setRetriaging] = useState(false);
   const [actionApproved, setActionApproved] = useState(false);
   const [approving, setApproving] = useState(false);
-
-  // Sync tab with global language if changed
-  useEffect(() => {
-    setLangTab(globalLanguage);
-  }, [globalLanguage]);
 
   // Handle ESC key press
   useEffect(() => {
@@ -174,7 +170,7 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
             {/* Language Tabs */}
             <div style={{ display: "flex", background: "var(--bg-canvas)", borderRadius: "4px", border: "1px solid var(--border-subtle)", padding: "2px" }}>
               <button
-                onClick={() => setLangTab("en")}
+                onClick={() => setLangTabOverride("en")}
                 style={{
                   background: langTab === "en" ? "#2563eb" : "transparent",
                   color: "#ffffff",
@@ -189,7 +185,7 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
                 EN
               </button>
               <button
-                onClick={() => setLangTab("bn")}
+                onClick={() => setLangTabOverride("bn")}
                 style={{
                   background: langTab === "bn" ? "#2563eb" : "transparent",
                   color: "#ffffff",

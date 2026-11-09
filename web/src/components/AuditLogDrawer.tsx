@@ -30,14 +30,23 @@ export const AuditLogDrawer: React.FC<AuditLogDrawerProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    if (isOpen) {
-      setLoading(true);
-      fetch(`${apiBase}/audit?limit=50`)
-        .then((r) => r.json())
-        .then((d) => setLogs(d))
-        .catch((e) => console.error("Error loading audit logs:", e))
-        .finally(() => setLoading(false));
-    }
+    if (!isOpen) return;
+    let isMounted = true;
+    Promise.resolve().then(() => {
+      if (isMounted) setLoading(true);
+    });
+    fetch(`${apiBase}/audit?limit=50`)
+      .then((r) => r.json())
+      .then((d) => {
+        if (isMounted) setLogs(d);
+      })
+      .catch((e) => console.error("Error loading audit logs:", e))
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+    return () => {
+      isMounted = false;
+    };
   }, [isOpen, apiBase]);
 
   // Close on ESC

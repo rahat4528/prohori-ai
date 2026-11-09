@@ -21,9 +21,20 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
   const [selectedChartBar, setSelectedChartBar] = useState<number | null>(null);
   const [statusFilter, setStatusFilter] = useState<"ALL" | "ACTIVE" | "CONTAINED" | "RESOLVED">("ALL");
 
+  // Pure reference timestamp anchored to incident telemetry
+  const referenceTime = useMemo(() => {
+    for (const inc of incidents) {
+      if (inc.last_seen) {
+        const t = new Date(inc.last_seen).getTime();
+        if (!isNaN(t)) return t;
+      }
+    }
+    return 1773000000000;
+  }, [incidents]);
+
   // Compute temporal volume buckets for SVG chart
   const timelineBuckets = useMemo(() => {
-    const now = Date.now();
+    const now = referenceTime;
     const bucketIntervalMs = 2 * 60 * 1000; // 2-minute slices
     const buckets: Array<{
       label: string;
@@ -74,7 +85,7 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
     }
 
     return buckets;
-  }, [incidents]);
+  }, [incidents, referenceTime]);
 
   const maxBucketCount = Math.max(...timelineBuckets.map((b) => b.total), 5);
 

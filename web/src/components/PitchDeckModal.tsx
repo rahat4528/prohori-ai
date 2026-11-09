@@ -172,11 +172,8 @@ export const PitchDeckModal: React.FC<PitchDeckModalProps> = ({
   globalLanguage
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [deckLang, setDeckLang] = useState<"en" | "bn">(globalLanguage);
-
-  useEffect(() => {
-    setDeckLang(globalLanguage);
-  }, [globalLanguage]);
+  const [deckLangOverride, setDeckLangOverride] = useState<"en" | "bn" | null>(null);
+  const deckLang = deckLangOverride ?? globalLanguage;
 
   // Keyboard navigation: Arrow keys & Escape
   useEffect(() => {
@@ -256,7 +253,7 @@ export const PitchDeckModal: React.FC<PitchDeckModalProps> = ({
             {/* In-Deck Language Toggle */}
             <div style={{ display: "flex", background: "var(--bg-elevated)", borderRadius: "4px", border: "1px solid var(--border-subtle)", padding: "2px" }}>
               <button
-                onClick={() => setDeckLang("en")}
+                onClick={() => setDeckLangOverride("en")}
                 style={{
                   background: deckLang === "en" ? "#2563eb" : "transparent",
                   color: "#ffffff",
@@ -271,7 +268,7 @@ export const PitchDeckModal: React.FC<PitchDeckModalProps> = ({
                 EN
               </button>
               <button
-                onClick={() => setDeckLang("bn")}
+                onClick={() => setDeckLangOverride("bn")}
                 style={{
                   background: deckLang === "bn" ? "#2563eb" : "transparent",
                   color: "#ffffff",

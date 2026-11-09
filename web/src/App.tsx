@@ -10,8 +10,8 @@ import { PitchDeckModal } from "./components/PitchDeckModal";
 import type { SecurityEvent, Incident } from "./types";
 import { Shield, BookOpen, Lock, Cpu } from "lucide-react";
 
-const API_BASE = "http://localhost:8000";
-const WS_URL = "ws://localhost:8000/stream";
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000";
+const WS_URL = import.meta.env.VITE_WS_URL || "ws://localhost:8000/stream";
 
 export const App: React.FC = () => {
   const [events, setEvents] = useState<SecurityEvent[]>([]);
@@ -74,7 +74,10 @@ export const App: React.FC = () => {
 
   // 2. Establish live WebSocket stream with automatic reconnection
   useEffect(() => {
-    fetchTelemetry();
+    const init = async () => {
+      await fetchTelemetry();
+    };
+    init();
 
     let retryTimeout: any;
 
@@ -101,9 +104,7 @@ export const App: React.FC = () => {
               setEvents((prev) =>
                 prev.map((e) => (e.id === data.event.id ? data.event : e))
               );
-              if (selectedEvent?.id === data.event.id) {
-                setSelectedEvent(data.event);
-              }
+              setSelectedEvent((prev) => (prev?.id === data.event.id ? data.event : prev));
             } else if (data.type === "incident_status_changed" && data.incident_id) {
               setIncidents((prev) =>
                 prev.map((i) =>
@@ -124,7 +125,7 @@ export const App: React.FC = () => {
         ws.onerror = () => {
           ws.close();
         };
-      } catch (err) {
+      } catch {
         setWsConnected(false);
         retryTimeout = setTimeout(connectWs, 3000);
       }
@@ -140,6 +141,30 @@ export const App: React.FC = () => {
       if (wsRef.current) wsRef.current.close();
     };
   }, []);
+
+  // 3. Trigger simulated attack telemetry directly
+  const handleTriggerDemo = async () => {
+    try {
+      await fetch(`${API_BASE}/events`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          source: "honeypot",
+          severity: "high",
+          type: "brute_force_suspected",
+          details: {
+            source_ip: "192.168.1.189",
+            username_tried: "admin",
+            password_tried: "toor",
+            attempts_in_window: 7,
+            simulated_surface: "fake_admin_login"
+          }
+        })
+      });
+    } catch (err) {
+      console.error("Failed to post demo event:", err);
+    }
+  };
 
   // Global Keyboard Shortcuts
   useEffect(() => {
@@ -175,29 +200,7 @@ export const App: React.FC = () => {
     }
   };
 
-  // 4. Trigger simulated attack telemetry directly
-  const handleTriggerDemo = async () => {
-    try {
-      await fetch(`${API_BASE}/events`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          source: "honeypot",
-          severity: "high",
-          type: "brute_force_suspected",
-          details: {
-            source_ip: "192.168.1.189",
-            username_tried: "admin",
-            password_tried: "toor",
-            attempts_in_window: 7,
-            simulated_surface: "fake_admin_login"
-          }
-        })
-      });
-    } catch (err) {
-      console.error("Failed to post demo event:", err);
-    }
-  };
+
 
   // 5. Human-in-the-Loop Countermeasure Approval for Incidents
   const handleApproveIncidentAction = async (incidentId: string) => {

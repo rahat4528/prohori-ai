@@ -3,12 +3,14 @@ SQLAlchemy ORM models for Prohori AI
 Supports Postgres JSONB and SQLite JSON fallback seamlessly.
 """
 
-from datetime import datetime, timezone
-from uuid import uuid4
-from sqlalchemy import Column, String, DateTime, Index, Integer
-from sqlalchemy.dialects.postgresql import UUID as PG_UUID, JSONB
-from sqlalchemy.types import JSON, TypeDecorator, CHAR
 import uuid
+from datetime import UTC, datetime
+from uuid import uuid4
+
+from sqlalchemy import Column, DateTime, Index, Integer, String
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+from sqlalchemy.types import CHAR, JSON, TypeDecorator
 
 from .database import Base
 
@@ -64,7 +66,7 @@ class EventRecord(Base):
     __tablename__ = "events"
 
     id = Column(GUID(), primary_key=True, default=uuid4)
-    ts = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc), index=True)
+    ts = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC), index=True)
     source = Column(String(50), nullable=False, index=True)
     severity = Column(String(20), nullable=False, index=True)
     type = Column(String(100), nullable=False, index=True)
@@ -83,8 +85,8 @@ class IncidentRecord(Base):
 
     id = Column(GUID(), primary_key=True, default=uuid4)
     incident_id = Column(String(50), nullable=False, unique=True, index=True)
-    created_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc), index=True)
-    updated_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC), index=True)
+    updated_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
     source_ip = Column(String(100), nullable=False, index=True)
     severity = Column(String(20), nullable=False, index=True)
     status = Column(String(30), nullable=False, default="ACTIVE", index=True)

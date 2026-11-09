@@ -4,10 +4,9 @@ Unit and Integration Tests for Data Sovereignty Mode & Immutable Audit Log
 
 import pytest
 import pytest_asyncio
-from httpx import AsyncClient, ASGITransport
-
+from app.database import Base, engine
 from app.main import app
-from app.database import engine, Base
+from httpx import ASGITransport, AsyncClient
 
 
 @pytest_asyncio.fixture

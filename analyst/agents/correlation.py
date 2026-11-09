@@ -4,17 +4,15 @@ Links individual sensor events sharing common source IPs or campaign markers int
 Generates attack chain progression timelines and bilingual incident summaries.
 """
 
-from collections import defaultdict
-from datetime import datetime, timezone
 import logging
-from typing import List, Dict, Any
-from uuid import uuid4
+from collections import defaultdict
+from typing import Any
 
 logger = logging.getLogger("prohori.analyst.correlation")
 
 
 class Incident:
-    def __init__(self, incident_id: str, source_ip: str, events: List[Dict[str, Any]]):
+    def __init__(self, incident_id: str, source_ip: str, events: list[dict[str, Any]]):
         self.incident_id = incident_id
         self.source_ip = source_ip
         self.events = sorted(events, key=lambda e: e.get("ts", ""))
@@ -32,7 +30,7 @@ class Incident:
         return "low"
 
     def _generate_bilingual_summary(self) -> tuple[str, str]:
-        event_types = set(e.get("type") for e in self.events)
+        event_types = {str(e.get("type", "")) for e in self.events if e.get("type")}
         stages = []
         if any("recon" in t for t in event_types):
             stages.append("Reconnaissance (অনুসন্ধান)")
@@ -53,7 +51,7 @@ class Incident:
         )
         return summary_en, summary_bn
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "incident_id": self.incident_id,
             "source_ip": self.source_ip,
@@ -68,7 +66,7 @@ class Incident:
 
 
 class CorrelationAgent:
-    def correlate_events(self, events: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def correlate_events(self, events: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Correlate a list of events into structured security incidents."""
         # Group by source_ip found in event details
         ip_groups = defaultdict(list)

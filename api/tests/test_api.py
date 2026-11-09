@@ -2,18 +2,18 @@
 Unit and Integration Tests for Prohori Event API
 """
 
-import pytest
-import pytest_asyncio
-from httpx import AsyncClient, ASGITransport
-from datetime import datetime, timezone
-from uuid import uuid4
-
 # Use SQLite for fast, isolated test runs
 import os
+from uuid import uuid4
+
+import pytest
+import pytest_asyncio
+from httpx import ASGITransport, AsyncClient
+
 os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///:memory:"
 
+from app.database import Base, engine
 from app.main import app
-from app.database import init_db, engine, Base
 
 
 @pytest_asyncio.fixture(autouse=True)

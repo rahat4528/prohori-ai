@@ -8,7 +8,6 @@ Any off-list scan attempt is immediately rejected and recorded in the audit log.
 import ipaddress
 import logging
 import os
-from typing import List, Set
 
 logger = logging.getLogger("prohori.discovery.guard")
 
@@ -25,19 +24,18 @@ DEFAULT_ALLOWLIST = [
 
 class TargetNotAllowlistedError(Exception):
     """Raised when an unauthorized scan target is supplied."""
-    pass
 
 
 class TargetAllowlistGuard:
-    def __init__(self, allowed_targets: List[str] = None):
+    def __init__(self, allowed_targets: list[str] = None):
         env_allowlist = os.getenv("DISCOVERY_ALLOWLIST")
         if env_allowlist:
             self.allowlist_raw = [t.strip() for t in env_allowlist.split(",") if t.strip()]
         else:
             self.allowlist_raw = allowed_targets or list(DEFAULT_ALLOWLIST)
 
-        self.allowed_networks: List[ipaddress.IPv4Network | ipaddress.IPv6Network] = []
-        self.allowed_hosts: Set[str] = set()
+        self.allowed_networks: list[ipaddress.IPv4Network | ipaddress.IPv6Network] = []
+        self.allowed_hosts: set[str] = set()
 
         for item in self.allowlist_raw:
             try:

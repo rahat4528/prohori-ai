@@ -4,12 +4,12 @@ Produces targeted, actionable defensive countermeasures flagged for Human-in-the
 NEVER executes any action automatically.
 """
 
-from typing import Dict, Any, List
+from typing import Any
 from uuid import uuid4
 
 
 class ResponseAdvisor:
-    def recommend_actions(self, event_or_incident: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def recommend_actions(self, event_or_incident: dict[str, Any]) -> list[dict[str, Any]]:
         """Generate recommended defensive countermeasures requiring operator sign-off."""
         details = event_or_incident.get("details", {})
         source_ip = details.get("source_ip") or event_or_incident.get("source_ip")

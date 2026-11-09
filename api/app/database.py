@@ -4,10 +4,11 @@ Automatically activates pgvector on Postgres and creates tables.
 """
 
 import logging
-from typing import AsyncGenerator
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
-from sqlalchemy.orm import declarative_base
+from collections.abc import AsyncGenerator
+
 from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.orm import declarative_base
 
 from .config import settings
 

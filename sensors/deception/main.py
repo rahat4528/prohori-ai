@@ -8,13 +8,12 @@ All actions are static simulations designed to attract and record attacker telem
 """
 
 import asyncio
-from datetime import datetime, timezone
 import logging
-from typing import Optional
+from datetime import UTC, datetime
 
-from fastapi import FastAPI, Request, Form, status
-from fastapi.responses import HTMLResponse, JSONResponse
 import httpx
+from fastapi import FastAPI, Form, Request, status
+from fastapi.responses import HTMLResponse, JSONResponse
 
 from .config import deception_settings
 from .tracker import InteractionTracker
@@ -103,8 +102,8 @@ async def login_surface():
 @app.post("/api/login")
 async def simulated_login_attempt(
     request: Request,
-    username: Optional[str] = Form(None),
-    password: Optional[str] = Form(None)
+    username: str | None = Form(None),
+    password: str | None = Form(None)
 ):
     """Simulated login handler.
 
@@ -147,7 +146,7 @@ async def simulated_login_attempt(
             "attempts_in_window": attempt_count,
             "window_seconds": deception_settings.BRUTE_FORCE_WINDOW_SEC,
             "simulated_surface": "fake_admin_login",
-            "ts": datetime.now(timezone.utc).isoformat()
+            "ts": datetime.now(UTC).isoformat()
         }
     }
 
@@ -187,7 +186,7 @@ async def simulated_recon_trap(request: Request):
             "target_path": path,
             "user_agent": user_agent,
             "simulated_surface": "decoy_path_trap",
-            "ts": datetime.now(timezone.utc).isoformat()
+            "ts": datetime.now(UTC).isoformat()
         }
     }
 

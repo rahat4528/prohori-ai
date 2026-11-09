@@ -8,6 +8,7 @@ Generates controlled, benign test traffic to demonstrate:
 
 import sys
 import time
+
 import httpx
 
 EVENT_API = "http://localhost:8000"

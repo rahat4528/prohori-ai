@@ -4,9 +4,8 @@ Emits sample test events for each source and severity to verify the API pipeline
 """
 
 import sys
-import time
+
 import httpx
-from datetime import datetime, timezone
 
 API_BASE = "http://localhost:8000"
 

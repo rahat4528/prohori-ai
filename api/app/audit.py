@@ -4,16 +4,14 @@ Records every AI Analyst reasoning step, RAG retrieval citation, and Human-in-th
 Essential for regulatory compliance, data sovereignty, and responsible AI auditability.
 """
 
-from datetime import datetime, timezone
 import logging
-from typing import Optional, List, Dict, Any
+from datetime import UTC, datetime
+from typing import Any
 from uuid import UUID, uuid4
 
-from sqlalchemy import Column, String, DateTime, Boolean, Index
-from sqlalchemy.dialects.postgresql import UUID as PG_UUID
-from sqlalchemy.sql import select, desc
-from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel, Field
+from sqlalchemy import Boolean, Column, DateTime, Index, String
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from .database import Base
 from .db_models import GUID, CompatibleJSON
@@ -26,7 +24,7 @@ class AuditRecordModel(Base):
     __tablename__ = "audit_logs"
 
     id = Column(GUID(), primary_key=True, default=uuid4)
-    ts = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc), index=True)
+    ts = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC), index=True)
     action_type = Column(String(50), nullable=False, index=True)
     actor = Column(String(50), nullable=False, default="AI_ANALYST")
     input_event_id = Column(GUID(), nullable=True, index=True)
@@ -44,12 +42,12 @@ class AuditRecordModel(Base):
 class AuditEntryCreate(BaseModel):
     action_type: str
     actor: str = "AI_ANALYST"
-    input_event_id: Optional[UUID] = None
+    input_event_id: UUID | None = None
     model_used: str
-    citations: List[str] = Field(default_factory=list)
-    verdict: Dict[str, Any]
+    citations: list[str] = Field(default_factory=list)
+    verdict: dict[str, Any]
     human_approved: bool = False
-    operator_id: Optional[str] = None
+    operator_id: str | None = None
 
 
 class AuditEntryResponse(BaseModel):
@@ -57,12 +55,12 @@ class AuditEntryResponse(BaseModel):
     ts: datetime
     action_type: str
     actor: str
-    input_event_id: Optional[UUID] = None
+    input_event_id: UUID | None = None
     model_used: str
-    citations: Optional[List[str]] = None
-    verdict: Dict[str, Any]
+    citations: list[str] | None = None
+    verdict: dict[str, Any]
     human_approved: bool
-    operator_id: Optional[str] = None
+    operator_id: str | None = None
 
 
 async def record_audit_entry(
@@ -70,16 +68,16 @@ async def record_audit_entry(
     action_type: str,
     actor: str,
     model_used: str,
-    verdict: Dict[str, Any],
-    input_event_id: Optional[UUID] = None,
-    citations: Optional[List[str]] = None,
+    verdict: dict[str, Any],
+    input_event_id: UUID | None = None,
+    citations: list[str] | None = None,
     human_approved: bool = False,
-    operator_id: Optional[str] = None
+    operator_id: str | None = None
 ) -> AuditRecordModel:
     """Append a new verified entry to the audit log."""
     entry = AuditRecordModel(
         id=uuid4(),
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         action_type=action_type,
         actor=actor,
         input_event_id=input_event_id,

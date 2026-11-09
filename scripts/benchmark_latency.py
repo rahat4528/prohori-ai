@@ -3,8 +3,9 @@ Prohori AI - Analysis Latency Benchmark Script
 Times 20 real alerts through the Event API and AI Triage engine.
 """
 
-import time
 import statistics
+import time
+
 import httpx
 
 API_BASE = "http://localhost:8000"

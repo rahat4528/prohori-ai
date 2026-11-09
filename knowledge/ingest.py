@@ -15,8 +15,8 @@ root_dir = Path(__file__).resolve().parent.parent
 if str(root_dir) not in sys.path:
     sys.path.insert(0, str(root_dir))
 
+from knowledge.data.curated_kb import CVE_DATABASE, CWE_DATABASE, MITRE_TECHNIQUES
 from knowledge.retriever import kb_retriever
-from knowledge.data.curated_kb import MITRE_TECHNIQUES, CVE_DATABASE, CWE_DATABASE
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] [KB-INGEST] %(message)s")
 logger = logging.getLogger("prohori.kb_ingest")
@@ -30,8 +30,8 @@ async def ingest_to_postgres():
         return
 
     try:
-        from sqlalchemy.ext.asyncio import create_async_engine
         from sqlalchemy import text
+        from sqlalchemy.ext.asyncio import create_async_engine
         engine = create_async_engine(db_url, echo=False)
         async with engine.begin() as conn:
             if conn.dialect.name == "postgresql":

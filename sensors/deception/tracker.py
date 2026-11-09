@@ -4,8 +4,7 @@ Maintains sliding-window counts per IP to tag brute-force patterns.
 """
 
 from collections import defaultdict
-from datetime import datetime, timezone
-from typing import Dict, List, Tuple
+from datetime import UTC, datetime
 
 
 class InteractionTracker:
@@ -13,14 +12,14 @@ class InteractionTracker:
         self.window_seconds = window_seconds
         self.threshold = threshold
         # ip -> list of timestamps
-        self.history: Dict[str, List[datetime]] = defaultdict(list)
+        self.history: dict[str, list[datetime]] = defaultdict(list)
 
-    def record_attempt(self, ip: str) -> Tuple[int, bool]:
+    def record_attempt(self, ip: str) -> tuple[int, bool]:
         """Record an attempt from IP.
 
         Returns (count_in_window, is_brute_force_suspected).
         """
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         timestamps = self.history[ip]
 
         # Prune older than window_seconds

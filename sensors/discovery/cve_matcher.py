@@ -4,15 +4,16 @@ Correlates identified service banners and port findings against cached CVE datab
 Operates 100% offline using local NVD/CVE intelligence.
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Any
+
 from knowledge.data.curated_kb import CVE_DATABASE
 
 
 class CVEMatcher:
-    def __init__(self, cve_db: List[Dict[str, Any]] = None):
+    def __init__(self, cve_db: list[dict[str, Any]] = None):
         self.cve_db = cve_db or CVE_DATABASE
 
-    def match_banner(self, banner: str, service: str = "", port: int = 0) -> List[Dict[str, Any]]:
+    def match_banner(self, banner: str, service: str = "", port: int = 0) -> list[dict[str, Any]]:
         """Identify matching CVE records for a discovered banner or service."""
         matches = []
         text_to_check = f"{banner} {service} port_{port}".lower()
@@ -47,7 +48,7 @@ class CVEMatcher:
 
         return matches
 
-    def _format_match(self, cve: Dict[str, Any], banner: str) -> Dict[str, Any]:
+    def _format_match(self, cve: dict[str, Any], banner: str) -> dict[str, Any]:
         cvss = cve.get("cvss", 5.0)
         if cvss >= 9.0:
             severity = "critical"

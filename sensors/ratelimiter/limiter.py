@@ -6,8 +6,7 @@ Protects endpoints against flood, brute-force, and resource exhaustion.
 
 from collections import defaultdict
 from dataclasses import dataclass
-from datetime import datetime, timezone
-from typing import Dict, List, Set, Optional
+from datetime import UTC, datetime
 
 
 @dataclass
@@ -40,16 +39,16 @@ class SlidingWindowRateLimiter:
         self.repeat_offender_threshold = repeat_offender_threshold
 
         # Sets for explicit access control
-        self.allowlist: Set[str] = set()
-        self.denylist: Set[str] = set()
+        self.allowlist: set[str] = set()
+        self.denylist: set[str] = set()
 
         # In-memory tracking
         # ip -> list of unix timestamps
-        self.requests: Dict[str, List[float]] = defaultdict(list)
+        self.requests: dict[str, list[float]] = defaultdict(list)
         # ip -> unix timestamp until which IP is blocked
-        self.blocks: Dict[str, float] = {}
+        self.blocks: dict[str, float] = {}
         # ip -> count of times blocked (for escalation)
-        self.offense_count: Dict[str, int] = defaultdict(int)
+        self.offense_count: dict[str, int] = defaultdict(int)
 
     def add_to_allowlist(self, ip: str) -> None:
         self.allowlist.add(ip)
@@ -64,7 +63,7 @@ class SlidingWindowRateLimiter:
         self.denylist.discard(ip)
 
     def evaluate(self, ip: str, path: str) -> LimiterDecision:
-        now = datetime.now(timezone.utc).timestamp()
+        now = datetime.now(UTC).timestamp()
         window_label = f"{self.window_seconds}s"
 
         # Check allowlist

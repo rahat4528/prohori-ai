@@ -3,8 +3,9 @@ Unit tests for API Abuse Guard (Rate Limiter Sensor)
 """
 
 import pytest
-from httpx import AsyncClient, ASGITransport
 from fastapi import FastAPI
+from httpx import ASGITransport, AsyncClient
+
 from sensors.ratelimiter.limiter import SlidingWindowRateLimiter
 from sensors.ratelimiter.middleware import RateLimitMiddleware
 

@@ -3,43 +3,53 @@ Prohori AI - Event Ingestion & Streaming API
 Defensive Security Operations Center Event Bus
 """
 
-from contextlib import asynccontextmanager
-from datetime import datetime, timezone
 import logging
-from pathlib import Path
 import sys
-from typing import Optional
+from contextlib import asynccontextmanager
+from datetime import UTC, datetime
+from pathlib import Path
 from uuid import UUID
 
-from fastapi import FastAPI, Depends, HTTPException, Query, WebSocket, WebSocketDisconnect, status
+from fastapi import (
+    Depends,
+    FastAPI,
+    HTTPException,
+    Query,
+    WebSocket,
+    WebSocketDisconnect,
+    status,
+)
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, desc
 
 # Ensure project root is available for sensor imports
 root_dir = Path(__file__).resolve().parent.parent.parent
 if str(root_dir) not in sys.path:
     sys.path.insert(0, str(root_dir))
 
-from .config import settings
-from .database import init_db, check_db_health, get_db, AsyncSessionLocal
-from .models import Event, EventCreate, EventFilter, EventListResponse, EventSource, EventSeverity
-from .db_models import EventRecord
-from .connection_mgr import ws_manager
-from .routes.analyst import router as analyst_router
-from .routes.sovereignty import router as sovereignty_router
-from .routes.docs import router as docs_router
-from .audit import record_audit_entry
-
-
-from analyst.agents.triage import triage_agent
 from analyst.agents.advisor import response_advisor
+from analyst.agents.triage import triage_agent
 from knowledge.retriever import kb_retriever
 
-
+from .audit import record_audit_entry
+from .config import settings
+from .connection_mgr import ws_manager
+from .database import AsyncSessionLocal, check_db_health, get_db, init_db
+from .db_models import EventRecord
+from .models import (
+    Event,
+    EventCreate,
+    EventListResponse,
+    EventSeverity,
+    EventSource,
+)
+from .routes.analyst import router as analyst_router
+from .routes.docs import router as docs_router
+from .routes.sovereignty import router as sovereignty_router
 
 try:
-    from sensors.ratelimiter.limiter import SlidingWindowRateLimiter, default_limiter
+    from sensors.ratelimiter.limiter import default_limiter
     from sensors.ratelimiter.middleware import RateLimitMiddleware
     HAS_RATE_LIMITER = True
 except ImportError:
@@ -139,7 +149,7 @@ async def healthz():
     db_ok = await check_db_health()
     return {
         "status": "healthy" if db_ok else "degraded",
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
         "database": "connected" if db_ok else "unreachable",
         "version": settings.APP_VERSION
     }
@@ -253,11 +263,11 @@ async def ingest_event(
     summary="List and filter security events"
 )
 async def list_events(
-    source: Optional[EventSource] = Query(None, description="Filter by event source"),
-    severity: Optional[EventSeverity] = Query(None, description="Filter by severity level"),
-    event_type: Optional[str] = Query(None, alias="type", description="Filter by event type"),
-    start_time: Optional[datetime] = Query(None, description="Filter events ts >= start_time (ISO 8601)"),
-    end_time: Optional[datetime] = Query(None, description="Filter events ts <= end_time (ISO 8601)"),
+    source: EventSource | None = Query(None, description="Filter by event source"),
+    severity: EventSeverity | None = Query(None, description="Filter by severity level"),
+    event_type: str | None = Query(None, alias="type", description="Filter by event type"),
+    start_time: datetime | None = Query(None, description="Filter events ts >= start_time (ISO 8601)"),
+    end_time: datetime | None = Query(None, description="Filter events ts <= end_time (ISO 8601)"),
     limit: int = Query(50, ge=1, le=500, description="Page limit"),
     offset: int = Query(0, ge=0, description="Page offset"),
     db: AsyncSession = Depends(get_db)

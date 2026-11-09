@@ -7,7 +7,7 @@ from event details and free-text queries so sensitive operational data never rea
 
 import copy
 import re
-from typing import Any, Dict, List, Union
+from typing import Any
 
 # Regex patterns for sensitive data
 EMAIL_REGEX = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b")
@@ -39,7 +39,7 @@ def redact_string(text: str) -> str:
     return text
 
 
-def redact_data(data: Union[Dict, List, str, Any]) -> Any:
+def redact_data(data: dict | list | str | Any) -> Any:
     """Recursively scrub sensitive keys and regex patterns from any Python data structure."""
     if isinstance(data, dict):
         scrubbed = {}
@@ -58,7 +58,7 @@ def redact_data(data: Union[Dict, List, str, Any]) -> Any:
         return data
 
 
-def sanitize_for_analyst(event_dict: Dict[str, Any]) -> Dict[str, Any]:
+def sanitize_for_analyst(event_dict: dict[str, Any]) -> dict[str, Any]:
     """Prepares a deep-copied, scrubbed copy of an event for LLM analysis."""
     clean_copy = copy.deepcopy(event_dict)
     if "details" in clean_copy and isinstance(clean_copy["details"], dict):

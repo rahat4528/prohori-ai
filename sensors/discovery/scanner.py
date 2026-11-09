@@ -5,10 +5,10 @@ Scans strictly allowlisted lab targets with graceful timeouts and banner grabbin
 
 import asyncio
 import logging
-from typing import List, Dict, Any, Optional
+from typing import Any
 
-from .guard import allowlist_guard
 from .cve_matcher import cve_matcher
+from .guard import allowlist_guard
 
 logger = logging.getLogger("prohori.discovery.scanner")
 
@@ -28,7 +28,7 @@ COMMON_SERVICES = {
 }
 
 
-async def scan_single_port(host: str, port: int, timeout: float = 0.5) -> Optional[Dict[str, Any]]:
+async def scan_single_port(host: str, port: int, timeout: float = 0.5) -> dict[str, Any] | None:
     """Attempt non-invasive TCP connection to determine port state and grab banner."""
     try:
         reader, writer = await asyncio.wait_for(
@@ -69,11 +69,11 @@ async def scan_single_port(host: str, port: int, timeout: float = 0.5) -> Option
             "cve_matches": cve_matches
         }
 
-    except (asyncio.TimeoutError, ConnectionRefusedError, OSError):
+    except (TimeoutError, ConnectionRefusedError, OSError):
         return None
 
 
-async def scan_target(host: str, ports: Optional[List[int]] = None) -> Dict[str, Any]:
+async def scan_target(host: str, ports: list[int] | None = None) -> dict[str, Any]:
     """Scan an allowlisted target host for active ports, service banners, and CVEs."""
     # Step 1: Enforce allowlist boundary strictly
     allowlist_guard.verify_or_raise(host)

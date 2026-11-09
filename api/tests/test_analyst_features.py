@@ -6,16 +6,17 @@ Unit and Integration Tests for Prohori Analyst Features:
 - Human-in-the-Loop approval and active perimeter denylist
 """
 
+import json
+import os
+
 import pytest
 import pytest_asyncio
-import json
-from httpx import AsyncClient, ASGITransport
+from httpx import ASGITransport, AsyncClient
 
-import os
 os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///:memory:"
 
+from app.database import Base, engine
 from app.main import app
-from app.database import engine, Base
 
 
 @pytest_asyncio.fixture(autouse=True)

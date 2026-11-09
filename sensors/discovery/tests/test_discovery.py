@@ -4,10 +4,10 @@ Specifically verifies that off-list targets are strictly blocked by the guard.
 """
 
 import pytest
-from httpx import AsyncClient, ASGITransport
+from httpx import ASGITransport, AsyncClient
 
-from sensors.discovery.guard import TargetAllowlistGuard, TargetNotAllowlistedError
 from sensors.discovery.cve_matcher import CVEMatcher
+from sensors.discovery.guard import TargetAllowlistGuard, TargetNotAllowlistedError
 from sensors.discovery.main import app
 
 

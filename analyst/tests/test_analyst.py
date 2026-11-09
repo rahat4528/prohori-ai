@@ -4,17 +4,16 @@ Unit and Integration Tests for Prohori AI SOC Analyst Core & RAG
 
 import pytest
 import pytest_asyncio
-from httpx import AsyncClient, ASGITransport
-
-from analyst.redaction import redact_data, redact_string, sanitize_for_analyst
-from knowledge.retriever import kb_retriever
-from analyst.agents.triage import triage_agent
-from analyst.agents.correlation import correlation_agent
-from analyst.agents.advisor import response_advisor
-from analyst.ask import analyst_assistant
-
+from app.database import Base, engine
 from app.main import app
-from app.database import engine, Base
+from httpx import ASGITransport, AsyncClient
+
+from analyst.agents.advisor import response_advisor
+from analyst.agents.correlation import correlation_agent
+from analyst.agents.triage import triage_agent
+from analyst.ask import analyst_assistant
+from analyst.redaction import redact_data, redact_string
+from knowledge.retriever import kb_retriever
 
 
 @pytest_asyncio.fixture

@@ -3,7 +3,9 @@ Google Gemini LLM Provider (Free Tier REST integration)
 """
 
 import logging
+
 import httpx
+
 from .base import LLMProvider
 
 logger = logging.getLogger("prohori.llm.gemini")

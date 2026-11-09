@@ -10,11 +10,9 @@ class LLMProvider(ABC):
     @abstractmethod
     async def generate(self, prompt: str, system_prompt: str = "") -> str:
         """Asynchronously generate a response from the model given a user prompt and optional system prompt."""
-        pass
 
     @property
     @abstractmethod
     def provider_name(self) -> str:
         """Name of the provider (e.g. 'gemini', 'groq', 'ollama', 'offline')."""
-        pass
 

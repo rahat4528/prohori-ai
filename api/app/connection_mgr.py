@@ -3,9 +3,9 @@ WebSocket Connection Manager for Prohori AI
 Broadcasts newly ingested events in real-time to operator consoles.
 """
 
-import json
 import logging
-from typing import Set, Any, Dict
+from typing import Any
+
 from fastapi import WebSocket
 
 logger = logging.getLogger("prohori.websocket")
@@ -13,7 +13,7 @@ logger = logging.getLogger("prohori.websocket")
 
 class ConnectionManager:
     def __init__(self):
-        self.active_connections: Set[WebSocket] = set()
+        self.active_connections: set[WebSocket] = set()
 
     async def connect(self, websocket: WebSocket) -> None:
         """Accept and register a new WebSocket connection."""
@@ -36,7 +36,7 @@ class ConnectionManager:
         self.active_connections.discard(websocket)
         logger.info(f"WebSocket client disconnected. Active clients: {len(self.active_connections)}")
 
-    async def broadcast(self, message: Dict[str, Any]) -> None:
+    async def broadcast(self, message: dict[str, Any]) -> None:
         """Broadcast an event payload to all currently connected clients."""
         if not self.active_connections:
             return

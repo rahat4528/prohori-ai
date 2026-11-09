@@ -7,6 +7,7 @@ Uses retrieved MITRE ATT&CK / CVE / CWE facts to synthesize cited bilingual narr
 import json
 import logging
 import re
+
 from .base import LLMProvider
 
 logger = logging.getLogger("prohori.llm.offline")
@@ -46,7 +47,7 @@ class DeterministicOfflineProvider(LLMProvider):
                 f"এই আক্রমণ প্যাটার্নটি MITRE ATT&CK কৌশল [{mitre_id}: {technique_name}] এবং দুর্বলতা [{cwe_id}] এর সাথে হুবহু মিলে যায়। "
                 f"আক্রমণকারী অননুমোদিত অ্যাক্সেস পাওয়ার উদ্দেশ্যে দ্রুত পাসওয়ার্ড পরীক্ষার চেষ্টা চালাচ্ছে।"
             )
-            recommendation = f"Block source IP at perimeter edge firewall and enforce multi-factor authentication (MFA)."
+            recommendation = "Block source IP at perimeter edge firewall and enforce multi-factor authentication (MFA)."
             severity = "high"
 
         elif "blocked_request" in prompt or "ratelimit" in prompt:

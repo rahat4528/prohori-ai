@@ -3,16 +3,15 @@ FastAPI Routes for Data Sovereignty, Local LLM Mode, and Immutable Audit Log
 """
 
 import os
-from typing import Optional, List
-from uuid import UUID
-from fastapi import APIRouter, Depends, Query, status
-from pydantic import BaseModel, Field
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, desc
 
+from fastapi import APIRouter, Depends, Query
+from pydantic import BaseModel, Field
+from sqlalchemy import desc, select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from ..audit import AuditEntryResponse, AuditRecordModel, record_audit_entry
 from ..database import get_db
 from ..db_models import IncidentRecord
-from ..audit import AuditRecordModel, AuditEntryResponse, record_audit_entry
 
 try:
     from sensors.ratelimiter.limiter import default_limiter
@@ -41,11 +40,11 @@ class ToggleSovereigntyRequest(BaseModel):
     mode: str = Field(..., description="'local' for zero-cloud sovereignty or 'cloud' for external API")
 
 
-@router.get("/audit", response_model=List[AuditEntryResponse], summary="Retrieve immutable audit log")
+@router.get("/audit", response_model=list[AuditEntryResponse], summary="Retrieve immutable audit log")
 async def get_audit_trail(
     limit: int = Query(50, ge=1, le=200),
     offset: int = Query(0, ge=0),
-    action_type: Optional[str] = None,
+    action_type: str | None = None,
     db: AsyncSession = Depends(get_db)
 ):
     """Retrieve append-only audit trail of all AI analyst verdicts, RAG retrievals,

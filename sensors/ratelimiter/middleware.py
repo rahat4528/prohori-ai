@@ -4,17 +4,16 @@ Emits security events to the Prohori Event API whenever a client is rate-limited
 """
 
 import asyncio
-from datetime import datetime, timezone
-import json
 import logging
-from typing import Optional, Callable
+from collections.abc import Callable
+from datetime import UTC, datetime
 
+import httpx
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
-import httpx
 
-from .limiter import SlidingWindowRateLimiter, LimiterDecision
+from .limiter import LimiterDecision, SlidingWindowRateLimiter
 
 logger = logging.getLogger("prohori.ratelimiter")
 
@@ -23,10 +22,10 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     def __init__(
         self,
         app,
-        limiter: Optional[SlidingWindowRateLimiter] = None,
+        limiter: SlidingWindowRateLimiter | None = None,
         event_api_url: str = "http://localhost:8000",
-        event_callback: Optional[Callable[[dict], None]] = None,
-        exempt_paths: Optional[list] = None
+        event_callback: Callable[[dict], None] | None = None,
+        exempt_paths: list | None = None
     ):
         super().__init__(app)
         self.limiter = limiter or SlidingWindowRateLimiter()
@@ -59,7 +58,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                 "limit": decision.limit,
                 "escalation": decision.escalation,
                 "retry_after": decision.retry_after,
-                "ts": datetime.now(timezone.utc).isoformat()
+                "ts": datetime.now(UTC).isoformat()
             }
         }
 

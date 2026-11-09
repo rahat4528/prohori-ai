@@ -3,7 +3,9 @@ Groq Cloud LLM Provider (Free Tier OpenAI-compatible endpoint)
 """
 
 import logging
+
 import httpx
+
 from .base import LLMProvider
 
 logger = logging.getLogger("prohori.llm.groq")

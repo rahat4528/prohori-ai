@@ -3,14 +3,13 @@ Prohori AI - "Ask the Analyst" Natural Language Reasoning Engine
 Handles free-text operator questions with grounded, cited bilingual responses.
 """
 
-import json
 import logging
 import re
-from typing import Dict, Any, List, Optional
+from typing import Any
 
-from knowledge.retriever import kb_retriever
+from analyst.providers import LLMProvider, get_llm_provider
 from analyst.redaction import redact_string
-from analyst.providers import get_llm_provider, LLMProvider
+from knowledge.retriever import kb_retriever
 
 logger = logging.getLogger("prohori.analyst.ask")
 
@@ -21,15 +20,15 @@ def is_bangla_text(text: str) -> bool:
 
 
 class AnalystAssistant:
-    def __init__(self, provider: Optional[LLMProvider] = None):
+    def __init__(self, provider: LLMProvider | None = None):
         self.provider = provider or get_llm_provider()
 
     async def answer_question(
         self,
         question: str,
-        recent_events: List[Dict[str, Any]],
-        language_override: Optional[str] = None
-    ) -> Dict[str, Any]:
+        recent_events: list[dict[str, Any]],
+        language_override: str | None = None
+    ) -> dict[str, Any]:
         """Answer free-text security question grounded in recent events and MITRE/CVE knowledge."""
         # Scrub question of potential PII
         clean_question = redact_string(question)

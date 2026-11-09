@@ -5,16 +5,15 @@ Scans strictly allowlisted internal hosts, discovers active services,
 enriches findings with CVE vulnerabilities, and emits security events to the Prohori Event API.
 """
 
-from datetime import datetime, timezone
 import logging
 import os
-from typing import List, Optional
+from datetime import UTC, datetime
 
+import httpx
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel, Field
-import httpx
 
-from .guard import allowlist_guard, TargetNotAllowlistedError
+from .guard import TargetNotAllowlistedError, allowlist_guard
 from .scanner import scan_target
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] [DISCOVERY] %(message)s")
@@ -31,7 +30,7 @@ EVENT_API_URL = os.getenv("EVENT_API_URL", "http://localhost:8000")
 
 class ScanRequest(BaseModel):
     target: str = Field(..., description="Target hostname or IP (MUST be on defensive allowlist)")
-    ports: Optional[List[int]] = Field(None, description="Optional custom port list to probe")
+    ports: list[int] | None = Field(None, description="Optional custom port list to probe")
 
 
 async def emit_discovery_events(scan_results: dict):
@@ -53,7 +52,7 @@ async def emit_discovery_events(scan_results: dict):
                     "service": svc["service"],
                     "banner": svc["banner"],
                     "allowlist_verified": True,
-                    "ts": datetime.now(timezone.utc).isoformat()
+                    "ts": datetime.now(UTC).isoformat()
                 }
             }
             try:
@@ -77,7 +76,7 @@ async def emit_discovery_events(scan_results: dict):
                         "description": cve["description"],
                         "mitigation": cve["mitigation"],
                         "matched_banner": cve["matched_banner"],
-                        "ts": datetime.now(timezone.utc).isoformat()
+                        "ts": datetime.now(UTC).isoformat()
                     }
                 }
                 try:
@@ -108,7 +107,7 @@ async def execute_scan(req: ScanRequest):
         logger.error(f"Error during scan: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Scan error: {str(e)}"
+            detail=f"Scan error: {e!s}"
         )
 
 

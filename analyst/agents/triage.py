@@ -7,11 +7,11 @@ Grounds every claim in MITRE ATT&CK, NVD CVE, or CWE knowledge bases.
 import json
 import logging
 import re
-from typing import Dict, Any, Optional
+from typing import Any
 
-from knowledge.retriever import kb_retriever
+from analyst.providers import LLMProvider, get_llm_provider
 from analyst.redaction import sanitize_for_analyst
-from analyst.providers import get_llm_provider, LLMProvider
+from knowledge.retriever import kb_retriever
 
 logger = logging.getLogger("prohori.analyst.triage")
 
@@ -27,10 +27,10 @@ CRITICAL RULES:
 
 
 class TriageAgent:
-    def __init__(self, provider: Optional[LLMProvider] = None):
+    def __init__(self, provider: LLMProvider | None = None):
         self.provider = provider or get_llm_provider()
 
-    async def triage_event(self, event_data: Dict[str, Any]) -> Dict[str, Any]:
+    async def triage_event(self, event_data: dict[str, Any]) -> dict[str, Any]:
         """Perform autonomous, grounded triage on an ingested event."""
         # Step 1: Mandatory PII & Secret Redaction
         clean_event = sanitize_for_analyst(event_data)

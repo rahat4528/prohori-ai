@@ -6,6 +6,7 @@ and emits security events to the Prohori Event API.
 """
 
 import os
+
 import httpx
 from fastapi import FastAPI, Request, Response
 from starlette.responses import StreamingResponse
@@ -78,7 +79,7 @@ async def proxy_pass(request: Request, path: str):
     except Exception as e:
         await client.aclose()
         return Response(
-            content=f'{{"error": "Upstream connection error", "details": "{str(e)}"}}',
+            content=f'{{"error": "Upstream connection error", "details": "{e!s}"}}',
             status_code=502,
             media_type="application/json"
         )

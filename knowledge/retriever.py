@@ -5,12 +5,12 @@ Supports in-memory cosine/keyword similarity and pgvector integration.
 Guarantees 100% offline functionality.
 """
 
-from dataclasses import dataclass
 import math
 import re
-from typing import List, Dict, Any, Optional
+from dataclasses import dataclass
+from typing import Any
 
-from .data.curated_kb import MITRE_TECHNIQUES, CVE_DATABASE, CWE_DATABASE
+from .data.curated_kb import CVE_DATABASE, CWE_DATABASE, MITRE_TECHNIQUES
 
 
 @dataclass
@@ -20,12 +20,12 @@ class KnowledgeDoc:
     title: str
     content: str
     mitigation: str
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
 
 
 class KnowledgeRetriever:
     def __init__(self):
-        self.documents: List[KnowledgeDoc] = []
+        self.documents: list[KnowledgeDoc] = []
         self._build_index()
 
     def _build_index(self):
@@ -72,7 +72,7 @@ class KnowledgeRetriever:
         tokens = re.findall(r"\b[a-zA-Z0-9_\-\.]{2,}\b", text.lower())
         return set(tokens)
 
-    def retrieve(self, query: str, top_k: int = 3, min_score: float = 0.05) -> List[Dict[str, Any]]:
+    def retrieve(self, query: str, top_k: int = 3, min_score: float = 0.05) -> list[dict[str, Any]]:
         """Retrieve most relevant knowledge base documents for a given security query or event."""
         query_tokens = self._tokenize(query)
         if not query_tokens:
@@ -110,7 +110,7 @@ class KnowledgeRetriever:
             })
         return results
 
-    def get_document_by_id(self, doc_id: str) -> Optional[Dict[str, Any]]:
+    def get_document_by_id(self, doc_id: str) -> dict[str, Any] | None:
         """Direct lookup of MITRE ATT&CK technique, CVE, or CWE by ID."""
         doc_id_clean = doc_id.strip().upper()
         for doc in self.documents:

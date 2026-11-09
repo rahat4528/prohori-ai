@@ -4,6 +4,7 @@ Serves dark-theme, responsive presentation and technical documentation pages.
 """
 
 from pathlib import Path
+
 from fastapi import APIRouter
 from fastapi.responses import HTMLResponse
 

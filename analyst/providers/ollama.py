@@ -4,7 +4,9 @@ Telemetry never leaves the local machine.
 """
 
 import logging
+
 import httpx
+
 from .base import LLMProvider
 
 logger = logging.getLogger("prohori.llm.ollama")

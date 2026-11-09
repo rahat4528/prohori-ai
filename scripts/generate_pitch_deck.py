@@ -5,11 +5,13 @@ in Microsoft PowerPoint (.pptx) format.
 Theme: Modern Cyber SOC Dark Mode (16:9 Widescreen)
 """
 import os
+
 from pptx import Presentation
-from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
-from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
 from pptx.enum.shapes import MSO_SHAPE
+from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
+from pptx.util import Inches, Pt
+
 
 def create_deck(output_path="docs/Prohori_AI_Pitch_Deck.pptx"):
     prs = Presentation()
@@ -30,7 +32,6 @@ def create_deck(output_path="docs/Prohori_AI_Pitch_Deck.pptx"):
     AMBER_ACCENT = RGBColor(255, 185, 0)   # Warning Gold
     TEXT_WHITE = RGBColor(245, 248, 255)   # Crisp White
     TEXT_MUTED = RGBColor(156, 163, 175)   # Muted Slate
-    WHITE = RGBColor(255, 255, 255)
 
     def set_bg(slide):
         bg_shape = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, 0, Inches(13.333), Inches(7.5))
@@ -383,7 +384,7 @@ def create_deck(output_path="docs/Prohori_AI_Pitch_Deck.pptx"):
     p2.space_after = Pt(20)
 
     p3 = tf.add_paragraph()
-    p3.text = "Core Competencies Delivered by Team Orionids in Prohori AI:\n1. Product & AI Systems Architecture — Unified async event architecture & pipeline design\n2. AI & RAG Engineering — pgvector embeddings, Bengali prompt tuning, STIX/NVD grounding\n3. Full-Stack UX Engineering — React 19 high-density dark console, sub-frame WebSocket updates\n4. Defensive Security Engineering — Isolated honeypot, token-bucket abuse guard, strict allowlists\n\n[FILL: Insert Team Member Names, Academic/Professional Credentials, and Congress Bonus Signals]"
+    p3.text = "Team Orionids — Department of CSE, Daffodil International University (DIU)\n• Rahat (Team Lead): System Architecture, FastAPI Async Bus & Container Orchestration\n• AI & RAG Engineer: Google Gemini API Integration, Local Ollama Fallback & Bengali Prompt Tuning\n• Full-Stack UX Engineer: React 19 High-Density Dark Console & WebSocket Streaming\n• Defensive Security Engineer: Isolated Honeypot Decoys, Token-Bucket Rate Limiter & Security Allowlist"
     p3.font.size = Pt(12)
     p3.font.color.rgb = TEXT_MUTED
 

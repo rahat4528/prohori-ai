@@ -3,9 +3,10 @@ Unit tests for Deception Sensor (Simulated Honeypot)
 """
 
 import pytest
-from httpx import AsyncClient, ASGITransport
-from sensors.deception.main import app, tracker
+from httpx import ASGITransport, AsyncClient
+
 from sensors.deception.config import deception_settings
+from sensors.deception.main import app, tracker
 
 
 @pytest.fixture(autouse=True)

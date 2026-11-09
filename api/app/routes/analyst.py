@@ -3,50 +3,49 @@ FastAPI Routes for AI SOC Analyst
 Exposes autonomous triage, 'Ask the Analyst', and incident correlation.
 """
 
-from typing import Optional, List
+import asyncio
+import json
 from uuid import UUID
+
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
+from sqlalchemy import desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, desc
-import json
-import asyncio
 
-
-from ..database import get_db
-from ..db_models import EventRecord, IncidentRecord
-from ..models import Event, EventSource, EventSeverity
-from ..connection_mgr import ws_manager
-from ..audit import record_audit_entry
+from analyst.agents.advisor import response_advisor
+from analyst.agents.correlation import correlation_agent
+from analyst.agents.triage import triage_agent
+from analyst.ask import analyst_assistant
 from knowledge.retriever import kb_retriever
 
-from analyst.agents.triage import triage_agent
-from analyst.agents.correlation import correlation_agent
-from analyst.agents.advisor import response_advisor
-from analyst.ask import analyst_assistant
+from ..audit import record_audit_entry
+from ..connection_mgr import ws_manager
+from ..database import get_db
+from ..db_models import EventRecord, IncidentRecord
+from ..models import Event, EventSeverity, EventSource
 
 router = APIRouter(prefix="/analyst", tags=["AI SOC Analyst"])
 
 
 class AskRequest(BaseModel):
     query: str = Field(..., min_length=2, max_length=500, description="Free-text operator question")
-    language: Optional[str] = Field(None, description="'en' for English, 'bn' for Bangla")
+    language: str | None = Field(None, description="'en' for English, 'bn' for Bangla")
 
 
 class AskResponse(BaseModel):
     question: str
     answer: str
     language: str
-    citations: List[str]
-    referenced_event_ids: List[str]
+    citations: list[str]
+    referenced_event_ids: list[str]
     provider: str
 
 
 class IncidentStatusUpdate(BaseModel):
     status: str = Field(..., pattern="^(ACTIVE|CONTAINED|RESOLVED)$", description="New incident status")
     operator_id: str = Field(default="SECURITY_OPERATOR", description="Identity of operator making update")
-    notes: Optional[str] = Field(None, description="Operational notes regarding status change")
+    notes: str | None = Field(None, description="Operational notes regarding status change")
 
 
 
@@ -247,11 +246,18 @@ async def list_incidents(
         inc_id = inc_data["incident_id"]
         ip = inc_data["source_ip"]
 
-        rec_stmt = select(IncidentRecord).where(
-            (IncidentRecord.incident_id == inc_id) | (IncidentRecord.source_ip == ip)
-        )
+        rec_stmt = select(IncidentRecord).where(IncidentRecord.incident_id == inc_id)
         rec_result = await db.execute(rec_stmt)
-        record = rec_result.scalar_one_or_none()
+        record = rec_result.scalars().first()
+
+        if not record and ip:
+            rec_stmt_ip = (
+                select(IncidentRecord)
+                .where(IncidentRecord.source_ip == ip)
+                .order_by(IncidentRecord.created_at.desc())
+            )
+            rec_result_ip = await db.execute(rec_stmt_ip)
+            record = rec_result_ip.scalars().first()
 
         if not record:
             record = IncidentRecord(

@@ -26,16 +26,15 @@ Here is how Prohori AI changes the game:
 🤝 5. Human-in-the-Loop Safety: The AI recommends firewall blocks and containment, but cannot execute them unilaterally. Operators approve actions with one click, permanently sealed in a cryptographic append-only audit log.
 📡 6. 3 Defensive Sensor Feeds: Fed by an isolated deception honeypot, a token-bucket API abuse guard, and an allowlisted asset scanner.
 
-Proud of our team — Team Orionids — for building and verifying this prototype with 32 passing automated tests and a production-ready React 19 + FastAPI stack!
+Proud of our team — Team Orionids from Daffodil International University (Department of CSE) — for conceptualizing, building, and verifying this prototype with 32 passing automated tests, a modern React 19 console, and a high-performance FastAPI backend!
 
-Huge thanks to my fellow Team Orionids builders:
-👥 [FILL: Teammate 1 Name] — [FILL: @LinkedInHandle]
-👥 [FILL: Teammate 2 Name] — [FILL: @LinkedInHandle]
-👥 [FILL: Teammate 3 Name] — [FILL: @LinkedInHandle]
+Huge shoutout to my fellow Team Orionids builders at Daffodil International University (DIU):
+👥 Rahat (Team Lead & Systems Architecture)
+👥 AI & NLP Engineering Lead (Gemini API & Bengali Prompt Tuning)
+👥 Full-Stack UX Engineering Lead (React 19 SOC Console)
+👥 Defensive Security Engineering Lead (Sensors & Allowlist Isolation)
 
-And deep gratitude to our mentors who guided our architecture and focus:
-🙏 [FILL: Mentor 1 Name] — [FILL: @LinkedInHandle]
-🙏 [FILL: Mentor 2 Name] — [FILL: @LinkedInHandle]
+Built independently as a student team adhering strictly to MITRE ATT&CK v15 and NIST CSF 2.0 defensive standards.
 
 Check out our open-source repository, pitch deck, and architecture docs here:
 🔗 https://github.com/rahat4528/prohori-ai

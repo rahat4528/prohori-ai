@@ -2,7 +2,7 @@
 
 **Team**: Team Orionids  
 **Event**: International AI Builders Congress 2026 · InfraSphere AI &rarr; SecureAI  
-**Target Duration**: Exactly 3 minutes (180 seconds)  
+**Target Duration**: 4 minutes (240 seconds) [Optimized for 4–5 minute slot with Q&A buffer]  
 **Backup Video Target Duration**: 60–90 seconds (no-fail screen recording)  
 **Tone**: Confident, technically precise, authoritative, grounded, accessible.
 

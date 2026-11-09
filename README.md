@@ -122,23 +122,56 @@ Once started:
 
 ### Option B: Running Locally (Fast Development Mode)
 
-The API includes automatic fallback to local SQLite (`prohori.db`) if a PostgreSQL server is not running locally:
+The API includes automatic fallback to local SQLite (`prohori.db`) if a PostgreSQL server is not running locally.
 
+**One-Click Windows Launcher**:
+```cmd
+run_dev.bat
+```
+*Or via PowerShell script*:
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/run_all.ps1
+```
+
+*Or manually in separate terminals*:
 ```bash
-# 1. Activate Python virtual environment
+# 1. Activate Python virtual environment & start Event API
 .venv\Scripts\activate
-
-# 2. Start the Event API
 $env:PYTHONPATH="api;."
-python -m uvicorn app.main:app --port 8000 --reload
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 
-# 3. Start the Deception Honeypot (in second terminal)
+# 2. Start the Deception Honeypot (second terminal)
 python -m uvicorn sensors.deception.main:app --port 8081
 
-# 4. Start the React Operator Console (in third terminal)
+# 3. Start the React Operator Console (third terminal)
 cd web
 npm run dev
 ```
+
+---
+
+### Option C: Frontend Deployment to Vercel
+
+The operator console includes native Vercel deployment configuration (`web/vercel.json` and root `vercel.json`):
+
+1. **Import Repository**: Connect `https://github.com/rahat4528/prohori-ai` to Vercel.
+2. **Root Directory**: Set root to `web/` (or leave default root).
+3. **Environment Variables**:
+   - `VITE_API_BASE`: Set to your deployed Event API URL (e.g., `https://prohori-api.onrender.com`).
+   - `VITE_WS_URL`: Set to your deployed WebSocket URL (e.g., `wss://prohori-api.onrender.com/stream`).
+4. **Deploy**: Build command `npm run build` generates production assets with zero client-side routing issues.
+
+---
+
+### Cloud LLM Configuration (Google Gemini)
+
+To enable cloud-augmented triage alongside default local sovereignty:
+```bash
+# In .env or shell environment
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_MODEL=gemini-1.5-flash
+```
+*When `GEMINI_API_KEY` is present, Prohori uses Gemini 1.5 Flash in cloud mode. In offline / sovereignty mode, it runs 100% locally with zero cloud egress.*
 
 ---
 
@@ -205,9 +238,9 @@ Prohori AI is engineered solely for defensive cybersecurity operations within au
 
 ## 9. Team Orionids
 
-Prohori AI was built by **Team Orionids** for the **International AI Builders Congress 2026** (Track: InfraSphere AI &rarr; SecureAI).
+Prohori AI was built by **Team Orionids** (Undergraduate Engineers from the **Department of Computer Science & Engineering, Daffodil International University**) for the **International AI Builders Congress 2026** (Track: InfraSphere AI &rarr; SecureAI).
 
-- **Team**: Team Orionids
+- **Team**: Team Orionids (Daffodil International University, CSE)
 - **Vision**: Sovereign, explainable, and accessible cybersecurity defense for emerging digital economies.
 - **Documentation**: See [`docs/PITCH_DECK.md`](docs/PITCH_DECK.md) and [`docs/SUBMISSION_UPDATES.md`](docs/SUBMISSION_UPDATES.md) for full team rosters and presentation guides.
 

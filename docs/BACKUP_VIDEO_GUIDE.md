@@ -81,3 +81,4 @@ Once recorded, verify playback quality, and create **three independent copies**:
 3. **Copy 3 (Mobile Phone / Cloud Backup)**: Accessible via phone hotspot or cloud drive in case the presentation laptop fails entirely.
 
 Test playback in VLC or Windows Media Player with sound before leaving for the venue.
+

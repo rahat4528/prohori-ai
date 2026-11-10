@@ -37,3 +37,4 @@
 - **Official Q&A Window**: `[FILL: minutes, or "unknown"]`
 - **Presentation Format**: `[FILL: as a team, or alone]`
 - **Preferred Real-LLM Provider**: `[FILL: Ollama / Gemini / Groq]`
+

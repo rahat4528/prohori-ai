@@ -157,3 +157,35 @@ async def test_human_approval_denylist_enforcement():
         # Verify IP is no longer in denylist
         denylist_resp2 = await client.get("/ratelimiter/denylist")
         assert test_ip not in denylist_resp2.json()["active_denied_ips"]
+
+
+@pytest.mark.asyncio
+async def test_analyst_metadata_provider_and_model():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        # 1. Ask endpoint returns provider & model in AskResponse
+        resp = await client.post("/analyst/ask", json={"query": "What is brute force?", "language": "en"})
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "provider" in data
+        assert "model" in data
+        assert len(data["provider"]) > 0
+        assert len(data["model"]) > 0
+
+        # 2. Ingest event and trigger triage, verify event.analyst contains provider and model
+        ingest_resp = await client.post("/events", json={
+            "source": "honeypot",
+            "severity": "medium",
+            "type": "unauthorized_probe",
+            "details": {"source_ip": "192.168.1.100", "path": "/admin"}
+        })
+        assert ingest_resp.status_code == 201
+        event_id = ingest_resp.json()["id"]
+
+        triage_resp = await client.post(f"/analyst/triage/{event_id}")
+        assert triage_resp.status_code == 200
+        triage_data = triage_resp.json()
+        assert "analyst" in triage_data and triage_data["analyst"] is not None
+        assert "provider" in triage_data["analyst"]
+        assert "model" in triage_data["analyst"]
+

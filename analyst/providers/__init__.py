@@ -18,7 +18,8 @@ def get_llm_provider() -> LLMProvider:
     if choice == "ollama":
         base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
         model = os.getenv("OLLAMA_MODEL", "llama3.2")
-        return OllamaProvider(base_url=base_url, model=model)
+        timeout = float(os.getenv("OLLAMA_TIMEOUT", "120.0"))
+        return OllamaProvider(base_url=base_url, model=model, timeout=timeout)
 
     if choice == "gemini" or (choice == "auto" and os.getenv("GEMINI_API_KEY")):
         api_key = os.getenv("GEMINI_API_KEY")

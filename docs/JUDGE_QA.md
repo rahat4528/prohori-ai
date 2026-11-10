@@ -9,18 +9,17 @@ This document prepares Team Orionids for the toughest technical, operational, an
 
 ### Question 1: "Does any data actually leave the machine?"
 **Honest Answer:**
-> *"In our default and local sovereignty mode, absolutely zero bytes of telemetry leave the machine. We run local Ollama (Llama 3.2) or our built-in deterministic offline RAG engine.
-> However, we also provide optional cloud provider integrations (Google Gemini 1.5 Flash and Groq Llama 3.3) for operators who want high-throughput cloud inference. When a cloud API key is configured and Sovereignty Mode is toggled off, telemetry prompts are sent to those third-party APIs after undergoing mandatory PII/secret scrubbing. The operator always controls this via the header Sovereignty toggle and environment configuration."*
+> *"In our default and local sovereignty mode, absolutely zero bytes of telemetry leave the machine. We run our built-in deterministic offline RAG engine (or local Ollama with Llama 3.2).
+> However, we also provide optional cloud provider integrations (Google Gemini 1.5 Flash and Groq Llama 3.3) for operators who want high-throughput cloud inference. When a cloud API key is configured and Sovereignty Mode is toggled off, event text, after redaction, is sent to the chosen provider over HTTPS. The operator always controls this via the header Sovereignty toggle and environment configuration."*
 
 ---
 
 ### Question 2: "What is your real analysis latency? Isn't an LLM too slow for real-time SOC alerting?"
 **Honest Answer:**
 > *"We benchmarked this directly on an AMD Ryzen 7 PRO 4750U (8 cores, 16 threads, 32GB RAM) over 20 live incoming alerts:
-> - **Steady-state median latency:** **30.44 ms** per alert (with the deterministic offline RAG engine).
-> - **Mean latency:** **134.03 ms** (accounting for initial cold-start connection pooling).
-> - **Worst-case / Cold-start:** **2,098.63 ms** (first alert warming up SQLite/Postgres connection and knowledge embeddings).
-> In local Ollama mode with Llama 3.2, token generation takes approximately 350–700 ms.
+> - **Steady-state median latency (Deterministic Offline RAG):** **50.57 ms** per alert (rules + indexed STIX retrieval).
+> - **Worst-case / Cold-start:** **2,158.99 ms** (first alert warming up SQLite connection and knowledge embeddings).
+> - **Real LLM Generation:** In cloud mode with Gemini Flash or local Ollama Llama 3.2, token generation takes approximately 350–700 ms.
 > Crucially, our architecture decouples high-speed event ingestion (handled asynchronously by FastAPI in sub-5ms) from AI reasoning: the AI Analyst only triages elevated signals or aggregates them into multi-stage attack incidents, preventing inference bottlenecks."*
 
 ---
@@ -56,7 +55,8 @@ This document prepares Team Orionids for the toughest technical, operational, an
 > 1. **Structured Data Isolation:** Incoming telemetry (user agents, usernames, query paths) is parsed into strict Pydantic schemas and placed in JSON data blocks rather than instruction headers.
 > 2. **Pre-Inference Sanitization:** Our redaction engine scrubs suspicious tokens, secrets, and raw control characters before the prompt is formatted.
 > 3. **Strict Grounding:** The LLM is instructed to reject instructions contained within telemetry details and only categorize them against retrieved MITRE/CVE vectors.
-> 4. **Zero Execution Privilege:** Even if an attacker somehow caused the model to hallucinate a command, Prohori has zero execution shell access."*
+> 4. **Zero Execution Privilege:** Even if an attacker somehow caused the model to hallucinate a command, Prohori has zero execution shell access.
+> *Note on Residual Risk:* Secrets and personal data are redacted before prompting; prompt injection is not fully mitigated against sophisticated adversarial inputs."*
 
 ---
 

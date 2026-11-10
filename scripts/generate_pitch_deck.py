@@ -384,11 +384,11 @@ def create_deck(output_path="docs/Prohori_AI_Pitch_Deck.pptx"):
     p2.space_after = Pt(20)
 
     p3 = tf.add_paragraph()
-    p3.text = "Team Orionids — Department of CSE, Daffodil International University (DIU)\n• Rahat (Team Lead): System Architecture, FastAPI Async Bus & Container Orchestration\n• AI & RAG Engineer: Google Gemini API Integration, Local Ollama Fallback & Bengali Prompt Tuning\n• Full-Stack UX Engineer: React 19 High-Density Dark Console & WebSocket Streaming\n• Defensive Security Engineer: Isolated Honeypot Decoys, Token-Bucket Rate Limiter & Security Allowlist"
+    p3.text = "Team Orionids — Department of CSE, Daffodil International University (DIU)\n• Member 1: [FILL: name] — [FILL: role] ([FILL: credibility])\n• Member 2: [FILL: name] — [FILL: role] ([FILL: credibility])\n• Member 3: [FILL: name] — [FILL: role] ([FILL: credibility])"
     p3.font.size = Pt(12)
     p3.font.color.rgb = TEXT_MUTED
 
-    add_notes(s7, "We are Team Orionids, a focused team of builders combining full-stack engineering, cybersecurity domain experience, and AI systems development. We built Prohori specifically to address the security deficit in emerging markets, delivering a battle-tested prototype backed by 32 passing automated tests, sub-35 millisecond RAG response times, and production-ready microservice packaging.")
+    add_notes(s7, "We are Team Orionids, a focused team of builders from the Department of CSE at Daffodil International University. We built Prohori specifically to address the security deficit in emerging markets, delivering a battle-tested prototype backed by 34 passing automated tests and production-ready microservice packaging.")
 
     # -------------------------------------------------------------------------
     # SLIDE 8: Commercial Hypothesis & Next Steps (with QR Code)
@@ -441,12 +441,12 @@ def create_deck(output_path="docs/Prohori_AI_Pitch_Deck.pptx"):
     p_qrt.font.color.rgb = CYAN_ACCENT
     p_qrt.alignment = PP_ALIGN.CENTER
 
-    qr_path = "docs/assets/repo_qr_code.png"
+    qr_path = "docs/repo_qr.png" if os.path.exists("docs/repo_qr.png") else "docs/assets/repo_qr_code.png"
     if os.path.exists(qr_path):
         s8.shapes.add_picture(qr_path, Inches(9.2), Inches(2.6), Inches(2.8), Inches(2.8))
 
     p_url = tf_qr.add_paragraph()
-    p_url.text = "\n\n\n\n\n\n\n\ngithub.com/rahat4528/prohori-ai\nTested with 32 Passing Tests"
+    p_url.text = "\n\n\n\n\n\n\n\ngithub.com/rahat4528/prohori-ai\nTested with 34 Passing Tests"
     p_url.font.size = Pt(10)
     p_url.font.color.rgb = CYAN_ACCENT
     p_url.alignment = PP_ALIGN.CENTER

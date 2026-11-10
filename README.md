@@ -83,20 +83,21 @@ All congress submission documents, pitch materials, and defense guides are index
    - Measured steady-state triage latency: **~30.44 ms** (offline RAG) with a first-alert cold-start of 2,098 ms on local commodity hardware (AMD Ryzen 7 PRO 4750U, 32 GB RAM).
 
 2. **National Data Sovereignty & Offline Operational Mode**:
-   - **Default Mode**: Operates 100% on-premises via local Ollama (`llama3.2`) or our deterministic offline provider. In this default configuration, zero bytes leave the organization's network.
-   - **Optional Cloud Providers**: Cloud models (Google Gemini, Groq) can be enabled via environment configuration when high-bandwidth external API usage is explicitly authorized.
+   - **Default Out-of-the-Box Mode**: Operates 100% on-premises via our Deterministic Offline RAG engine (deterministic rule-guided triage + indexed STIX 2.1 knowledge retrieval; ~50 ms steady-state latency). Requires zero external API keys, zero internet, and no GPU hardware. Zero bytes leave the local host.
+   - **Real LLM Mode**: Full generative reasoning can be enabled by setting `GEMINI_API_KEY` (Google Gemini), `GROQ_API_KEY` (Llama 3.3 70B on Groq), or running a local Ollama daemon (`ollama run llama3.2`). When cloud mode is enabled, event text, after redaction, is sent to the chosen provider over HTTPS.
 
 3. **Mandatory PII & Secret Scrubbing**:
-   - Centralized redaction engine scrubs passwords, API keys, JWT tokens, Bearer tokens, and emails *before* data reaches any model or database.
+   - Centralized redaction engine scrubs passwords, API keys, JWT tokens, Bearer tokens, and emails *before* data reaches any model or database. Note: secrets and personal data are redacted before prompting; prompt injection is not fully mitigated.
 
 4. **Strict Defensive Safety & Sensor Isolation**:
    - **Simulated Deception Honeypot (Port 8081)**: Fully isolated trap; never executes arbitrary shell commands and touches no host files.
    - **API Abuse Guard (Port 8082)**: Progressive sliding-window rate limiter (warn &rarr; temp block &rarr; extended block) returning HTTP 429.
    - **Target Allowlist Guard (Port 8083)**: Enforced in code; strictly refuses port scans against non-allowlisted targets with HTTP 403.
+   - **Opt-In API Authentication**: Configurable via `PROHORI_API_KEY`. Protects `POST /events`, `POST /audit/approve`, and `POST /sovereignty/toggle` with `X-API-Key` header; runs in open demo mode with a startup warning if unset.
 
-5. **Human-in-the-Loop (HITL) & Immutable Audit Trail**:
-   - Containment countermeasures (e.g., perimeter firewall blocks) require explicit operator review.
-   - When an operator clicks "Approve Defense", the action is cryptographically recorded in an append-only audit log database.
+5. **Human-in-the-Loop (HITL) & Append-Only Audit Log**:
+   - Containment countermeasures require explicit operator review.
+   - When an operator clicks "Approve Defense", the action adds the adversary IP to the live API Abuse Guard denylist, simulates perimeter firewall enforcement, and records the event in the append-only audit log database.
 
 ---
 
@@ -232,7 +233,7 @@ Prohori AI is engineered solely for defensive cybersecurity operations within au
 1. Target allowlisting in code to prevent unauthorized scanning.
 2. Simulated deception environments that never execute arbitrary shell commands.
 3. Strict Human-in-the-Loop gating on all countermeasure actions.
-4. Cryptographic, append-only audit logging for verifiable operational transparency.
+4. Append-only audit logging for verifiable operational transparency.
 
 ---
 

@@ -3,7 +3,7 @@
 **Team**: Team Orionids  
 **Event**: International AI Builders Congress 2026  
 **Track**: InfraSphere AI &rarr; SecureAI  
-**Target Duration**: 4 minutes (240s) [Optimized for 4–5 minute slot with 1-minute buffer]  
+**Target Duration**: [FILL: minutes] (Official pitch slot length)  
 **Repository**: [https://github.com/rahat4528/prohori-ai](https://github.com/rahat4528/prohori-ai)  
 **Companion Artifacts**:
 - Visual Deck: [`docs/Prohori_AI_Pitch_Deck.pptx`](file:///c:/diu/docs/Prohori_AI_Pitch_Deck.pptx)
@@ -113,7 +113,7 @@
 - **Slide Body Text (Strictly < 15 words)**:
   - Strict MITRE/CVE citation grounding
   - Zero cloud egress in offline mode
-  - Append-only cryptographic audit trail
+  - Append-only audit trail
 - **Speaker Script (2:05 - 2:25)**:
   > "Prohori is built on strict Responsible AI principles. First, no hallucination: our model is anchored to a retrieved vector database of MITRE ATT&CK and CVE records, citing exact technique IDs. Second, data privacy: in local mode, zero bytes leave the premises. Third, human safety: the AI recommends actions, but only an authorized operator can approve containment. Every decision is preserved in an append-only audit log."
 
@@ -227,10 +227,13 @@ All team members are undergraduate students from **Daffodil International Univer
 
 | Member / Role | Focus Area | Hackathon Credibility & Contributions | Academic Affiliation |
 |---|---|---|---|
-| **Rahat (Team Lead & Systems Architect)** | System Architecture & Event Pipeline | FastAPI asynchronous event bus, WebSocket streaming, Docker orchestration | Department of CSE, Daffodil International University |
-| **AI & NLP Engineer** | RAG Engine & LLM Integration | Google Gemini API integration, local Ollama fallback, Bengali prompt engineering | Department of CSE, Daffodil International University |
-| **Frontend Engineer** | Operator Console & UX | React 19 console, dark SOC theme, responsive timeline & drawer architecture | Department of CSE, Daffodil International University |
-| **Defensive Security Engineer** | Sensor Containment & Allowlist | Honeypot decoy isolation, token-bucket sliding rate limiter, allowlist guard | Department of CSE, Daffodil International University |
+| **Member 1: [FILL: name]** | [FILL: role] | [FILL: one credibility line] | Department of CSE, Daffodil International University |
+| **Member 2: [FILL: name]** | [FILL: role] | [FILL: one credibility line] | Department of CSE, Daffodil International University |
+| **Member 3: [FILL: name]** | [FILL: role] | [FILL: one credibility line] | Department of CSE, Daffodil International University |
+
+**Bonus Signals Checklist (per Congress Guidelines):**
+- Female team member: `[FILL: None - all male]`
+- Diaspora / NRB Advisor: `[FILL: None yet]`
 
 ---
 

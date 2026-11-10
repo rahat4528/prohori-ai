@@ -14,7 +14,7 @@ logger = logging.getLogger("prohori.llm.ollama")
 
 
 class OllamaProvider(LLMProvider):
-    def __init__(self, base_url: str = "http://localhost:11434", model: str = "llama3.2", timeout: float = 120.0):
+    def __init__(self, base_url: str = "http://localhost:11434", model: str = "llama3.2", timeout: float = 180.0):
         self.base_url = base_url.rstrip("/")
         self.model = model
         self.timeout = timeout
@@ -25,7 +25,7 @@ class OllamaProvider(LLMProvider):
 
     async def generate(self, prompt: str, system_prompt: str = "", format: str | None = None) -> str:
         url = f"{self.base_url}/api/generate"
-        num_predict = int(os.getenv("OLLAMA_NUM_PREDICT", "700"))
+        num_predict = int(os.getenv("OLLAMA_NUM_PREDICT", "1000"))
         payload = {
             "model": self.model,
             "prompt": prompt,

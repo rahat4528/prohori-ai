@@ -189,3 +189,78 @@ async def test_analyst_metadata_provider_and_model():
         assert "provider" in triage_data["analyst"]
         assert "model" in triage_data["analyst"]
 
+
+@pytest.mark.asyncio
+async def test_triage_invalid_json_fallback():
+    """Verify that malformed or non-JSON model output triggers graceful fallback to deterministic RAG."""
+    from analyst.agents.triage import TriageAgent
+    from analyst.providers.base import LLMProvider
+
+    class BrokenJsonProvider(LLMProvider):
+        @property
+        def provider_name(self) -> str:
+            return "broken-mock-llm"
+
+        async def generate(self, prompt: str, system_prompt: str = "", format: str | None = None) -> str:
+            return "I am an AI assistant and I refuse to output JSON: {status: incomplete..."
+
+    agent = TriageAgent(provider=BrokenJsonProvider())
+    test_event = {
+        "source": "honeypot",
+        "severity": "high",
+        "type": "login_attempt_burst",
+        "details": {"source_ip": "192.168.1.189", "username_tried": "admin"}
+    }
+
+    result = await agent.triage_event(test_event)
+    assert result is not None
+    assert result["provider"] == "deterministic-offline-rag (fallback)"
+    assert "fallback_reason" in result
+    assert "Invalid JSON" in result["fallback_reason"]
+    assert result["severity"] in ["high", "critical"]
+    assert len(result["narrative_en"]) > 0
+    assert len(result["narrative_bn"]) > 0
+
+
+@pytest.mark.asyncio
+async def test_triage_grounding_validation_filters_hallucinations():
+    """Verify that hallucinated citations not present in knowledge base are filtered out."""
+    from analyst.agents.triage import TriageAgent
+    from analyst.providers.base import LLMProvider
+
+    class HallucinatingProvider(LLMProvider):
+        @property
+        def provider_name(self) -> str:
+            return "hallucinating-mock-llm"
+
+        async def generate(self, prompt: str, system_prompt: str = "", format: str | None = None) -> str:
+            return json.dumps({
+                "severity": "high",
+                "confidence": 0.95,
+                "narrative_en": "Attack detected.",
+                "narrative_bn": "আক্রমণ শনাক্ত হয়েছে।",
+                "citations": ["T9999.888", "CVE-9999-0000", "T1110.001"],
+                "mitre_technique": "T9999.888",
+                "recommended_action": "Block IP",
+                "requires_human_approval": True
+            })
+
+    agent = TriageAgent(provider=HallucinatingProvider())
+    test_event = {
+        "source": "honeypot",
+        "severity": "high",
+        "type": "login_attempt_burst",
+        "details": {"source_ip": "192.168.1.189"}
+    }
+
+    result = await agent.triage_event(test_event)
+    assert result is not None
+    # Hallucinated IDs T9999.888 and CVE-9999-0000 must NOT be in citations
+    assert "T9999.888" not in result["citations"]
+    assert "CVE-9999-0000" not in result["citations"]
+    # Real ID T1110.001 must be preserved
+    assert "T1110.001" in result["citations"]
+    # mitre_technique must not be the hallucinated T9999.888
+    assert result["mitre_technique"] != "T9999.888"
+
+

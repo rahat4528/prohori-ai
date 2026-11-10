@@ -59,8 +59,8 @@ Return a single JSON object with these exact keys:
 {{
   "severity": "info" | "low" | "medium" | "high" | "critical",
   "confidence": 0.0 to 1.0,
-  "narrative_en": "One concise paragraph in English explaining what happened, why it matters, and citing the MITRE ATT&CK or CVE ID.",
-  "narrative_bn": "One concise paragraph in fluent Bangla explaining the event clearly to Bangladeshi security staff with citations.",
+  "narrative_en": "1-2 concise sentences in English explaining what happened and citing the exact MITRE ATT&CK or CVE ID from context.",
+  "narrative_bn": "1-2 concise sentences in fluent Bangla explaining the event clearly to Bangladeshi security staff with citations.",
   "citations": ["T1110.001", "CWE-307"],
   "mitre_technique": "Primary MITRE ID",
   "recommended_action": "Clear, defensive next step requiring human operator approval.",
@@ -70,14 +70,43 @@ Return a single JSON object with these exact keys:
 
         # Step 4: Call Model
         try:
-            raw_response = await self.provider.generate(prompt, system_prompt=TRIAGE_SYSTEM_PROMPT)
+            raw_response = await self.provider.generate(prompt, system_prompt=TRIAGE_SYSTEM_PROMPT, format="json")
 
             # Extract JSON block
             json_match = re.search(r"\{.*\}", raw_response, re.DOTALL)
-            if json_match:
-                triage_result = json.loads(json_match.group(0))
-            else:
-                triage_result = json.loads(raw_response)
+            try:
+                if json_match:
+                    triage_result = json.loads(json_match.group(0))
+                else:
+                    triage_result = json.loads(raw_response)
+            except json.JSONDecodeError as json_err:
+                logger.warning(f"LLM returned invalid JSON ({json_err}). Falling back to deterministic RAG engine.")
+                raise ValueError(f"Invalid JSON returned by LLM: {json_err}") from json_err
+
+            # Step 5: Strict Grounding Validation against Knowledge Base
+            known_kb_ids = {doc.doc_id for doc in kb_retriever.documents}
+            raw_citations = triage_result.get("citations", [])
+            valid_citations = []
+            for cit in raw_citations:
+                clean_cit = str(cit).strip().strip("[]")
+                if clean_cit in known_kb_ids:
+                    valid_citations.append(clean_cit)
+                else:
+                    logger.warning(f"Filtered ungrounded citation '{cit}' not found in knowledge base.")
+
+            # If no valid citations remain, fallback to top retrieved RAG document
+            if not valid_citations and retrieved_docs:
+                valid_citations = [retrieved_docs[0]["id"]]
+
+            triage_result["citations"] = valid_citations
+
+            # Reconcile mitre_technique with knowledge base
+            mitre_val = str(triage_result.get("mitre_technique", "")).strip().strip("[]")
+            if mitre_val and mitre_val not in known_kb_ids:
+                logger.warning(f"Reconciling ungrounded mitre_technique '{mitre_val}' to '{retrieved_docs[0]['id']}'")
+                triage_result["mitre_technique"] = retrieved_docs[0]["id"]
+            elif not mitre_val and retrieved_docs:
+                triage_result["mitre_technique"] = retrieved_docs[0]["id"]
 
             # Ensure required fields exist
             triage_result.setdefault("requires_human_approval", True)
@@ -93,6 +122,7 @@ Return a single JSON object with these exact keys:
             fallback_dict = json.loads(offline_raw)
             fallback_dict["provider"] = "deterministic-offline-rag (fallback)"
             fallback_dict["model"] = "deterministic-rules-stix2.1"
+            fallback_dict["fallback_reason"] = f"LLM unavailable or invalid output: {str(e)}"
             return fallback_dict
 
 

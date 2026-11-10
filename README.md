@@ -3,7 +3,7 @@
 **Built by Team Orionids · International AI Builders Congress 2026 · Domain: InfraSphere AI &rarr; SecureAI**
 
 [![Team](https://img.shields.io/badge/Team-Orionids-blueviolet.svg)](#team-orionids)
-[![Tests](https://img.shields.io/badge/pytest-32%20passed-brightgreen.svg)](#testing--verification)
+[![Tests](https://img.shields.io/badge/pytest-34%20passed-brightgreen.svg)](#testing--verification)
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
 [![React](https://img.shields.io/badge/React-19%20%2B%20Vite-61dafb.svg)](https://react.dev/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg)](https://fastapi.tiangolo.com/)
@@ -80,7 +80,7 @@ All congress submission documents, pitch materials, and defense guides are index
 1. **AI SOC Analyst Core (90% Value Focus)**:
    - Ingests raw telemetry, performs autonomous severity reconciliation, and generates natural-language incident narratives in **plain English and native Bengali (বাংলা)**.
    - Grounded in retrieved **MITRE ATT&CK** (`T1110.001`, `T1499.002`, `T1595.002`) and NIST NVD CVE records. Every claim shows its verified citation badges.
-   - Measured steady-state triage latency: **~30.44 ms** (offline RAG) with a first-alert cold-start of 2,098 ms on local commodity hardware (AMD Ryzen 7 PRO 4750U, 32 GB RAM).
+   - Measured steady-state triage latency: **~50.57 ms** (deterministic offline RAG; 350–700 ms for neural LLMs) with a first-alert cold-start of 2,158 ms on local commodity hardware (AMD Ryzen 7 PRO 4750U, 32 GB RAM).
 
 2. **National Data Sovereignty & Offline Operational Mode**:
    - **Default Out-of-the-Box Mode**: Operates 100% on-premises via our Deterministic Offline RAG engine (deterministic rule-guided triage + indexed STIX 2.1 knowledge retrieval; ~50 ms steady-state latency). Requires zero external API keys, zero internet, and no GPU hardware. Zero bytes leave the local host.
@@ -203,7 +203,7 @@ Comprehensive test suites covering the Event API, Deception sensor, Rate Limiter
 pytest api/tests sensors/deception/tests sensors/ratelimiter/tests analyst/tests sensors/discovery/tests -v
 ```
 
-**Results**: `32 passed in ~4.39s` (100% pass rate).
+**Results**: `34 passed in ~5.06s` (100% pass rate).
 
 ---
 
@@ -242,6 +242,11 @@ Prohori AI is engineered solely for defensive cybersecurity operations within au
 Prohori AI was built by **Team Orionids** (Undergraduate Engineers from the **Department of Computer Science & Engineering, Daffodil International University**) for the **International AI Builders Congress 2026** (Track: InfraSphere AI &rarr; SecureAI).
 
 - **Team**: Team Orionids (Daffodil International University, CSE)
+- **Official Single Source of Truth**: [`docs/TEAM.md`](docs/TEAM.md)
+- **Roster**:
+  - **Member 1**: `[FILL: name]` | `[FILL: role]` | `[FILL: credibility line]`
+  - **Member 2**: `[FILL: name]` | `[FILL: role]` | `[FILL: credibility line]`
+  - **Member 3**: `[FILL: name]` | `[FILL: role]` | `[FILL: credibility line]`
 - **Vision**: Sovereign, explainable, and accessible cybersecurity defense for emerging digital economies.
-- **Documentation**: See [`docs/PITCH_DECK.md`](docs/PITCH_DECK.md) and [`docs/SUBMISSION_UPDATES.md`](docs/SUBMISSION_UPDATES.md) for full team rosters and presentation guides.
+- **Documentation**: See [`docs/TEAM.md`](docs/TEAM.md), [`docs/PITCH_DECK.md`](docs/PITCH_DECK.md), and [`docs/SUBMISSION_UPDATES.md`](docs/SUBMISSION_UPDATES.md).
 

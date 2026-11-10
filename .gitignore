@@ -35,5 +35,6 @@ pgdata/
 *.mov
 *.webm
 *.mkv
+docs/backup/
 
 

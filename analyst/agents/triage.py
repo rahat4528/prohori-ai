@@ -82,6 +82,7 @@ Return a single JSON object with these exact keys:
             # Ensure required fields exist
             triage_result.setdefault("requires_human_approval", True)
             triage_result.setdefault("provider", self.provider.provider_name)
+            triage_result.setdefault("model", getattr(self.provider, "model", "deterministic-rules-stix2.1"))
             return triage_result
 
         except Exception as e:
@@ -91,6 +92,7 @@ Return a single JSON object with these exact keys:
             offline_raw = await offline_prov.generate(prompt, system_prompt="json")
             fallback_dict = json.loads(offline_raw)
             fallback_dict["provider"] = "deterministic-offline-rag (fallback)"
+            fallback_dict["model"] = "deterministic-rules-stix2.1"
             return fallback_dict
 
 

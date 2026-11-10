@@ -225,8 +225,21 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
                   </span>
                 )}
                 {analyst.provider && (
-                  <span className="badge font-mono" style={{ background: "rgba(168, 85, 247, 0.15)", color: "#d8b4fe", border: "1px solid rgba(168, 85, 247, 0.35)" }}>
-                    Provider: {analyst.provider}
+                  <span
+                    className="badge font-mono"
+                    style={{
+                      background: analyst.provider.includes("deterministic")
+                        ? "rgba(100, 116, 139, 0.15)"
+                        : "rgba(168, 85, 247, 0.15)",
+                      color: analyst.provider.includes("deterministic") ? "#94a3b8" : "#d8b4fe",
+                      border: analyst.provider.includes("deterministic")
+                        ? "1px solid rgba(100, 116, 139, 0.35)"
+                        : "1px solid rgba(168, 85, 247, 0.35)",
+                    }}
+                  >
+                    {analyst.provider.includes("deterministic")
+                      ? `Engine: Offline RAG (${analyst.provider})`
+                      : `LLM: ${analyst.provider}`}
                   </span>
                 )}
               </div>

@@ -49,6 +49,7 @@ class AskResponse(BaseModel):
     citations: list[str]
     referenced_event_ids: list[str]
     provider: str
+    model: str = "deterministic-rules-stix2.1"
 
 
 class IncidentStatusUpdate(BaseModel):

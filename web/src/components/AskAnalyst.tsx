@@ -292,8 +292,21 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
               <span className="badge" style={{ background: "rgba(16, 185, 129, 0.15)", color: "#6ee7b7", border: "1px solid rgba(16, 185, 129, 0.3)" }}>
                 Language: {response.language === "bn" ? "বাংলা" : "English"}
               </span>
-              <span className="badge" style={{ background: "rgba(168, 85, 247, 0.15)", color: "#d8b4fe", border: "1px solid rgba(168, 85, 247, 0.3)" }}>
-                Model: {response.provider}
+              <span
+                className="badge"
+                style={{
+                  background: response.provider.includes("deterministic")
+                    ? "rgba(100, 116, 139, 0.15)"
+                    : "rgba(168, 85, 247, 0.15)",
+                  color: response.provider.includes("deterministic") ? "#94a3b8" : "#d8b4fe",
+                  border: response.provider.includes("deterministic")
+                    ? "1px solid rgba(100, 116, 139, 0.3)"
+                    : "1px solid rgba(168, 85, 247, 0.3)",
+                }}
+              >
+                {response.provider.includes("deterministic")
+                  ? `Engine: Offline RAG (${response.provider})`
+                  : `LLM Provider: ${response.provider}`}
               </span>
               {streaming && (
                 <span className="badge pulse-active" style={{ background: "rgba(56, 189, 248, 0.15)", color: "#38bdf8", border: "1px solid rgba(56, 189, 248, 0.3)" }}>

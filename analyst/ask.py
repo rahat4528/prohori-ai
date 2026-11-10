@@ -85,6 +85,8 @@ Do not hallucinate facts outside the telemetry and knowledge base.
             f"Respond strictly in {'Bangla (বাংলা)' if target_lang == 'bn' else 'English'}."
         )
 
+        active_provider = self.provider.provider_name
+        active_model = getattr(self.provider, "model", "deterministic-rules-stix2.1")
         try:
             answer_text = await self.provider.generate(prompt, system_prompt=system_prompt)
         except Exception as e:
@@ -92,6 +94,8 @@ Do not hallucinate facts outside the telemetry and knowledge base.
             from analyst.providers.offline import DeterministicOfflineProvider
             offline_prov = DeterministicOfflineProvider()
             answer_text = await offline_prov.generate(f"{clean_question} {target_lang}")
+            active_provider = "deterministic-offline-rag (fallback)"
+            active_model = "deterministic-rules-stix2.1"
 
         return {
             "question": clean_question,
@@ -99,7 +103,8 @@ Do not hallucinate facts outside the telemetry and knowledge base.
             "language": target_lang,
             "citations": citations,
             "referenced_event_ids": referenced_event_ids,
-            "provider": self.provider.provider_name
+            "provider": active_provider,
+            "model": active_model
         }
 
 

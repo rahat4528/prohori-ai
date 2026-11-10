@@ -26,13 +26,13 @@ Here is how Prohori AI changes the game:
 🤝 5. Human-in-the-Loop Safety: The AI recommends firewall blocks and containment, but cannot execute them unilaterally. Operators approve actions with one click, permanently sealed in a cryptographic append-only audit log.
 📡 6. 3 Defensive Sensor Feeds: Fed by an isolated deception honeypot, a token-bucket API abuse guard, and an allowlisted asset scanner.
 
-Proud of our team — Team Orionids from Daffodil International University (Department of CSE) — for conceptualizing, building, and verifying this prototype with 32 passing automated tests, a modern React 19 console, and a high-performance FastAPI backend!
+Proud of our team — Team Orionids from Daffodil International University (Department of CSE) — for conceptualizing, building, and verifying this prototype with 34 passing automated tests, a modern React 19 console, and a high-performance FastAPI backend!
 
 Huge shoutout to my fellow Team Orionids builders at Daffodil International University (DIU):
-👥 Rahat (Team Lead & Systems Architecture)
-👥 AI & NLP Engineering Lead (Gemini API & Bengali Prompt Tuning)
-👥 Full-Stack UX Engineering Lead (React 19 SOC Console)
-👥 Defensive Security Engineering Lead (Sensors & Allowlist Isolation)
+👥 Member 1: [FILL: name] ([FILL: role])
+👥 Member 2: [FILL: name] ([FILL: role])
+👥 Member 3: [FILL: name] ([FILL: role])
+(Single source of truth maintained in docs/TEAM.md)
 
 Built independently as a student team adhering strictly to MITRE ATT&CK v15 and NIST CSF 2.0 defensive standards.
 
@@ -97,7 +97,7 @@ Hi [FILL: Mentor Name],
 
 Our team is building Prohori AI ("প্রহরী") in the InfraSphere AI / SecureAI track. We’ve built a self-hostable, bilingual (Bangla + English) AI SOC analyst with on-premises data sovereignty and MITRE ATT&CK grounding.
 
-The prototype is live with 32 passing tests and a working React console. If you have 10 minutes today, we would be deeply grateful to get your feedback on our architecture and presentation flow:
+The prototype is live with 34 passing tests and a working React console. If you have 10 minutes today, we would be deeply grateful to get your feedback on our architecture and presentation flow:
 1. Does our on-premises Ollama mode clearly address public sector data sovereignty concerns?
 2. How can we make our live bilingual triage demo even more impactful for the judging panel?
 

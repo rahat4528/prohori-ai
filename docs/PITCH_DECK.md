@@ -128,7 +128,7 @@
   - Direct local domain experience
   - Production-tested hackathon delivery
 - **Speaker Script (2:25 - 2:40)**:
-  > "We are Team Orionids, a focused team of builders combining full-stack engineering, cybersecurity domain experience, and AI systems development. We built Prohori specifically to address the security deficit in emerging markets, delivering a battle-tested prototype backed by 32 passing automated tests, sub-35 millisecond RAG response times, and production-ready microservice packaging."
+  > "We are Team Orionids, a focused team of builders combining full-stack engineering, cybersecurity domain experience, and AI systems development. We built Prohori specifically to address the security deficit in emerging markets, delivering a battle-tested prototype backed by 34 passing automated tests, ~50 millisecond steady-state offline RAG latency, and production-ready microservice packaging."
 
 ---
 

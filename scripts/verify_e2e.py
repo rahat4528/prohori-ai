@@ -263,16 +263,17 @@ async def run_e2e_verification():
         except Exception as e:
             record("13. Discovery Scanner & Allowlist Security (Port 8083)", False, str(e))
 
-        # 14. Operator Console Web Server (Port 3000)
+        # 14. Operator Console Web Server (Port 3000) & Bundled Offline Fonts
         try:
             r_web = await client.get(f"{WEB_URL}/")
+            r_font = await client.get(f"{WEB_URL}/fonts/hind-siliguri-bengali.woff2")
             has_html = r_web.status_code == 200 and "<div id=\"root\"></div>" in r_web.text
-            has_bengali_font = "Hind+Siliguri" in r_web.text
+            has_bengali_font = r_font.status_code == 200 and len(r_font.content) > 50000
             passed = has_html and has_bengali_font
-            record("14. React Operator Console (Port 3000)", passed, 
-                   f"Status: {r_web.status_code}, Root DOM: True, Bengali Font Link: {has_bengali_font}")
+            record("14. React Operator Console & Offline Fonts (Port 3000)", passed, 
+                   f"Status: {r_web.status_code}, Root DOM: True, Bundled WOFF2: {has_bengali_font} ({len(r_font.content)} bytes)")
         except Exception as e:
-            record("14. React Operator Console (Port 3000)", False, str(e))
+            record("14. React Operator Console & Offline Fonts (Port 3000)", False, str(e))
 
     # 15. WebSocket Real-time Ingestion Broadcast
     try:

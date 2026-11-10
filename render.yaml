@@ -1,0 +1,50 @@
+# ==============================================================================
+# Prohori AI — Render Blueprint Deployment Specification
+# Automatically deploys the FastAPI Event API & AI Core on Render Free Tier
+# ==============================================================================
+
+services:
+  # Prohori AI - Main Event Bus & AI SOC Analyst Core
+  - type: web
+    name: prohori-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHONPATH
+        value: api:.
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: false
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        value: sqlite+aiosqlite:///prohori.db
+      - key: CORS_ORIGINS
+        value: '["*"]'
+      - key: LLM_PROVIDER
+        value: auto
+      - key: GEMINI_MODEL
+        value: gemini-1.5-flash
+      - key: GEMINI_API_KEY
+        sync: false
+
+  # Prohori Deception Honeypot (Simulated Decoy Sensor)
+  - type: web
+    name: prohori-honeypot
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn sensors.deception.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHONPATH
+        value: api:.
+      - key: PORT
+        value: 10000
+      - key: EVENT_API_URL
+        fromService:
+          type: web
+          name: prohori-api
+          property: host

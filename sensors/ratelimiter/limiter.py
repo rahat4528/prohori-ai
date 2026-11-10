@@ -177,7 +177,7 @@ class SlidingWindowRateLimiter:
 # Default singleton instance used across API middleware and countermeasure enforcement
 default_limiter = SlidingWindowRateLimiter(
     window_seconds=10,
-    max_requests=25,
+    max_requests=60,
     temp_block_seconds=30,
     extended_block_seconds=180
 )

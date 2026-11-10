@@ -9,7 +9,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 from sqlalchemy import desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -29,8 +29,17 @@ router = APIRouter(prefix="/analyst", tags=["AI SOC Analyst"])
 
 
 class AskRequest(BaseModel):
-    query: str = Field(..., min_length=2, max_length=500, description="Free-text operator question")
+    query: str | None = Field(None, min_length=2, max_length=500, description="Free-text operator question")
+    question: str | None = Field(None, min_length=2, max_length=500, description="Alternative field for operator question")
     language: str | None = Field(None, description="'en' for English, 'bn' for Bangla")
+
+    @model_validator(mode="after")
+    def validate_query_or_question(self):
+        if not self.query and not self.question:
+            raise ValueError("Either 'query' or 'question' must be provided.")
+        if not self.query and self.question:
+            self.query = self.question
+        return self
 
 
 class AskResponse(BaseModel):

@@ -11,6 +11,10 @@ from httpx import ASGITransport, AsyncClient
 
 @pytest_asyncio.fixture
 async def setup_sovereignty_db():
+    from app.routes.sovereignty import SOVEREIGNTY_STATE
+    SOVEREIGNTY_STATE["local_mode"] = True
+    SOVEREIGNTY_STATE["cloud_egress_blocked"] = True
+    SOVEREIGNTY_STATE["pii_redaction_enforced"] = True
     from sensors.ratelimiter.limiter import default_limiter
     default_limiter.reset()
     async with engine.begin() as conn:

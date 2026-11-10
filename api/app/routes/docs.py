@@ -123,18 +123,22 @@ async def get_presentation():
 
 
 @router.get("/architecture", response_class=HTMLResponse, summary="Architecture Documentation")
+@router.get("/docs/architecture", response_class=HTMLResponse, summary="Architecture Documentation")
 async def get_architecture_page():
     md = read_doc_file("ARCHITECTURE.md")
     return HTMLResponse(content=f"<html><body style='background:#070a0f;color:#f1f5f9;font-family:sans-serif;padding:30px;'><pre style='white-space:pre-wrap;'>{md}</pre></body></html>")
 
 
 @router.get("/data", response_class=HTMLResponse, summary="Data Lineage Documentation")
+@router.get("/docs/lineage", response_class=HTMLResponse, summary="Data Lineage Documentation")
+@router.get("/docs/data", response_class=HTMLResponse, summary="Data Lineage Documentation")
 async def get_data_page():
     md = read_doc_file("DATA_LINEAGE.md")
     return HTMLResponse(content=f"<html><body style='background:#070a0f;color:#f1f5f9;font-family:sans-serif;padding:30px;'><pre style='white-space:pre-wrap;'>{md}</pre></body></html>")
 
 
 @router.get("/security", response_class=HTMLResponse, summary="Security Controls Documentation")
+@router.get("/docs/security", response_class=HTMLResponse, summary="Security Controls Documentation")
 async def get_security_page():
     md = read_doc_file("SECURITY.md")
     return HTMLResponse(content=f"<html><body style='background:#070a0f;color:#f1f5f9;font-family:sans-serif;padding:30px;'><pre style='white-space:pre-wrap;'>{md}</pre></body></html>")

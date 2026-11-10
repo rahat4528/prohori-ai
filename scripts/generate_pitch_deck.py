@@ -352,7 +352,7 @@ def create_deck(output_path="docs/Prohori_AI_Pitch_Deck.pptx"):
         p3.font.size = Pt(12)
         p3.font.color.rgb = TEXT_MUTED
 
-    add_notes(s6, "Prohori is built on strict Responsible AI principles. First, no hallucination: our model is anchored to a retrieved vector database of MITRE ATT&CK and CVE records, citing exact technique IDs. Second, data privacy: in local mode, zero bytes leave the premises. Third, human safety: the AI recommends actions, but only an authorized operator can approve containment. Every decision is preserved in an append-only audit log.")
+    add_notes(s6, "Prohori is built on strict Responsible AI principles. First, strict grounding: our model is anchored to a retrieved vector database of MITRE ATT&CK and CVE records, citing exact technique IDs. Second, data privacy: in local mode, zero bytes leave the premises. Third, human safety: the AI recommends actions, but only an authorized operator can approve containment. Every decision is preserved in an append-only audit log.")
 
     # -------------------------------------------------------------------------
     # SLIDE 7: Team Orionids & Execution Credentials

@@ -107,7 +107,7 @@
 
 - **Slide Title**: Grounded, Auditable, Sovereign AI
 - **Visual Blueprint**: 3 shield pillars:
-  - Pillar 1: Grounded RAG with strict MITRE ATT&CK & CVE citations (no hallucinations).
+  - Pillar 1: Grounded RAG with strict MITRE ATT&CK & CVE citations (eliminates ungrounded speculation).
   - Pillar 2: 100% On-Premises Sovereignty mode via local Ollama or deterministic offline provider.
   - Pillar 3: Human-in-the-Loop approval gate with append-only audit trail.
 - **Slide Body Text (Strictly < 15 words)**:
@@ -115,7 +115,7 @@
   - Zero cloud egress in offline mode
   - Append-only audit trail
 - **Speaker Script (2:05 - 2:25)**:
-  > "Prohori is built on strict Responsible AI principles. First, no hallucination: our model is anchored to a retrieved vector database of MITRE ATT&CK and CVE records, citing exact technique IDs. Second, data privacy: in local mode, zero bytes leave the premises. Third, human safety: the AI recommends actions, but only an authorized operator can approve containment. Every decision is preserved in an append-only audit log."
+  > "Prohori is built on strict Responsible AI principles. First, strict grounding: our model is anchored to a retrieved vector database of MITRE ATT&CK and CVE records, citing exact technique IDs. Second, data privacy: in local mode, zero bytes leave the premises. Third, human safety: the AI recommends actions, but only an authorized operator can approve containment. Every decision is preserved in an append-only audit log."
 
 ---
 

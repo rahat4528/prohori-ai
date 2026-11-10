@@ -9,6 +9,7 @@ All actions are static simulations designed to attract and record attacker telem
 
 import asyncio
 import logging
+import os
 from datetime import UTC, datetime
 
 import httpx
@@ -70,9 +71,13 @@ HTML_LOGIN_PAGE = """<!DOCTYPE html>
 async def emit_security_event(event_payload: dict):
     """Safely forward detected interaction to the Event API."""
     url = f"{deception_settings.EVENT_API_URL}/events"
+    headers = {"Content-Type": "application/json"}
+    api_key = os.getenv("PROHORI_API_KEY")
+    if api_key:
+        headers["X-API-Key"] = api_key
     try:
         async with httpx.AsyncClient(timeout=3.0) as client:
-            resp = await client.post(url, json=event_payload)
+            resp = await client.post(url, json=event_payload, headers=headers)
             if resp.status_code in (200, 201):
                 logger.info(f"Emitted event to API: {event_payload.get('type')} ({event_payload.get('severity')})")
             else:

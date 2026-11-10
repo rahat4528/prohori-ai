@@ -12,6 +12,10 @@ import { Shield, BookOpen, Lock, Cpu } from "lucide-react";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000";
 const WS_URL = import.meta.env.VITE_WS_URL || "ws://localhost:8000/stream";
+const API_KEY = import.meta.env.VITE_PROHORI_API_KEY || "";
+const jsonHeaders: Record<string, string> = API_KEY
+  ? { "Content-Type": "application/json", "X-API-Key": API_KEY }
+  : { "Content-Type": "application/json" };
 
 export const App: React.FC = () => {
   const [events, setEvents] = useState<SecurityEvent[]>([]);
@@ -35,7 +39,7 @@ export const App: React.FC = () => {
     try {
       const resp = await fetch(`${API_BASE}/sovereignty/toggle`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: jsonHeaders,
         body: JSON.stringify({ mode: nextMode })
       });
       if (resp.ok) {
@@ -210,7 +214,7 @@ export const App: React.FC = () => {
     try {
       await fetch(`${API_BASE}/audit/approve`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: jsonHeaders,
         body: JSON.stringify({
           action_id: `ACT-INC-${incidentId}`,
           target: inc.source_ip,
@@ -221,7 +225,7 @@ export const App: React.FC = () => {
 
       await fetch(`${API_BASE}/analyst/incidents/${incidentId}/status`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: jsonHeaders,
         body: JSON.stringify({
           status: "CONTAINED",
           operator_id: "SOC_CONSOLE_OPERATOR",

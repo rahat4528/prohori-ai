@@ -52,9 +52,13 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
     const targetIp = event.details?.source_ip || event.details?.target_host || "192.168.1.189";
     setApproving(true);
     try {
+      const apiKey = import.meta.env.VITE_PROHORI_API_KEY || "";
+      const headers: Record<string, string> = apiKey
+        ? { "Content-Type": "application/json", "X-API-Key": apiKey }
+        : { "Content-Type": "application/json" };
       const resp = await fetch(`${apiBase}/audit/approve`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({
           action_id: `ACT-EV-${event.id.slice(0, 8)}`,
           target: targetIp,

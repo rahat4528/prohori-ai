@@ -10,6 +10,7 @@ from sqlalchemy import desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..audit import AuditEntryResponse, AuditRecordModel, record_audit_entry
+from ..auth import verify_api_key
 from ..database import get_db
 from ..db_models import IncidentRecord
 
@@ -79,7 +80,8 @@ async def get_audit_trail(
 @router.post("/audit/approve", summary="Human-in-the-Loop Countermeasure Approval")
 async def approve_countermeasure(
     payload: ApproveActionRequest,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    _: None = Depends(verify_api_key),
 ):
     """Approve and record a defensive countermeasure into the immutable audit trail.
 
@@ -161,7 +163,10 @@ async def sovereignty_status():
 
 
 @router.post("/sovereignty/toggle", summary="Toggle Local Sovereignty vs Cloud Mode")
-async def toggle_sovereignty(payload: ToggleSovereigntyRequest):
+async def toggle_sovereignty(
+    payload: ToggleSovereigntyRequest,
+    _: None = Depends(verify_api_key),
+):
     """Toggle between offline/local mode (Ollama / offline RAG) and cloud LLM mode live."""
     mode = payload.mode.lower()
     if mode == "local":

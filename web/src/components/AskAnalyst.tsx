@@ -151,9 +151,13 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
 
   const handleApproveAction = async () => {
     try {
+      const apiKey = import.meta.env.VITE_PROHORI_API_KEY || "";
+      const headers: Record<string, string> = apiKey
+        ? { "Content-Type": "application/json", "X-API-Key": apiKey }
+        : { "Content-Type": "application/json" };
       const resp = await fetch(`${apiBase}/audit/approve`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({
           action_id: `ACT-DEF-${Date.now()}`,
           target: "192.168.1.189",

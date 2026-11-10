@@ -37,6 +37,10 @@ async def emit_discovery_events(scan_results: dict):
     """Emit open_port and cve_match events to Event API."""
     target = scan_results["target"]
     url = f"{EVENT_API_URL}/events"
+    headers = {"Content-Type": "application/json"}
+    api_key = os.getenv("PROHORI_API_KEY")
+    if api_key:
+        headers["X-API-Key"] = api_key
 
     async with httpx.AsyncClient(timeout=4.0) as client:
         for svc in scan_results["services"]:
@@ -56,7 +60,7 @@ async def emit_discovery_events(scan_results: dict):
                 }
             }
             try:
-                await client.post(url, json=open_port_payload)
+                await client.post(url, json=open_port_payload, headers=headers)
             except Exception as e:
                 logger.warning(f"Failed to post open_port event: {e}")
 
@@ -80,7 +84,7 @@ async def emit_discovery_events(scan_results: dict):
                     }
                 }
                 try:
-                    await client.post(url, json=cve_payload)
+                    await client.post(url, json=cve_payload, headers=headers)
                     logger.info(f"Emitted CVE match event [{cve['cve_id']}] for {target}:{svc['port']}")
                 except Exception as e:
                     logger.warning(f"Failed to post cve_match event: {e}")

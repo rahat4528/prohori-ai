@@ -6,12 +6,17 @@ Reconnaissance -> Credential Stuffing -> Brute Force -> API Abuse Block -> CVE M
 Ensures the dashboard and AI SOC Analyst have an unshakeable live story on stage.
 """
 
+import os
 import sys
 import time
 
 import httpx
 
 API_BASE = "http://localhost:8000"
+PROHORI_API_KEY = os.getenv("PROHORI_API_KEY")
+HEADERS = {"Content-Type": "application/json"}
+if PROHORI_API_KEY:
+    HEADERS["X-API-Key"] = PROHORI_API_KEY
 
 STAGED_CAMPAIGN = [
     {
@@ -124,7 +129,7 @@ def run_replay():
         time.sleep(stage["delay"])
 
         try:
-            resp = httpx.post(f"{API_BASE}/events", json=stage["payload"], timeout=5.0)
+            resp = httpx.post(f"{API_BASE}/events", json=stage["payload"], headers=HEADERS, timeout=5.0)
             if resp.status_code == 201:
                 ev = resp.json()
                 analyst = ev.get("analyst") or {}

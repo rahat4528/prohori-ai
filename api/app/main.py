@@ -4,6 +4,7 @@ Defensive Security Operations Center Event Bus
 """
 
 import logging
+import os
 import sys
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
@@ -33,6 +34,7 @@ from analyst.agents.triage import triage_agent
 from knowledge.retriever import kb_retriever
 
 from .audit import record_audit_entry
+from .auth import verify_api_key
 from .config import settings
 from .connection_mgr import ws_manager
 from .database import AsyncSessionLocal, check_db_health, get_db, init_db
@@ -65,6 +67,16 @@ logger = logging.getLogger("prohori.api")
 async def lifespan(app: FastAPI):
     """Application lifespan manager to initialize DB on startup."""
     logger.info("Initializing Prohori Event API...")
+    configured_key = os.getenv("PROHORI_API_KEY")
+    if not configured_key:
+        logger.warning("=" * 72)
+        logger.warning("WARNING: PROHORI_API_KEY is not set.")
+        logger.warning("API write endpoints (POST /events, POST /audit/approve, POST /sovereignty/toggle)")
+        logger.warning("are running in UNPROTECTED DEMO MODE.")
+        logger.warning("To enable API authentication, set PROHORI_API_KEY in your environment.")
+        logger.warning("=" * 72)
+    else:
+        logger.info("PROHORI_API_KEY is configured. Write endpoints protected via X-API-Key.")
     try:
         await init_db()
     except Exception as e:
@@ -128,6 +140,7 @@ if HAS_RATE_LIMITER:
     app.add_middleware(
         RateLimitMiddleware,
         limiter=default_limiter,
+        event_api_url="http://127.0.0.1:8000",
         event_callback=on_rate_limit_block,
         exempt_paths=["/healthz", "/docs", "/openapi.json", "/stream"]
     )
@@ -173,7 +186,8 @@ async def get_root_knowledge_doc(doc_id: str):
 )
 async def ingest_event(
     event_in: EventCreate,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    _: None = Depends(verify_api_key),
 ):
     """Ingest a security event from a sensor, execute autonomous AI triage with RAG,
 

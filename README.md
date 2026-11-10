@@ -80,7 +80,7 @@ All congress submission documents, pitch materials, and defense guides are index
 1. **AI SOC Analyst Core (90% Value Focus)**:
    - Ingests raw telemetry, performs autonomous severity reconciliation, and generates natural-language incident narratives in **plain English and native Bengali (বাংলা)**.
    - Grounded in retrieved **MITRE ATT&CK** (`T1110.001`, `T1499.002`, `T1595.002`) and NIST NVD CVE records. Every claim shows its verified citation badges.
-   - Measured steady-state triage latency: **~50.57 ms** (deterministic offline RAG; 350–700 ms for neural LLMs) with a first-alert cold-start of 2,158 ms on local commodity hardware (AMD Ryzen 7 PRO 4750U, 32 GB RAM).
+   - Measured steady-state triage latency: **~50.57 ms** (deterministic offline RAG; LLM latency: not yet measured) with a first-alert cold-start of 2,158 ms on local commodity hardware (AMD Ryzen 7 PRO 4750U, 32 GB RAM).
 
 2. **National Data Sovereignty & Offline Operational Mode**:
    - **Default Out-of-the-Box Mode**: Operates 100% on-premises via our Deterministic Offline RAG engine (deterministic rule-guided triage + indexed STIX 2.1 knowledge retrieval; ~50 ms steady-state latency). Requires zero external API keys, zero internet, and no GPU hardware. Zero bytes leave the local host.

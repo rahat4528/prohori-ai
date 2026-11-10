@@ -26,12 +26,10 @@ To guarantee absolute compliance with the competition's academic integrity stand
 ### Gate 1: Real LLM Inference Verification
 - **Status**: `[ ] UNTICKED (NOT VERIFIED)`
 - **Verification Evidence**: 
-  - Host audit confirms `ollama` is not installed (`where.exe ollama` -> not found) and no `.env` API keys (`GEMINI_API_KEY` / `GROQ_API_KEY`) are present.
-  - The system is verified in **Deterministic Offline RAG mode** (~50 ms latency, 34/34 tests passing), which uses rule-guided STIX 2.1 knowledge retrieval, but does NOT run a generative neural LLM.
+  - Host audit confirms `ollama` is installed with `llama3.2:latest` weights (2.0 GB).
+  - The system is verified in **Deterministic Offline RAG mode** (~50 ms latency, 35/35 tests passing), and real LLM benchmarking is active.
 - **Unblocking Action Required**: 
-  - Either install and pull local Ollama (`winget install Ollama.Ollama` then `ollama pull llama3.2`), OR
-  - Provide a Google Gemini API key (`GEMINI_API_KEY`) in `.env`.
-  - Once active, run 10 test events and link the execution evidence to [`docs/evidence/llm_runs.md`](docs/evidence/llm_runs.md).
+  - Complete the 20-alert CPU benchmark and link the execution evidence to [`docs/evidence/llm_runs.md`](docs/evidence/llm_runs.md).
 
 ---
 
@@ -69,7 +67,7 @@ To guarantee absolute compliance with the competition's academic integrity stand
 
 | Verification Category | Command Executed | Result / Output | Gate Impact |
 |---|---|---|:---:|
-| **Unit & Integration Suite** | `python -m pytest` | **34 passed in ~5.06s** | **PASS** |
+| **Unit & Integration Suite** | `python -m pytest` | **35 passed in ~5.78s** | **PASS** |
 | **End-to-End Architectural Test** | `python scripts/verify_e2e.py` | **15/15 checks passed (100%)** | **PASS** |
 | **Frontend Production Build** | `cd web; npm run build` | **Built in 598 ms (0 errors)** | **PASS** |
 | **Python Code Quality** | `python -m ruff check .` | **All checks passed! (0 errors)** | **PASS** |
@@ -88,3 +86,4 @@ To guarantee absolute compliance with the competition's academic integrity stand
 - **Lead Developer Confirmation**: ___________________________________________
 - **Date**: ________________________
 - **Submission Status**: `[ ] READY FOR HACKATHON` / `[X] NOT READY FOR HACKATHON (Awaiting 4 Gates)`
+

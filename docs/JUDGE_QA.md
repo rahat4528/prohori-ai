@@ -19,7 +19,7 @@ This document prepares Team Orionids for the toughest technical, operational, an
 > *"We benchmarked this directly on an AMD Ryzen 7 PRO 4750U (8 cores, 16 threads, 32GB RAM) over 20 live incoming alerts:
 > - **Steady-state median latency (Deterministic Offline RAG):** **50.57 ms** per alert (rules + indexed STIX retrieval).
 > - **Worst-case / Cold-start:** **2,158.99 ms** (first alert warming up SQLite connection and knowledge embeddings).
-> - **Real LLM Generation:** In cloud mode with Gemini Flash or local Ollama Llama 3.2, token generation takes approximately 350–700 ms.
+> - **Real LLM Generation:** LLM latency: not yet measured (currently being benchmarked on local CPU hardware).
 > Crucially, our architecture decouples high-speed event ingestion (handled asynchronously by FastAPI in sub-5ms) from AI reasoning: the AI Analyst only triages elevated signals or aggregates them into multi-stage attack incidents, preventing inference bottlenecks."*
 
 ---

@@ -28,7 +28,7 @@ Prohori AI is engineered strictly for **defensive security monitoring** inside a
 
 ---
 
-## 2. Human-in-the-Loop (HITL) Defense Guarantee & Enforcement Reality
+## 2. Human-in-the-Loop (HITL) Defense Controls & Enforcement Reality
 
 Under NO circumstances does Prohori AI execute destructive counter-attacks or autonomous network changes:
 1. Countermeasure recommendations (e.g., `FIREWALL_BLOCK_IP`, `ROTATE_DECEPTION_DECOY`, `THROTTLE_RATE_LIMIT`) are flagged strictly with `requires_human_approval = True` and status `PENDING_APPROVAL`.

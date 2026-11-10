@@ -388,7 +388,7 @@ def create_deck(output_path="docs/Prohori_AI_Pitch_Deck.pptx"):
     p3.font.size = Pt(12)
     p3.font.color.rgb = TEXT_MUTED
 
-    add_notes(s7, "We are Team Orionids, a focused team of builders from the Department of CSE at Daffodil International University. We built Prohori specifically to address the security deficit in emerging markets, delivering a battle-tested prototype backed by 34 passing automated tests and production-ready microservice packaging.")
+    add_notes(s7, "We are Team Orionids, a focused team of builders from the Department of CSE at Daffodil International University. We built Prohori specifically to address the security deficit in emerging markets, delivering a battle-tested prototype backed by 35 passing automated tests and production-ready microservice packaging.")
 
     # -------------------------------------------------------------------------
     # SLIDE 8: Commercial Hypothesis & Next Steps (with QR Code)
@@ -446,7 +446,7 @@ def create_deck(output_path="docs/Prohori_AI_Pitch_Deck.pptx"):
         s8.shapes.add_picture(qr_path, Inches(9.2), Inches(2.6), Inches(2.8), Inches(2.8))
 
     p_url = tf_qr.add_paragraph()
-    p_url.text = "\n\n\n\n\n\n\n\ngithub.com/rahat4528/prohori-ai\nTested with 34 Passing Tests"
+    p_url.text = "\n\n\n\n\n\n\n\ngithub.com/rahat4528/prohori-ai\nTested with 35 Passing Tests"
     p_url.font.size = Pt(10)
     p_url.font.color.rgb = CYAN_ACCENT
     p_url.alignment = PP_ALIGN.CENTER

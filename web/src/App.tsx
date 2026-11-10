@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Header } from "./components/Header";
-import { TopCounters } from "./components/TopCounters";
-import { AskAnalyst } from "./components/AskAnalyst";
-import { EventFeed } from "./components/EventFeed";
-import { IncidentTimeline } from "./components/IncidentTimeline";
-import { EventDetailDrawer } from "./components/EventDetailDrawer";
+import { AlertList } from "./components/AlertList";
+import { SelectedAlertPanel, type AuditConfirmation } from "./components/SelectedAlertPanel";
 import { AuditLogDrawer } from "./components/AuditLogDrawer";
 import { PitchDeckModal } from "./components/PitchDeckModal";
+import { ShortcutsModal } from "./components/ShortcutsModal";
+import { EventDetailDrawer } from "./components/EventDetailDrawer";
 import type { SecurityEvent, Incident } from "./types";
-import { Shield, BookOpen, Lock, Cpu } from "lucide-react";
+import { Shield, Lock, Cpu, BookOpen, ShieldAlert, Sparkles } from "lucide-react";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000";
 const WS_URL = import.meta.env.VITE_WS_URL || "ws://localhost:8000/stream";
@@ -19,39 +18,34 @@ const jsonHeaders: Record<string, string> = API_KEY
 
 export const App: React.FC = () => {
   const [events, setEvents] = useState<SecurityEvent[]>([]);
-  const [incidents, setIncidents] = useState<Incident[]>([]);
+  const [, setIncidents] = useState<Incident[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<SecurityEvent | null>(null);
   const [wsConnected, setWsConnected] = useState<boolean>(false);
   const [globalLanguage, setGlobalLanguage] = useState<"en" | "bn">("en");
-  const [approvedIncidents, setApprovedIncidents] = useState<Record<string, boolean>>({});
+  const [approvedMap, setApprovedMap] = useState<Record<string, AuditConfirmation>>({});
   const [isAuditOpen, setIsAuditOpen] = useState<boolean>(false);
   const [isPitchDeckOpen, setIsPitchDeckOpen] = useState<boolean>(false);
+  const [isShortcutsOpen, setIsShortcutsOpen] = useState<boolean>(false);
+  const [isRawDrawerOpen, setIsRawDrawerOpen] = useState<boolean>(false);
   const [isLocalSovereignty, setIsLocalSovereignty] = useState<boolean>(true);
-
-  // Synchronized Filter State between TopCounters and EventFeed
-  const [sourceFilter, setSourceFilter] = useState<string>("all");
-  const [severityFilter, setSeverityFilter] = useState<string>("all");
+  const [activeProvider, setActiveProvider] = useState<string>("deterministic-offline-rag");
+  const [activeMobileTab, setActiveMobileTab] = useState<"alerts" | "analysis">("alerts");
+  const [isMobile, setIsMobile] = useState<boolean>(false);
 
   const wsRef = useRef<WebSocket | null>(null);
 
-  const handleToggleSovereignty = async () => {
-    const nextMode = isLocalSovereignty ? "cloud" : "local";
-    try {
-      const resp = await fetch(`${API_BASE}/sovereignty/toggle`, {
-        method: "POST",
-        headers: jsonHeaders,
-        body: JSON.stringify({ mode: nextMode })
-      });
-      if (resp.ok) {
-        setIsLocalSovereignty(!isLocalSovereignty);
-      }
-    } catch (e) {
-      console.error("Failed to toggle sovereignty:", e);
-    }
-  };
+  // Responsive mobile detector
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 900);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
-  // 1. Fetch initial events, incidents, and sovereignty status
-  const fetchTelemetry = async () => {
+  // 1. Fetch initial telemetry and sovereignty status
+  const fetchTelemetry = useCallback(async () => {
     try {
       const [eventsRes, incRes, sovRes] = await Promise.all([
         fetch(`${API_BASE}/events?limit=100`),
@@ -61,27 +55,48 @@ export const App: React.FC = () => {
 
       if (eventsRes.ok) {
         const data = await eventsRes.json();
-        setEvents(data.events || []);
+        const evList: SecurityEvent[] = data.events || [];
+        setEvents(evList);
+        // Default select newest event if none selected
+        setSelectedEvent((prev) => {
+          if (!prev && evList.length > 0) return evList[0];
+          if (prev) {
+            const updated = evList.find((e) => e.id === prev.id);
+            return updated || prev;
+          }
+          return null;
+        });
       }
+
       if (incRes.ok) {
-        const data = await incRes.json();
-        setIncidents(data.incidents || []);
+        const incData = await incRes.json();
+        setIncidents(incData.incidents || []);
       }
+
       if (sovRes && sovRes.ok) {
         const sovData = await sovRes.json();
-        setIsLocalSovereignty(sovData.sovereignty_mode === "LOCAL_SOVEREIGNTY");
+        setIsLocalSovereignty(sovData.sovereignty_mode === "BANGLADESH_ON_PREM_ONLY" || sovData.sovereignty_mode === "LOCAL_SOVEREIGNTY");
+        if (sovData.active_llm_backend) {
+          if (sovData.active_llm_backend === "ollama") {
+            setActiveProvider("ollama-local (llama3.2)");
+          } else if (sovData.active_llm_backend === "offline") {
+            setActiveProvider("deterministic-offline-rag");
+          } else {
+            setActiveProvider(sovData.active_llm_backend);
+          }
+        }
       }
     } catch (err) {
-      console.warn("Could not fetch initial telemetry from API:", err);
+      console.warn("Could not fetch telemetry from API:", err);
     }
-  };
+  }, []);
 
   // 2. Establish live WebSocket stream with automatic reconnection
   useEffect(() => {
-    const init = async () => {
-      await fetchTelemetry();
-    };
-    init();
+    let isMounted = true;
+    Promise.resolve().then(() => {
+      if (isMounted) fetchTelemetry();
+    });
 
     let retryTimeout: any;
 
@@ -99,7 +114,8 @@ export const App: React.FC = () => {
             const data = JSON.parse(event.data);
             if (data.type === "new_event" && data.event) {
               setEvents((prev) => [data.event, ...prev.filter((e) => e.id !== data.event.id)]);
-              // Refresh incidents when new events stream in
+              // Auto-select latest streamed event for instant feedback
+              setSelectedEvent(data.event);
               fetch(`${API_BASE}/analyst/incidents`)
                 .then((r) => r.json())
                 .then((d) => setIncidents(d.incidents || []))
@@ -140,18 +156,19 @@ export const App: React.FC = () => {
     const interval = setInterval(fetchTelemetry, 10000);
 
     return () => {
+      isMounted = false;
       clearTimeout(retryTimeout);
       clearInterval(interval);
       if (wsRef.current) wsRef.current.close();
     };
-  }, []);
+  }, [fetchTelemetry]);
 
-  // 3. Trigger simulated attack telemetry directly
-  const handleTriggerDemo = async () => {
+  // 3. Trigger simulated attack telemetry (single "Run demo" action)
+  const handleTriggerDemo = useCallback(async () => {
     try {
-      await fetch(`${API_BASE}/events`, {
+      const resp = await fetch(`${API_BASE}/events`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: jsonHeaders,
         body: JSON.stringify({
           source: "honeypot",
           severity: "high",
@@ -165,30 +182,39 @@ export const App: React.FC = () => {
           }
         })
       });
+
+      if (resp.ok) {
+        const newEv = await resp.json();
+        setEvents((prev) => [newEv, ...prev.filter((e) => e.id !== newEv.id)]);
+        setSelectedEvent(newEv);
+        if (isMobile) {
+          setActiveMobileTab("analysis");
+        }
+      }
     } catch (err) {
       console.error("Failed to post demo event:", err);
     }
+  }, [isMobile]);
+
+  // 4. Toggle Data Sovereignty Mode
+  const handleToggleSovereignty = async () => {
+    const nextMode = isLocalSovereignty ? "cloud" : "local";
+    try {
+      const resp = await fetch(`${API_BASE}/sovereignty/toggle`, {
+        method: "POST",
+        headers: jsonHeaders,
+        body: JSON.stringify({ mode: nextMode })
+      });
+      if (resp.ok) {
+        setIsLocalSovereignty(!isLocalSovereignty);
+        setActiveProvider(nextMode === "local" ? "ollama-local (llama3.2)" : "cloud-hybrid");
+      }
+    } catch (e) {
+      console.error("Failed to toggle sovereignty:", e);
+    }
   };
 
-  // Global Keyboard Shortcuts
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
-        return;
-      }
-      if (e.key === "P" && e.shiftKey) {
-        setIsPitchDeckOpen((prev) => !prev);
-      } else if (e.key === "A" && e.shiftKey) {
-        setIsAuditOpen((prev) => !prev);
-      } else if (e.key === "S" && e.shiftKey) {
-        handleTriggerDemo();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
-  // 3. Handler for Retriage
+  // 5. Retriage Event
   const handleRetriage = async (eventId: string) => {
     try {
       const resp = await fetch(`${API_BASE}/analyst/triage/${eventId}`, {
@@ -204,71 +230,80 @@ export const App: React.FC = () => {
     }
   };
 
-
-
-  // 5. Human-in-the-Loop Countermeasure Approval for Incidents
-  const handleApproveIncidentAction = async (incidentId: string) => {
-    const inc = incidents.find((i) => i.incident_id === incidentId);
-    if (!inc) return;
-
+  // 6. Human-in-the-Loop Countermeasure Approval
+  const handleApproveDefense = async (
+    actionId: string,
+    target: string,
+    actionType: string
+  ): Promise<AuditConfirmation | void> => {
     try {
-      await fetch(`${API_BASE}/audit/approve`, {
+      const resp = await fetch(`${API_BASE}/audit/approve`, {
         method: "POST",
         headers: jsonHeaders,
         body: JSON.stringify({
-          action_id: `ACT-INC-${incidentId}`,
-          target: inc.source_ip,
-          action_type: "PERIMETER_FIREWALL_DROP",
+          action_id: actionId,
+          target: target,
+          action_type: actionType,
           operator_id: "SOC_CONSOLE_OPERATOR"
         })
       });
 
-      await fetch(`${API_BASE}/analyst/incidents/${incidentId}/status`, {
-        method: "PATCH",
-        headers: jsonHeaders,
-        body: JSON.stringify({
-          status: "CONTAINED",
-          operator_id: "SOC_CONSOLE_OPERATOR",
-          notes: "Approved firewall drop via incident timeline"
-        })
-      });
-
-      setApprovedIncidents((prev) => ({ ...prev, [incidentId]: true }));
-      setIncidents((prev) =>
-        prev.map((i) => (i.incident_id === incidentId ? { ...i, status: "CONTAINED" } : i))
-      );
+      if (resp.ok) {
+        const data: AuditConfirmation = await resp.json();
+        const actionKey = selectedEvent ? `${selectedEvent.id}_${target}` : actionId;
+        setApprovedMap((prev) => ({
+          ...prev,
+          [actionKey]: data,
+          [actionId]: data
+        }));
+        // Refresh incidents
+        fetchTelemetry();
+        return data;
+      }
     } catch (err) {
-      console.error("Failed to approve incident action:", err);
+      console.error("Failed to approve defense action:", err);
     }
   };
 
-  // 6. Resolve Incident Action
-  const handleResolveIncidentAction = async (incidentId: string) => {
-    try {
-      await fetch(`${API_BASE}/analyst/incidents/${incidentId}/status`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          status: "RESOLVED",
-          operator_id: "SOC_CONSOLE_OPERATOR",
-          notes: "Incident remediated and marked closed"
-        })
-      });
+  // 7. Global Accessible Keyboard Shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+      if (e.key === "Escape") {
+        setIsAuditOpen(false);
+        setIsPitchDeckOpen(false);
+        setIsShortcutsOpen(false);
+        setIsRawDrawerOpen(false);
+      } else if (e.key === "?" || (e.shiftKey && e.key === "/")) {
+        e.preventDefault();
+        setIsShortcutsOpen((prev) => !prev);
+      } else if (e.shiftKey && (e.key === "D" || e.key === "S")) {
+        e.preventDefault();
+        handleTriggerDemo();
+      } else if (e.shiftKey && e.key === "A") {
+        e.preventDefault();
+        setIsAuditOpen((prev) => !prev);
+      } else if (e.shiftKey && e.key === "P") {
+        e.preventDefault();
+        setIsPitchDeckOpen((prev) => !prev);
+      } else if (e.shiftKey && e.key === "L") {
+        e.preventDefault();
+        setGlobalLanguage((prev) => (prev === "en" ? "bn" : "en"));
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleTriggerDemo]);
 
-      setIncidents((prev) =>
-        prev.map((i) => (i.incident_id === incidentId ? { ...i, status: "RESOLVED" } : i))
-      );
-    } catch (err) {
-      console.error("Failed to resolve incident:", err);
-    }
-  };
+  const isBn = globalLanguage === "bn";
 
   return (
     <div className="soc-container">
-      {/* Top Header */}
+      {/* 1. Top Simplified Header */}
       <Header
         wsConnected={wsConnected}
-        eventCount={events.length}
         globalLanguage={globalLanguage}
         setGlobalLanguage={setGlobalLanguage}
         onTriggerDemo={handleTriggerDemo}
@@ -276,75 +311,119 @@ export const App: React.FC = () => {
         onOpenPitchDeck={() => setIsPitchDeckOpen(true)}
         isLocalSovereignty={isLocalSovereignty}
         onToggleSovereignty={handleToggleSovereignty}
+        onOpenShortcuts={() => setIsShortcutsOpen(true)}
+        activeProvider={activeProvider}
       />
 
-      {/* Top Telemetry KPI Counters */}
-      <TopCounters
-        events={events}
-        incidentCount={incidents.length}
-        onSelectSeverityFilter={(sev) => setSeverityFilter(sev)}
-        onSelectSourceFilter={(src) => setSourceFilter(src)}
-        selectedSeverity={severityFilter}
-        selectedSource={sourceFilter}
-      />
-
-      {/* Main SOC Layout Grid */}
-      <div className="soc-grid">
-        {/* Left Column: Live Event Feed & Incident Timeline */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          <EventFeed
-            events={events}
-            onSelectEvent={(ev) => setSelectedEvent(ev)}
-            selectedEventId={selectedEvent?.id}
-            globalLanguage={globalLanguage}
-            sourceFilter={sourceFilter}
-            setSourceFilter={setSourceFilter}
-            severityFilter={severityFilter}
-            setSeverityFilter={setSeverityFilter}
-          />
-          <IncidentTimeline
-            incidents={incidents}
-            globalLanguage={globalLanguage}
-            onApproveIncidentAction={handleApproveIncidentAction}
-            onResolveIncidentAction={handleResolveIncidentAction}
-            approvedIncidents={approvedIncidents}
-            apiBase={API_BASE}
-          />
-        </div>
-
-        {/* Right Column: "Ask the AI SOC Analyst" Centerpiece */}
-        <div>
-          <AskAnalyst apiBase={API_BASE} globalLanguage={globalLanguage} />
-        </div>
+      {/* 2. Mobile Tab Switcher (< 900px) */}
+      <div className="mobile-tab-bar" role="tablist" aria-label="Mobile View Switcher">
+        <button
+          role="tab"
+          aria-selected={activeMobileTab === "alerts"}
+          onClick={() => setActiveMobileTab("alerts")}
+          className={`mobile-tab-btn ${activeMobileTab === "alerts" ? "active" : ""}`}
+        >
+          <ShieldAlert size={16} />
+          <span>{isBn ? `সরাসরি সতর্কতা (${events.length})` : `Live Alerts (${events.length})`}</span>
+        </button>
+        <button
+          role="tab"
+          aria-selected={activeMobileTab === "analysis"}
+          onClick={() => setActiveMobileTab("analysis")}
+          className={`mobile-tab-btn ${activeMobileTab === "analysis" ? "active" : ""}`}
+        >
+          <Sparkles size={16} />
+          <span>{isBn ? "এআই হুমকি বিশ্লেষণ" : "Threat Analysis"}</span>
+        </button>
       </div>
 
-      {/* Footer Ribbon */}
-      <footer style={{
-        marginTop: "32px",
-        padding: "16px 20px",
-        background: "var(--bg-surface)",
-        border: "1px solid var(--border-subtle)",
-        borderRadius: "10px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        flexWrap: "wrap",
-        gap: "12px",
-        fontSize: "11px",
-        color: "var(--text-tertiary)"
-      }}>
+      {/* 3. Main Simplified 2-Column SOC Layout */}
+      <main className="simplified-grid" role="main">
+        {/* Left Column: Live Alert Feed */}
+        <div style={{ display: isMobile && activeMobileTab !== "alerts" ? "none" : "block" }}>
+          <AlertList
+            events={events}
+            selectedEventId={selectedEvent?.id || null}
+            onSelectEvent={(ev) => {
+              setSelectedEvent(ev);
+              if (isMobile) {
+                setActiveMobileTab("analysis");
+              }
+            }}
+            globalLanguage={globalLanguage}
+            onTriggerDemo={handleTriggerDemo}
+          />
+        </div>
+
+        {/* Right Column: Selected Alert Intelligence & Action Gate */}
+        <div style={{ display: isMobile && activeMobileTab !== "analysis" ? "none" : "block" }}>
+          <SelectedAlertPanel
+            event={selectedEvent}
+            globalLanguage={globalLanguage}
+            apiBase={API_BASE}
+            onApproveDefense={handleApproveDefense}
+            onRetriage={handleRetriage}
+            approvedMap={approvedMap}
+          />
+        </div>
+      </main>
+
+      {/* 4. Footer */}
+      <footer
+        style={{
+          marginTop: "28px",
+          padding: "14px 20px",
+          background: "var(--bg-surface)",
+          border: "1px solid var(--border-subtle)",
+          borderRadius: "10px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: "12px",
+          fontSize: "13px",
+          color: "var(--text-tertiary)"
+        }}
+        role="contentinfo"
+      >
         <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap" }}>
-          <span style={{ display: "flex", alignItems: "center", gap: "5px", color: "var(--text-secondary)" }}>
-            <Shield size={13} color="#38bdf8" />
-            <strong>Prohori Sentinel</strong> &bull; International AI Builders Congress 2026
+          <span style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)", fontWeight: 600 }}>
+            <Shield size={15} color="#38bdf8" />
+            <span>Prohori Sentinel &bull; International AI Builders Congress 2026</span>
           </span>
-          <span className="badge" style={{ background: "rgba(16, 185, 129, 0.12)", color: "#34d399" }}>
-            <Lock size={10} style={{ marginRight: "3px" }} />
-            Zero Cloud Egress Guaranteed
+          <span
+            className="badge"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "4px",
+              background: "rgba(16, 185, 129, 0.12)",
+              color: "#34d399",
+              padding: "3px 8px",
+              borderRadius: "4px",
+              fontSize: "12px",
+              fontWeight: 600
+            }}
+          >
+            <Lock size={12} />
+            <span>Controls: Zero packet egress in sovereignty mode</span>
           </span>
-          <span className="badge" style={{ background: "rgba(56, 189, 248, 0.12)", color: "#38bdf8" }}>
-            <Cpu size={10} style={{ marginRight: "3px" }} />
-            Local Model: Llama 3.2 / Qwen
+          <span
+            className="badge"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "4px",
+              background: "rgba(56, 189, 248, 0.12)",
+              color: "#38bdf8",
+              padding: "3px 8px",
+              borderRadius: "4px",
+              fontSize: "12px",
+              fontWeight: 600
+            }}
+          >
+            <Cpu size={12} />
+            <span>Local Model: Llama 3.2 / Offline RAG</span>
           </span>
         </div>
 
@@ -353,63 +432,58 @@ export const App: React.FC = () => {
             href={`${API_BASE}/docs`}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: "#38bdf8", textDecoration: "none", display: "flex", alignItems: "center", gap: "4px" }}
+            style={{ color: "#38bdf8", textDecoration: "none", display: "flex", alignItems: "center", gap: "4px", fontWeight: 600 }}
           >
-            <BookOpen size={11} />
+            <BookOpen size={13} />
             <span>Interactive API Docs</span>
           </a>
-          <a
-            href={`${API_BASE}/docs/architecture`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: "#94a3b8", textDecoration: "none" }}
+          <button
+            onClick={() => setIsRawDrawerOpen(true)}
+            style={{
+              background: "transparent",
+              border: "none",
+              color: "var(--text-secondary)",
+              cursor: "pointer",
+              fontSize: "13px",
+              textDecoration: "underline"
+            }}
           >
-            Architecture
-          </a>
-          <a
-            href={`${API_BASE}/docs/security`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: "#94a3b8", textDecoration: "none" }}
-          >
-            Security Scope
-          </a>
-          <a
-            href={`${API_BASE}/docs/lineage`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: "#94a3b8", textDecoration: "none" }}
-          >
-            Data Lineage
-          </a>
-          <span className="font-mono" style={{ color: "var(--text-muted)" }}>
-            [Shift+P: Pitch Deck | Shift+A: Audit Log | Shift+S: Simulate]
+            {isBn ? "কাঁচা ফরেনসিক তথ্য" : "Raw Forensic Event"}
+          </button>
+          <span className="font-mono" style={{ color: "var(--text-tertiary)", fontSize: "12px" }}>
+            [? : Shortcuts | Shift+D: Demo | Shift+A: Audit | Shift+P: Pitch Deck]
           </span>
         </div>
       </footer>
 
-      {/* Detailed Event Inspector Drawer */}
-      <EventDetailDrawer
-        event={selectedEvent}
-        onClose={() => setSelectedEvent(null)}
-        onRetriage={handleRetriage}
-        globalLanguage={globalLanguage}
-        apiBase={API_BASE}
-      />
-
-      {/* Immutable Audit Log Modal */}
+      {/* 5. Modals & Drawers */}
       <AuditLogDrawer
         isOpen={isAuditOpen}
         onClose={() => setIsAuditOpen(false)}
         apiBase={API_BASE}
       />
 
-      {/* 8-Slide Pitch Deck Presentation Modal */}
       <PitchDeckModal
         isOpen={isPitchDeckOpen}
         onClose={() => setIsPitchDeckOpen(false)}
         globalLanguage={globalLanguage}
       />
+
+      <ShortcutsModal
+        isOpen={isShortcutsOpen}
+        onClose={() => setIsShortcutsOpen(false)}
+        globalLanguage={globalLanguage}
+      />
+
+      {isRawDrawerOpen && (
+        <EventDetailDrawer
+          event={selectedEvent}
+          onClose={() => setIsRawDrawerOpen(false)}
+          onRetriage={handleRetriage}
+          globalLanguage={globalLanguage}
+          apiBase={API_BASE}
+        />
+      )}
     </div>
   );
 };

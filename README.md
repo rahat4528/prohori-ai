@@ -3,7 +3,7 @@
 **Built by Team Orionids · International AI Builders Congress 2026 · Domain: InfraSphere AI &rarr; SecureAI**
 
 [![Team](https://img.shields.io/badge/Team-Orionids-blueviolet.svg)](#team-orionids)
-[![Tests](https://img.shields.io/badge/pytest-34%20passed-brightgreen.svg)](#testing--verification)
+[![Tests](https://img.shields.io/badge/pytest-35%20passed-brightgreen.svg)](#testing--verification)
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
 [![React](https://img.shields.io/badge/React-19%20%2B%20Vite-61dafb.svg)](https://react.dev/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg)](https://fastapi.tiangolo.com/)
@@ -66,11 +66,12 @@ All congress submission documents, pitch materials, and defense guides are index
                WebSocket /stream │ HTTP REST                      │
                                  ▼                                 │
                    OPERATOR CONSOLE (React 19 + Vite)             │
-                   • Real-time color-coded event feed             │
-                   • "Ask the Analyst" reasoning panel            │
-                   • Attack campaign timeline                     │
-                   • Human-in-the-Loop approval drawer            │
-                   • Immutable audit log                          │
+                   • Simplified 2-column layout (5s comprehension)│
+                   • Plain-language live threat alert feed        │
+                   • Grounded intelligence panel (EN / বাংলা)     │
+                   • Human-in-the-Loop "Approve Defense" action   │
+                   • Inline "Ask AI Analyst" threat chat          │
+                   • Append-only immutable audit trail            │
 ```
 
 ---
@@ -203,7 +204,7 @@ Comprehensive test suites covering the Event API, Deception sensor, Rate Limiter
 pytest api/tests sensors/deception/tests sensors/ratelimiter/tests analyst/tests sensors/discovery/tests -v
 ```
 
-**Results**: `34 passed in ~5.06s` (100% pass rate).
+**Results**: `35 passed in ~5.06s` (100% pass rate).
 
 ---
 

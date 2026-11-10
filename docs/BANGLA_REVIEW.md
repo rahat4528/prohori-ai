@@ -30,6 +30,65 @@
 
 ---
 
+## UI Strings Review Matrix (Operator Console Simplification)
+
+> **Status:** `NOT VERIFIED` (Automated implementation; awaiting native speaker sign-off).
+> Evaluates all user-facing Bengali strings introduced or reorganized in the simplified UI.
+
+| UI Component | Context / English Key | Bengali Text (বাংলা) | Natural & Correct? (Y/N) | Cultural / Professional Fit? (Y/N) | Suggested Correction / Comments |
+|---|---|---|---|---|---|
+| **Header** | Brand Subtitle ("Autonomous AI Defensive SOC") | স্বায়ত্তশাসিত এআই ডিফেন্সিভ এসওসি | [ ] | [ ] | |
+| **Header** | Live WebSocket Status ("Live" / "Offline") | সক্রিয় / সংযোগ বিচ্ছিন্ন | [ ] | [ ] | |
+| **Header** | AI Engine Badge ("Engine: Offline RAG") | ইঞ্জিন: অফলাইন আরএজি (Deterministic RAG) | [ ] | [ ] | |
+| **Header** | Primary Button ("Run demo" / "Running...") | ডেমো চালান / ডেমো চলছে... | [ ] | [ ] | |
+| **Header** | Language Switcher ("English" / "বাংলা") | English / বাংলা | [ ] | [ ] | |
+| **Header (More Menu)** | Dropdown Trigger ("More") | অন্যান্য | [ ] | [ ] | |
+| **Header (More Menu)** | Audit Trail Item & Subtitle | অডিট ট্রেইল (দায়িত্বশীল এআই রেকর্ড) | [ ] | [ ] | |
+| **Header (More Menu)** | Pitch Deck Item & Subtitle | পিচ ডেক (৮-স্লাইড উপস্থাপনা) | [ ] | [ ] | |
+| **Header (More Menu)** | Sovereignty Toggle Item & Subtitle | সার্বভৌমত্ব: অন-প্রিম (স্থানীয় ডেটা সুরক্ষা কার্যকর) | [ ] | [ ] | |
+| **Header (More Menu)** | Hybrid Mode Item & Subtitle | মোড: ক্লাউড হাইব্রিড (ক্লাউড এআই সক্ষম) | [ ] | [ ] | |
+| **Header (More Menu)** | API Docs Item & Subtitle | এপিআই ডকুমেন্টস (FastAPI Swagger UI) | [ ] | [ ] | |
+| **Header (More Menu)** | Keyboard Shortcuts Item | কিবোর্ড শর্টকাট (Shift+D, Shift+A, Shift+P) | [ ] | [ ] | |
+| **Alert List** | Panel Title ("Live Alerts") | সরাসরি সতর্কতা | [ ] | [ ] | |
+| **Alert List** | Severity Filter Options | সকল তীব্রতা / জরুরি / উচ্চ / মাঝারি / নিম্ন | [ ] | [ ] | |
+| **Alert List** | Search Placeholder | আইপি, আক্রমণ বা কৌশল দিয়ে খুঁজুন... | [ ] | [ ] | |
+| **Alert List (Attacks)** | Credential Stuffing Attack | ক্রেডেনশিয়াল স্টাফিং আক্রমণ | [ ] | [ ] | |
+| **Alert List (Attacks)** | Reconnaissance Scan | রিকনেসান্স স্ক্যান | [ ] | [ ] | |
+| **Alert List (Attacks)** | API Flooding / Abuse | এপিআই ফ্লাডিং অপব্যবহার | [ ] | [ ] | |
+| **Alert List (Attacks)** | Vulnerable Service Detected | নিরাপত্তা দুর্বলতা শনাক্ত | [ ] | [ ] | |
+| **Alert List (Attacks)** | Multi-Stage Attack Campaign | বহু-পর্যায়ের সমন্বিত আক্রমণ | [ ] | [ ] | |
+| **Alert List (Attacks)** | Log4j JNDI Injection Attack | লগফরজে জেএনডিআই ইনজেকশন | [ ] | [ ] | |
+| **Alert List (Attacks)** | SQL Injection Attempt | এসকিউএল ইনজেকশন আক্রমণ | [ ] | [ ] | |
+| **Alert List (Attacks)** | Ransomware Defense Evasion | র‍্যানসমওয়্যার শ্যাডো কপি মুছনের চেষ্টা | [ ] | [ ] | |
+| **Alert List (Attacks)** | Cloud Metadata SSRF Probe | ক্লাউড মেটাডেটা প্ররোচনা (SSRF) | [ ] | [ ] | |
+| **Alert List (Attacks)** | Remote Command Injection | অননুমোদিত কমান্ড এক্সিকিউশন | [ ] | [ ] | |
+| **Alert List (Attacks)** | C2 Beaconing Detected | সি২ কমান্ড অ্যান্ড কন্ট্রোল সিগন্যাল | [ ] | [ ] | |
+| **Alert List** | Empty State Title | কোনো হুমকি পাওয়া যায়নি | [ ] | [ ] | |
+| **Alert List** | Empty State Instruction | সিস্টেম স্বাভাবিক রয়েছে। আক্রমণ শনাক্তকরণ ও এআই বিশ্লেষণ দেখতে 'ডেমো চালান' বোতামে ক্লিক করুন। | [ ] | [ ] | |
+| **Selected Alert** | Empty State Guidance | বামপাশের তালিকা থেকে যেকোনো সতর্কতায় ক্লিক করে কৃত্রিম বুদ্ধিমত্তার (AI) বিস্তারিত বিশ্লেষণ ও প্রতিক্রিয়া দেখুন। | [ ] | [ ] | |
+| **Selected Alert** | Retriage Button ("Re-Triage" / "Analyzing...") | পুনরায় বিশ্লেষণ / বিশ্লেষণ হচ্ছে... | [ ] | [ ] | |
+| **Selected Alert** | Citations Label | ভেরিফায়েড থ্রেট সাইটেশন: | [ ] | [ ] | |
+| **Selected Alert** | Section: What Happened | কী ঘটেছে (What Happened) | [ ] | [ ] | |
+| **Selected Alert** | Section: Recommended Defense | প্রস্তাবিত পদক্ষেপ (Recommended Action) | [ ] | [ ] | |
+| **Selected Alert** | Action Button ("Approve Defense") | 🛡️ প্রতিরক্ষা অনুমোদন করুন (Approve Defense) | [ ] | [ ] | |
+| **Selected Alert** | Action Button ("Applying...") | অনুমোদন করা হচ্ছে... | [ ] | [ ] | |
+| **Selected Alert** | Action Gate Explanatory Text | মানবসক্রিয় অনুমোদন গেট: এই বোতাম চাপলে আক্রমণকারীর আইপি অবিলম্বে ফায়ারওয়ালে ব্লক হবে এবং অডিট ট্রেইলে সংরক্ষিত হবে। | [ ] | [ ] | |
+| **Selected Alert** | Approved State Banner | প্রতিরক্ষা কার্যকর হয়েছে (Approved) | [ ] | [ ] | |
+| **Selected Alert** | Approved Containment Explanation | আক্রমণকারী আইপি পেরিমিটার ডিনাইলিস্টে যুক্ত হয়েছে। পরবর্তী অনুরোধ অবিলম্বে ব্লক করা হবে। | [ ] | [ ] | |
+| **Selected Alert (Ask)** | Accordion Title | এই হুমকি সম্পর্কে এআই বিশ্লেষককে জিজ্ঞাসা করুন | [ ] | [ ] | |
+| **Selected Alert (Ask)** | Suggestion 1 | 💡 মূল কৌশল কী? ("এই আক্রমণের মূল কৌশল এবং ক্ষতি করার সম্ভাবনা ব্যাখ্যা করুন।") | [ ] | [ ] | |
+| **Selected Alert (Ask)** | Suggestion 2 | 🛡️ ফায়ারওয়াল ব্লক পদ্ধতি ("এই আইপি কীভাবে পারিপার্শ্বিক ফায়ারওয়ালে ব্লক করব?") | [ ] | [ ] | |
+| **Selected Alert (Ask)** | Suggestion 3 | 🔍 ইনসাইডার থ্রেট নাকি বহিঃস্থ? ("এটি কি অভ্যন্তরীণ নিরাপত্তা লঙ্ঘন নাকি বহিঃস্থ আক্রমণ?") | [ ] | [ ] | |
+| **Selected Alert (Ask)** | Input Field Placeholder | বাংলায় বা ইংরেজিতে প্রশ্ন লিখুন... | [ ] | [ ] | |
+| **Selected Alert (Ask)** | Submit Button ("Ask" / "Generating...") | জিজ্ঞাসা / লিখছে... | [ ] | [ ] | |
+| **Mobile Tabs** | Segmented Control Tab 1 | সরাসরি সতর্কতা ({count}) | [ ] | [ ] | |
+| **Mobile Tabs** | Segmented Control Tab 2 | এআই হুমকি বিশ্লেষণ | [ ] | [ ] | |
+| **Shortcuts Modal** | Modal Title | কিবোর্ড শর্টকাট গাইড | [ ] | [ ] | |
+| **Shortcuts Modal** | Shortcut Descriptions | আক্রমণ ডেমো চালান / দায়িত্বশীল এআই অডিট লগ / ৮-স্লাইড পিচ ডেক / জাতীয় ডেটা সার্বভৌমত্ব মোড / ভাষা পরিবর্তন / কিবোর্ড শর্টকাট সহায়তা / খোলা উইন্ডো বন্ধ করুন | [ ] | [ ] | |
+| **Footer** | Raw Forensic Link | কাঁচা ফরেনসিক তথ্য | [ ] | [ ] | |
+
+---
+
 ## Reviewer Sign-Off Block (Human Verification Required)
 
 > [!WARNING]

@@ -58,6 +58,9 @@ To guarantee absolute compliance with the competition's academic integrity stand
 - **Verification Evidence**: 
   - Complete recording guide, timing matrix, and second-by-second narration script prepared in [`docs/BACKUP_VIDEO_GUIDE.md`](BACKUP_VIDEO_GUIDE.md).
   - Output directory `docs/backup/` created and git-ignored.
+- **UI Freeze Requirement**:
+  - The simplified 2-column UI layout on branch `ui-simplify` constitutes the official **UI Freeze**.
+  - **The 60–90 second backup video MUST be recorded strictly after this UI freeze** so that judge walkthrough footage matches the final operator console layout.
 - **Unblocking Action Required**: 
   - The user must follow [`docs/BACKUP_VIDEO_GUIDE.md`](BACKUP_VIDEO_GUIDE.md), record a 60–90 second screen capture of `http://localhost:3000` during `python scripts/demo_replay.py`, and save copies to `docs/backup/prohori_demo_backup.mp4` and a backup USB drive.
 

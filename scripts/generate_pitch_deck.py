@@ -388,7 +388,7 @@ def create_deck(output_path="docs/Prohori_AI_Pitch_Deck.pptx"):
     p3.font.size = Pt(12)
     p3.font.color.rgb = TEXT_MUTED
 
-    add_notes(s7, "We are Team Orionids, a focused team of builders from the Department of CSE at Daffodil International University. We built Prohori specifically to address the security deficit in emerging markets, delivering a battle-tested prototype backed by 37 passing automated tests, 32-millisecond steady-state offline triage latency, verified on-premises neural LLM reasoning, and production-ready microservice packaging.")
+    add_notes(s7, "We are Team Orionids, a focused team of builders from the Department of CSE at Daffodil International University. We built Prohori specifically to address the security deficit in emerging markets, delivering a battle-tested prototype backed by 38 passing automated tests, 32-millisecond steady-state offline triage latency, verified on-premises neural LLM reasoning, and production-ready microservice packaging.")
 
     # -------------------------------------------------------------------------
     # SLIDE 8: Commercial Hypothesis & Next Steps (with QR Code)

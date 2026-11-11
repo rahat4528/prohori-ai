@@ -18,6 +18,7 @@ To guarantee absolute compliance with the competition's academic integrity stand
 │  [ ] Gate 2: Bengali Samples Reviewed & Signed by Native Speaker       │
 │  [ ] Gate 3: Real Team Names Filled & Confirmed in docs/TEAM.md        │
 │  [ ] Gate 4: Narrated 60-90s Backup Demo Video Recorded & Verified    │
+│  [x] Stage demo path verified (Task 3 and 5)                           │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -29,7 +30,7 @@ To guarantee absolute compliance with the competition's academic integrity stand
   - Host audit confirms `ollama` is installed and running local `llama3.2:latest` (2.0 GB weights) on AMD Ryzen 7 PRO 4750U CPU.
   - Successfully executed 20 distinct alert triage runs (5 demo scenarios + 15 novel unseen attack types) via `scripts/benchmark_ollama.py`.
   - **Latency Profile**: Cold start: `77,284.54 ms` (77.28 s) | Median steady-state: `70,550.23 ms` (70.55 s) | Min: `44,672.53 ms` (44.67 s).
-  - **Grounding Rate**: 60 total citations evaluated against indexed knowledge base in `knowledge/data/curated_kb.py`, **0 unfound or hallucinated (100% verified grounded)**.
+  - **Grounding Rate**: 60 total citations evaluated against indexed knowledge base in `knowledge/data/curated_kb.py`; the validator verified 59 of 60 cited IDs and removed 1 unindexed sub-technique (`T1490.001`) before storage.
   - **Failure Resilience**: Verified graceful degradation to `deterministic-offline-rag (fallback)` under 3 failure conditions:
     - Daemon offline / unreachable port: recovered in `2,461.44 ms`.
     - Forced timeout: recovered in `441.59 ms`.
@@ -72,11 +73,23 @@ To guarantee absolute compliance with the competition's academic integrity stand
 
 ---
 
+### Stage Demo Path Verification (Task 3 & 5)
+- **Status**: `[x] TICKED (VERIFIED WITH REAL EXECUTION EVIDENCE)`
+- **Verification Evidence**: 
+  - Tested decoupled event ingestion with `LLM_PROVIDER=ollama`: `POST /events` returned immediately in **873 ms** (initial cold triage), while neural LLM enrichment proceeded in the background without blocking the caller.
+  - Executed full 5-stage attack campaign replay via `scripts/demo_replay.py` in **35.5 seconds** without sensor timeouts.
+  - Unit test `test_decoupled_ingestion_with_background_llm_upgrade` verified passing.
+  - Selected Alert Panel updated to render the live engine badge (`Engine: Offline RAG` / `LLM: ollama-local (llama3.2)`).
+  - Recommended stage demo strategy established: **Option A** (live stage demo on deterministic engine + pre-generated/recorded LLM sample).
+- **Unblocking Action**: Completed.
+
+---
+
 ## 2. Technical Baseline & Quality Verification Summary
 
 | Verification Category | Command Executed | Result / Output | Gate Impact |
 |---|---|---|:---:|
-| **Unit & Integration Suite** | `python -m pytest` | **37 passed in ~5.14s** | **PASS** |
+| **Unit & Integration Suite** | `python -m pytest` | **38 passed in ~13.08s** | **PASS** |
 | **End-to-End Architectural Test** | `python scripts/verify_e2e.py` | **15/15 checks passed (100%)** | **PASS** |
 | **Frontend Production Build** | `cd web; npm run build` | **Built in 598 ms (0 errors)** | **PASS** |
 | **Python Code Quality** | `python -m ruff check .` | **All checks passed! (0 errors)** | **PASS** |

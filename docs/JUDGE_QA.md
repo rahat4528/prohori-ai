@@ -14,25 +14,35 @@ This document prepares Team Orionids for the toughest technical, operational, an
 
 ---
 
-### Question 2: "What is your real analysis latency? Isn't an LLM too slow for real-time SOC alerting?"
+### Question 2: "Is it fast enough? What is your real analysis latency?"
 **Honest Answer:**
-> *"We benchmarked this directly on our host hardware (AMD Ryzen 7 PRO 4750U, 8 cores, 16 threads, 32GB RAM) over 20 live incoming alerts:
-> - **Steady-state median latency (Deterministic Offline RAG):** **32.03 ms** per alert (rules + indexed STIX retrieval; cold start: 2,111.45 ms).
-> - **Steady-state median latency (Local Neural LLM - Ollama Llama 3.2 on CPU):** **70.55 s** per alert (cold start: 77.28 s; min: 44.67 s; max steady: 110.06 s; 60/60 citations verified grounded).
-> - **Stage Demo Acceleration:** For a live stage pitch, operators can pre-warm the model, use our deterministic engine for instantaneous sub-50ms triage, or toggle Sovereignty Mode off to use cloud inference (Google Gemini 1.5 Flash: ~1.2s; Groq Llama 3.3: ~0.8s).
-> Crucially, our architecture decouples high-speed event ingestion (handled asynchronously by FastAPI in sub-5ms) from AI reasoning: the AI Analyst only triages elevated signals or aggregates them into multi-stage attack incidents, preventing ingestion bottlenecks."*
+> *"It depends on the engine mode, which is why our architecture decouples event ingestion:
+> - **Line-Rate Ingestion & Deterministic Triage (Default):** **32.03 ms** median steady-state latency (tested over 20 live alerts on an AMD Ryzen 7 PRO 4750U, cold start: 2,111.45 ms). Incoming sensor events appear on the console in sub-second time.
+> - **Local Neural LLM (Ollama Llama 3.2 on CPU):** **70.55 s** median steady-state latency (min: 44.67 s, max steady: 110.06 s; cold start: 77.28 s). With prompt optimization (limiting output to 1 concise sentence), this drops to **24.85 s**.
+> - **Decoupled Architecture:** Ingestion never waits for the LLM. The deterministic engine provides instant triage in 32 ms, and if local Ollama is active, it enriches the incident in the background and upgrades the console via WebSocket (`event_enriched`).
+> - **Cloud Mode (Optional):** Cloud latency requires an API key and is currently **not measured** on this host."*
 
 ---
 
-### Question 3: "Why native Bengali (বাংলা)? How do you evaluate its quality and avoid mistranslations?"
+### Question 3: "Where is the AI if the default out-of-the-box mode is deterministic?"
 **Honest Answer:**
-> *"During an active security breach, cognitive load on on-duty IT officers is extreme. Translating complex technical concepts in high-stress moments causes delayed incident response.
-> For technical identifiers (IPs, CVE IDs, MITRE techniques like `[T1110.001]`, port numbers), we strictly preserve standard English terms. The narrative context, attack progression, and recommended mitigations are explained in natural, fluent Bengali.
-> In our offline engine, we ground translations in verified cybersecurity lexicons curated for Bangladeshi organizations. In LLM mode, our system prompt enforces bilingual parity and forbids conversational filler."*
+> *"We believe in engineering honesty over marketing hype:
+> 1. **Default Mode (Retrieval-Grounded Expert System):** Out of the box, Prohori runs a deterministic RAG engine. It indexes MITRE ATT&CK techniques, CVEs, and CWEs in vector/relational stores, performs rule-guided triage, and synthesizes grounded bilingual explanations in ~32 ms. It requires zero GPU, zero downloads, and zero cloud keys.
+> 2. **Neural AI Layer (Ollama / Cloud):** When enabled, local Ollama (`llama3.2`) or cloud providers perform generative reasoning, synthesizing novel narratives and conversational threat Q&A (`/analyst/ask`).
+> 3. **Honest Console Badge:** The operator console explicitly labels the source of every explanation: `Engine: Offline RAG (deterministic-offline-rag)` vs `LLM: ollama-local (llama3.2)`. We never pretend our deterministic rules are a neural model."*
 
 ---
 
-### Question 4: "What parts of the system are real vs. simulated / mocked?"
+### Question 4: "How good is the LLM's Bangla? How do you evaluate it?"
+**Honest Answer:**
+> *"Here is the unvarnished reality:
+> - **Measured Output:** In our 20-alert benchmark, Ollama `llama3.2` generated Bengali narratives across all runs, but lightweight 3B models frequently exhibit awkward literal phrasing or non-standard security terms when translating technical English concepts into Bengali.
+> - **Evaluation Status:** The LLM's Bengali text is **currently unreviewed by a human native speaker**. We do not certify linguistic fluency with automated tools.
+> - **Verification Gate:** We assembled a 10-scenario human evaluation pack in [`docs/BANGLA_REVIEW.md`](BANGLA_REVIEW.md) (with rows 6–10 populated directly from real LLM runs). Gate 2 of our final sign-off remains unticked until a native Bengali teammate evaluates each row and signs the review block."*
+
+---
+
+### Question 5: "What parts of the system are real vs. simulated / mocked?"
 **Honest Answer:**
 > *"Let's be 100% transparent:
 > - **Real & Production-Ready:** The FastAPI ingestion bus, SQLite / PostgreSQL with pgvector schema, the real-time WebSocket broadcaster, the PII/secret scrubbing regex pipeline, the RAG retrieval engine over 14 MITRE techniques & 8 CVEs, the immutable audit trail database, and the React 19 console with live SSE typewriter streaming.
@@ -41,7 +51,7 @@ This document prepares Team Orionids for the toughest technical, operational, an
 
 ---
 
-### Question 5: "How do you handle False Positives and prevent the AI from taking destructive actions?"
+### Question 6: "How do you handle False Positives and prevent the AI from taking destructive actions?"
 **Honest Answer:**
 > *"Prohori is built on the principle of Human-in-the-Loop (HITL) defensive guardrails. The AI Analyst **never** executes automated perimeter drops or destructive actions autonomously.
 > When an anomaly is detected, the Response Advisor formulates a risk-graded recommendation (e.g. temporary IP rate limit or firewall block). The human operator must review the grounded evidence and click 'Approve Countermeasure'.
@@ -49,7 +59,7 @@ This document prepares Team Orionids for the toughest technical, operational, an
 
 ---
 
-### Question 6: "Can an attacker compromise your AI Analyst using Prompt Injection?"
+### Question 7: "Can an attacker compromise your AI Analyst using Prompt Injection?"
 **Honest Answer:**
 > *"We enforce multi-stage defense-in-depth against prompt injection:
 > 1. **Structured Data Isolation:** Incoming telemetry (user agents, usernames, query paths) is parsed into strict Pydantic schemas and placed in JSON data blocks rather than instruction headers.
@@ -60,7 +70,7 @@ This document prepares Team Orionids for the toughest technical, operational, an
 
 ---
 
-### Question 7: "What is your business model? Are your pricing numbers validated?"
+### Question 8: "What is your business model? Are your pricing numbers validated?"
 **Honest Answer:**
 > *"Our pricing figures ($1,200/node/year for enterprise on-premises and $99/month for SaaS) are **initial commercial hypotheses**, not yet customer-validated.
 > Our go-to-market strategy has two clear tiers:
@@ -69,7 +79,7 @@ This document prepares Team Orionids for the toughest technical, operational, an
 
 ---
 
-### Question 8: "How does Prohori compare to established tools like Wazuh or Splunk?"
+### Question 9: "How does Prohori compare to established tools like Wazuh or Splunk?"
 **Honest Answer:**
 > *"Wazuh and Splunk are exceptional log aggregation and rule-matching engines, but they require seasoned, expensive SOC analysts to configure YAML rules and interpret cryptic alerts.
 > Prohori is an **AI-native analyst layer**. Instead of handing an IT officer 500 alert rows, Prohori correlates them into a multi-stage attack chain, explains the adversary's intent in plain Bengali and English with MITRE citations, and drafts an immediate containment action. It is designed specifically for organizations that cannot afford a 5-person 24/7 SOC team."*

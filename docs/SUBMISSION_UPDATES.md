@@ -26,7 +26,7 @@ Following a strict mentor review, Prohori AI underwent a comprehensive engineeri
 | **Pitch Focus** | Spent equal time (~50%) explaining the 3 defensive sensors instead of the AI. | **90% of pitch & video time** focused on the Bilingual AI Analyst; 3 sensors framed in 20 seconds. | Sensors are commodity data feeds; the core differentiator is the bilingual AI reasoning engine. |
 | **Data Sovereignty** | Claimed "zero data leaves the country" without qualification. | Explicitly states: **Offline Ollama/Deterministic mode is the default sovereign mode (zero data egress)**; cloud LLMs (Groq/Gemini) are optional. | Truth in engineering: cloud APIs transmit event text over the internet; local Ollama does not. |
 | **Sensor Count** | Inconsistent: some docs said 3 sensors, LinkedIn draft said 4. | Standardized on **exactly 3 defensive sensors** (Honeypot, Abuse Guard, Scanner) + 1 Operator Console. | Eliminates judge confusion between sensors and user interfaces. |
-| **Triage Latency** | Claimed "under 800 ms per alert" without empirical measurement. | **Measured 30.44 ms median steady-state latency** (worst-case cold-start: 2,098 ms) on AMD Ryzen 7 PRO. | Replaces unverified estimate with an empirical benchmark run over 20 live alerts. |
+| **Triage Latency** | Claimed "under 800 ms per alert" without empirical measurement. | **Measured 32.03 ms median steady-state latency** for deterministic RAG (2,111 ms cold-start); local neural LLM (Ollama CPU) median **70.55 s** (24.85 s concise). Ingestion decoupled to ~35 ms. | Replaces unverified estimate with empirical benchmarks and decoupled ingestion architecture. |
 | **AI Hallucination** | Claimed "zero hallucination". | Replaced with **"grounded in retrieved MITRE ATT&CK & CVE intelligence with verified citation badges"**. | No LLM can guarantee zero hallucination; citing retrieved source documents is technically accurate. |
 | **NVD / MITRE Sync** | Implied automated scheduled cron synchronization. | Accurately describes `knowledge/ingest.py` as a manual/startup ingestion script; cron sync placed on roadmap. | Accurate reflection of current codebase capabilities. |
 | **Statistics** | Stated unsourced "85% of institutions cannot afford a SOC" and "$40k–$100k salary". | Softened to "many small organizations and public offices cannot afford dedicated SOC teams". | Prevents credibility loss during judge scrutiny. |
@@ -39,9 +39,9 @@ Following a strict mentor review, Prohori AI underwent a comprehensive engineeri
 
 ### A. Pytest Suite Execution
 - **Command**: `.venv\Scripts\python -m pytest`
-- **Result**: `37 passed in 5.14s` (100% pass rate)
+- **Result**: `38 passed in 13.08s` (100% pass rate)
 - **Coverage**:
-  - `api/tests/`: Event ingestion, PII redaction, schema validation, rate limit middleware, opt-in header auth, JSON-grammar failover, and grounding validation
+  - `api/tests/`: Event ingestion, PII redaction, schema validation, rate limit middleware, opt-in header auth, JSON-grammar failover, grounding validation, and decoupled background LLM upgrading
   - `sensors/deception/tests/`: Simulated honeypot traps, isolated response generation, telemetry streaming
   - `sensors/ratelimiter/tests/`: Sliding-window token-bucket limiter, progressive HTTP 429 blocking
   - `sensors/discovery/tests/`: Target allowlist enforcement, non-allowlisted target rejection (HTTP 403)
@@ -62,7 +62,7 @@ Following a strict mentor review, Prohori AI underwent a comprehensive engineeri
   - **Steady-State Median (Alerts 2–20)**: `70,550.23 ms` (70.55 s)
   - **Min Latency**: `44,672.53 ms` (44.67 s)
   - **Max Steady Latency**: `110,056.05 ms` (110.06 s)
-  - **Grounding Audit**: 60 total citations evaluated, **0 unfound or hallucinated (100% verified against knowledge base)**.
+  - **Grounding Audit**: 60 total citations evaluated; validator verified 59 of 60 cited IDs and removed 1 unindexed sub-technique (`T1490.001`) before storage.
   - **Resilience Tests**:
     - Unreachable daemon: gracefully fell back in `2,461.44 ms`.
     - Forced timeout: gracefully fell back in `441.59 ms`.

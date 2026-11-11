@@ -445,8 +445,8 @@ async def run_suite():
   - **P95 Latency**: `{p95_ms:.2f} ms`
 
 > [!NOTE]
-> On commodity mobile x86 CPUs without discrete CUDA acceleration, local neural LLM inference (~3B parameters) generates tokens at ~15–25 tokens/sec.
-> In Prohori's defense architecture, **FastAPI ingestion and deterministic rule triage operate in sub-50ms** line rate, while the local neural LLM operates asynchronously on elevated incidents.
+> On commodity mobile x86 CPUs without discrete CUDA acceleration, local neural LLM inference (~3B parameters) generates tokens via CPU execution.
+> In Prohori's defense architecture, **FastAPI ingestion and deterministic rule triage operate in ~30–50 ms**, while the local neural LLM operates asynchronously on elevated incidents.
 
 ---
 

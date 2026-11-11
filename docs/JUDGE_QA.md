@@ -16,11 +16,11 @@ This document prepares Team Orionids for the toughest technical, operational, an
 
 ### Question 2: "What is your real analysis latency? Isn't an LLM too slow for real-time SOC alerting?"
 **Honest Answer:**
-> *"We benchmarked this directly on an AMD Ryzen 7 PRO 4750U (8 cores, 16 threads, 32GB RAM) over 20 live incoming alerts:
-> - **Steady-state median latency (Deterministic Offline RAG):** **50.57 ms** per alert (rules + indexed STIX retrieval).
-> - **Worst-case / Cold-start:** **2,158.99 ms** (first alert warming up SQLite connection and knowledge embeddings).
-> - **Real LLM Generation:** LLM latency: not yet measured (currently being benchmarked on local CPU hardware).
-> Crucially, our architecture decouples high-speed event ingestion (handled asynchronously by FastAPI in sub-5ms) from AI reasoning: the AI Analyst only triages elevated signals or aggregates them into multi-stage attack incidents, preventing inference bottlenecks."*
+> *"We benchmarked this directly on our host hardware (AMD Ryzen 7 PRO 4750U, 8 cores, 16 threads, 32GB RAM) over 20 live incoming alerts:
+> - **Steady-state median latency (Deterministic Offline RAG):** **32.03 ms** per alert (rules + indexed STIX retrieval; cold start: 2,111.45 ms).
+> - **Steady-state median latency (Local Neural LLM - Ollama Llama 3.2 on CPU):** **70.55 s** per alert (cold start: 77.28 s; min: 44.67 s; max steady: 110.06 s; 60/60 citations verified grounded).
+> - **Stage Demo Acceleration:** For a live stage pitch, operators can pre-warm the model, use our deterministic engine for instantaneous sub-50ms triage, or toggle Sovereignty Mode off to use cloud inference (Google Gemini 1.5 Flash: ~1.2s; Groq Llama 3.3: ~0.8s).
+> Crucially, our architecture decouples high-speed event ingestion (handled asynchronously by FastAPI in sub-5ms) from AI reasoning: the AI Analyst only triages elevated signals or aggregates them into multi-stage attack incidents, preventing ingestion bottlenecks."*
 
 ---
 

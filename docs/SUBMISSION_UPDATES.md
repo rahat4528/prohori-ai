@@ -39,26 +39,35 @@ Following a strict mentor review, Prohori AI underwent a comprehensive engineeri
 
 ### A. Pytest Suite Execution
 - **Command**: `.venv\Scripts\python -m pytest`
-- **Result**: `34 passed in 5.06s` (100% pass rate)
+- **Result**: `37 passed in 5.14s` (100% pass rate)
 - **Coverage**:
-  - `api/tests/`: Event ingestion, PII redaction, schema validation, rate limit middleware
+  - `api/tests/`: Event ingestion, PII redaction, schema validation, rate limit middleware, opt-in header auth, JSON-grammar failover, and grounding validation
   - `sensors/deception/tests/`: Simulated honeypot traps, isolated response generation, telemetry streaming
   - `sensors/ratelimiter/tests/`: Sliding-window token-bucket limiter, progressive HTTP 429 blocking
   - `sensors/discovery/tests/`: Target allowlist enforcement, non-allowlisted target rejection (HTTP 403)
-  - `analyst/tests/`: Autonomous triage agent, correlation agent, bilingual narrative generation, MITRE/CVE RAG retrieval
+  - `analyst/tests/`: Autonomous triage agent, correlation agent, bilingual narrative generation, MITRE/CVE RAG retrieval, and strict citation grounding
 
-### B. Empirical Latency Benchmark
-- **Benchmark Script**: `scripts/benchmark_latency.py`
-- **Hardware Tested**: AMD Ryzen 7 PRO 4750U (8 cores, 16 threads @ 1.70 GHz), 32.0 GB RAM, Windows 11 Enterprise (64-bit).
-- **Workload**: 20 live sequential alerts processed through API ingestion, PII redaction, and local RAG retrieval.
-- **Key Metrics**:
+### B. Empirical Latency & Inference Benchmark
+- **Deterministic RAG Engine Benchmark** (`scripts/benchmark_latency.py`):
   - **Sample Size**: 20 alerts
-  - **Min Latency**: `27.68 ms`
-  - **Median Latency**: `30.44 ms`
-  - **Mean Latency**: `134.03 ms`
-  - **P95 Latency**: `2,098.63 ms`
-  - **Worst-case Latency (Cold Start)**: `2,098.63 ms` (Alert 1: database connection pool initialization and embedding store warm-up)
-  - **Steady-State Latency (Alerts 2–20)**: `27.68 ms – 35.03 ms`
+  - **Min Latency**: `30.82 ms`
+  - **Median Latency**: `32.03 ms`
+  - **Mean Latency**: `136.21 ms`
+  - **Cold-Start (Alert 1)**: `2,111.45 ms` (database connection initialization & embedding store warm-up)
+  - **Steady-State Latency (Alerts 2–20)**: `30.82 ms – 35.61 ms`
+- **Real Neural LLM Benchmark — Ollama Llama 3.2 on CPU** (`scripts/benchmark_ollama.py`):
+  - **Host Hardware**: AMD Ryzen 7 PRO 4750U (8 cores, 16 threads), 32 GB RAM (No discrete CUDA GPU).
+  - **Sample Size**: 20 distinct alerts (5 demo scenarios + 15 novel unseen attack types).
+  - **Cold-Start (Alert 1)**: `77,284.54 ms` (77.28 s)
+  - **Steady-State Median (Alerts 2–20)**: `70,550.23 ms` (70.55 s)
+  - **Min Latency**: `44,672.53 ms` (44.67 s)
+  - **Max Steady Latency**: `110,056.05 ms` (110.06 s)
+  - **Grounding Audit**: 60 total citations evaluated, **0 unfound or hallucinated (100% verified against knowledge base)**.
+  - **Resilience Tests**:
+    - Unreachable daemon: gracefully fell back in `2,461.44 ms`.
+    - Forced timeout: gracefully fell back in `441.59 ms`.
+    - Malformed non-JSON output: recovered with deterministic fallback in `1.87 ms`.
+  - **Full Evidence Document**: [`docs/evidence/llm_runs.md`](evidence/llm_runs.md).
 
 ### C. Live End-to-End Campaign Replay
 - **Command**: `python scripts/demo_replay.py`

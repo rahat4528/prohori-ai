@@ -3,7 +3,7 @@
 **Built by Team Orionids · International AI Builders Congress 2026 · Domain: InfraSphere AI &rarr; SecureAI**
 
 [![Team](https://img.shields.io/badge/Team-Orionids-blueviolet.svg)](#team-orionids)
-[![Tests](https://img.shields.io/badge/pytest-35%20passed-brightgreen.svg)](#testing--verification)
+[![Tests](https://img.shields.io/badge/pytest-37%20passed-brightgreen.svg)](#testing--verification)
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
 [![React](https://img.shields.io/badge/React-19%20%2B%20Vite-61dafb.svg)](https://react.dev/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg)](https://fastapi.tiangolo.com/)
@@ -81,11 +81,14 @@ All congress submission documents, pitch materials, and defense guides are index
 1. **AI SOC Analyst Core (90% Value Focus)**:
    - Ingests raw telemetry, performs autonomous severity reconciliation, and generates natural-language incident narratives in **plain English and native Bengali (বাংলা)**.
    - Grounded in retrieved **MITRE ATT&CK** (`T1110.001`, `T1499.002`, `T1595.002`) and NIST NVD CVE records. Every claim shows its verified citation badges.
-   - Measured steady-state triage latency: **~50.57 ms** (deterministic offline RAG; LLM latency: not yet measured) with a first-alert cold-start of 2,158 ms on local commodity hardware (AMD Ryzen 7 PRO 4750U, 32 GB RAM).
+   - Measured steady-state triage latency:
+     - **Deterministic Offline RAG**: **32.03 ms** median (cold start: 2,111.45 ms).
+     - **Local Neural LLM (Ollama Llama 3.2 on CPU)**: **70.55 s** median (cold start: 77.28 s) across 20 distinct alerts with **100% verified citation grounding** (0 hallucinated citations; see [`docs/evidence/llm_runs.md`](docs/evidence/llm_runs.md)).
+     - Tested on local hardware (AMD Ryzen 7 PRO 4750U, 8 cores / 16 threads, 32 GB RAM). Real-time ingestion is handled in sub-5ms by FastAPI, decoupling real-time detection from neural reasoning.
 
 2. **National Data Sovereignty & Offline Operational Mode**:
-   - **Default Out-of-the-Box Mode**: Operates 100% on-premises via our Deterministic Offline RAG engine (deterministic rule-guided triage + indexed STIX 2.1 knowledge retrieval; ~50 ms steady-state latency). Requires zero external API keys, zero internet, and no GPU hardware. Zero bytes leave the local host.
-   - **Real LLM Mode**: Full generative reasoning can be enabled by setting `GEMINI_API_KEY` (Google Gemini), `GROQ_API_KEY` (Llama 3.3 70B on Groq), or running a local Ollama daemon (`ollama run llama3.2`). When cloud mode is enabled, event text, after redaction, is sent to the chosen provider over HTTPS.
+   - **Default Sovereign Mode**: Operates 100% on-premises via local Ollama (`llama3.2`) or our Deterministic Offline RAG engine. Requires zero external API keys, zero cloud connectivity, and zero bytes leaving the local machine (`127.0.0.1:11434`).
+   - **Real LLM Mode & Cloud Flexibility**: Generative reasoning runs locally by default via Ollama. Cloud acceleration can optionally be enabled by setting `GEMINI_API_KEY` (Google Gemini 1.5 Flash) or `GROQ_API_KEY` (Llama 3.3 70B on Groq). When cloud mode is enabled, event text, after redaction, is sent to the chosen provider over HTTPS.
 
 3. **Mandatory PII & Secret Scrubbing**:
    - Centralized redaction engine scrubs passwords, API keys, JWT tokens, Bearer tokens, and emails *before* data reaches any model or database. Note: secrets and personal data are redacted before prompting; prompt injection is not fully mitigated.
@@ -204,7 +207,7 @@ Comprehensive test suites covering the Event API, Deception sensor, Rate Limiter
 pytest api/tests sensors/deception/tests sensors/ratelimiter/tests analyst/tests sensors/discovery/tests -v
 ```
 
-**Results**: `35 passed in ~5.06s` (100% pass rate).
+**Results**: `37 passed in ~5.14s` (100% pass rate).
 
 ---
 

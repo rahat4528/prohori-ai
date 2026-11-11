@@ -5,7 +5,6 @@ Results are written to docs/evidence/llm_runs.md and docs/BANGLA_REVIEW.md.
 """
 
 import asyncio
-import json
 import logging
 import os
 import re
@@ -460,7 +459,7 @@ async def run_suite():
         note = "Cold start" if i == 1 else "Steady-state CPU"
         md_content += f"| {i:02d} | `{r['event_id']}` | {r['type']} | **{r['latency_ms']:.2f}** | {str(r['severity']).upper()} | `ollama-local (llama3.2)` | {note} |\n"
 
-    md_content += f"""
+    md_content += """
 ---
 
 ## 3. Grounding Verification Matrix (20 Scenarios)

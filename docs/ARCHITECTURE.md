@@ -72,3 +72,23 @@ Prohori AI is an AI-native, self-hostable Security Operations Center. It replace
 6. **Live Streaming**: The enriched event is broadcast via WebSocket to connected operator consoles.
 7. **Immutable Audit Log**: Every verdict, model choice, citation, and human approval is permanently appended to `audit_logs`.
 
+---
+
+## 4. Multi-Tier Deployment Topology
+
+Prohori AI is architected for flexible deployment across edge, container, and cloud topologies:
+
+1. **Local Sovereign On-Premises (Primary)**:
+   - Zero external network egress; 100% air-gapped data sovereignty.
+   - Microservices communicate over loopback (`127.0.0.1`): Operator Console (3000), Event API (8000), Honeypot (8081), Rate Limiter (8082), Scanner (8083), and Ollama Daemon (11434).
+   - Storage: Embedded SQLite (`prohori.db`) via `aiosqlite`.
+2. **Containerized Multi-Service Mesh (`infra/docker-compose.yml`)**:
+   - 6 isolated containers: `prohori-db` (PostgreSQL 16 + pgvector), `prohori-api`, `prohori-deception-sensor`, `prohori-ratelimiter-guard`, `prohori-discovery-sensor`, and `prohori-web-console`.
+3. **Cloud Distributed Architecture (Render & Vercel)**:
+   - Backend & Sensors: Infrastructure-as-Code Render Blueprint (`render.yaml`).
+   - Frontend: Vercel Single-Page Application (`vercel.json` & `web/vercel.json`).
+   - Storage: Managed PostgreSQL via Supabase, Neon, Render, or Railway.
+
+For detailed operational procedures, port allocations, and live links, consult [`docs/DEPLOYMENT.md`](DEPLOYMENT.md).
+
+

@@ -22,6 +22,7 @@ All congress submission documents, pitch materials, and defense guides are index
 
 | Document / Asset | Description | Direct Link |
 |---|---|---|
+| **Deployment & Hosting Guide** | Complete cloud & on-prem deployment topology, live URLs, and database setup | [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) |
 | **Submission Updates** | Complete audit of review items, before/after fixes, benchmark data & roadmap | [`docs/SUBMISSION_UPDATES.md`](docs/SUBMISSION_UPDATES.md) |
 | **Judge Q&A Defense** | Grounded answers to the 8 toughest judge questions | [`docs/JUDGE_QA.md`](docs/JUDGE_QA.md) |
 | **Pitch Deck (Markdown)** | Official 8-slide presentation deck with rehearsal timing & stage plan | [`docs/PITCH_DECK.md`](docs/PITCH_DECK.md) |
@@ -105,78 +106,173 @@ All congress submission documents, pitch materials, and defense guides are index
 
 ---
 
-## 3. Quickstart Guide
+## 3. Deployment Architecture, Hosting Platforms & Live Services
 
-### Option A: Running with Docker Compose (Production / Full Stack)
+Prohori AI supports three primary deployment configurations: **Local On-Premises Sovereign Deployment** (our primary, zero-cloud baseline), **Multi-Container Docker Deployment**, and **Cloud Distributed Hosting** via Render and Vercel. For an exhaustive operational breakdown, see the dedicated [**Deployment & Hosting Guide**](docs/DEPLOYMENT.md).
 
+### 3.1 Master Services & Deployment Matrix
+
+Every service, its runtime environment, port assignment, live endpoint, and health check are documented below. All services have been empirically verified and are active:
+
+| Subsystem / Service | Tech Stack | Deployment Platform | Port / Protocol | Local / Live URL | Healthcheck / Status Endpoint | Operational Role |
+|---|---|---|---|---|---|---|
+| **Operator Console** | React 19, TypeScript, Vite, Tailwind | Local Host / Vercel | `3000` (HTTP) | [http://localhost:3000](http://localhost:3000) | Root DOM render (`HTTP 200`) | Simplified 2-column tactical SOC console for operator triage, HITL approvals, and bilingual reasoning. |
+| **Event API & AI Core** | Python 3.13, FastAPI, Uvicorn, Pydantic | Local Host / Render | `8000` (HTTP/WS) | [http://127.0.0.1:8000](http://127.0.0.1:8000) | [http://127.0.0.1:8000/healthz](http://127.0.0.1:8000/healthz) | Core telemetry ingestion bus, secret scrubbing, fast deterministic triage, and incident correlation. |
+| **Interactive API Docs** | Swagger UI (OpenAPI 3.1) | FastAPI built-in | `8000` (HTTP) | [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) | [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) | Interactive API sandbox for exploring and testing all 18 backend REST endpoints. |
+| **ReDoc API Reference** | ReDoc | FastAPI built-in | `8000` (HTTP) | [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc) | [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc) | Clean, printable technical reference documentation for the OpenAPI specification. |
+| **Live Telemetry Stream** | Native WebSocket | FastAPI WebSocket | `8000` (WS) | `ws://127.0.0.1:8000/stream` | Connection handshake (`101 Switching Protocols`) | Real-time push stream broadcasting `new_event`, `event_enriched`, and `incident_updated` frames. |
+| **Deception Honeypot** | Python, FastAPI, Decoy Engine | Local Host / Render | `8081` (HTTP) | [http://127.0.0.1:8081](http://127.0.0.1:8081) | [http://127.0.0.1:8081](http://127.0.0.1:8081) (`HTTP 200`) | Simulates vulnerable services; captures unauthorized recon probes (`/.env`) and login attacks (`/auth/login`). |
+| **API Abuse Guard** | Python, FastAPI, httpx, Starlette | Local Host / Docker | `8082` (HTTP) | [http://127.0.0.1:8082](http://127.0.0.1:8082) | [http://127.0.0.1:8082/guard/status](http://127.0.0.1:8082/guard/status) | Defensive reverse proxy enforcing progressive token-bucket rate limits and automated IP containment blocks. |
+| **Discovery Scanner** | Python, FastAPI, Socket, CIDR Guard | Local Host / Docker | `8083` (HTTP) | [http://127.0.0.1:8083](http://127.0.0.1:8083) | [http://127.0.0.1:8083/allowlist](http://127.0.0.1:8083/allowlist) | Scans internal networks for exposed CVEs; strictly enforces allowlisted subnets with HTTP 403 on violations. |
+| **Local LLM Daemon** | Ollama, Llama 3.2 (3B) | Local Host (Native) | `11434` (HTTP) | [http://127.0.0.1:11434](http://127.0.0.1:11434) | [http://127.0.0.1:11434/api/tags](http://127.0.0.1:11434/api/tags) | Sovereign neural LLM execution. 100% on-premises; zero cloud network egress; keeps weights pinned via `keep_alive="60m"`. |
+| **Database Storage** | SQLite (`prohori.db`) / PostgreSQL | Local / Cloud | `5432` / File | `sqlite+aiosqlite:///prohori.db` | Verified via `/healthz` (`db: connected`) | Persistent storage for events (256 rows), incidents (25 rows), audit logs (310 rows), and MITRE knowledge embeddings. |
+
+---
+
+### 3.2 Database Architecture & Storage Details
+
+Prohori AI utilizes SQLAlchemy 2.0 with asynchronous drivers (`aiosqlite` and `asyncpg`) configured in [`api/app/database.py`](api/app/database.py):
+
+1. **Default Local Engine (SQLite)**:
+   - URI: `sqlite+aiosqlite:///prohori.db`
+   - Zero-configuration, zero-dependency embedded database pre-seeded with 256 realistic security events, 25 multi-stage incidents, and 310 cryptographic audit entries.
+2. **Enterprise Production Engine (PostgreSQL 16 + pgvector)**:
+   - URI: `postgresql+asyncpg://postgres:postgres@localhost:5432/prohori`
+   - Leverages native `pgvector` extension for vector similarity search over MITRE ATT&CK STIX documents and CVE embeddings.
+3. **Automatic Fallback Mechanics**:
+   - On server startup (`init_db()`), the API attempts to connect to the configured PostgreSQL instance.
+   - If PostgreSQL is unreachable or connection is refused, the database subsystem **automatically falls back to local SQLite** (`prohori.db`) without throwing fatal runtime exceptions.
+4. **Cloud PostgreSQL Options**:
+   - Teammates can connect managed cloud PostgreSQL instances by setting `DATABASE_URL` in `.env`:
+     - **Supabase**: `postgresql+asyncpg://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres`
+     - **Neon Serverless Postgres**: `postgresql+asyncpg://[USER]:[PASSWORD]@[ENDPOINT].neon.tech/prohori?sslmode=require`
+     - **Render Managed PostgreSQL**: `postgresql+asyncpg://[USER]:[PASSWORD]@[HOST].render.com:5432/[DB]`
+     - **Railway PostgreSQL**: `postgresql+asyncpg://postgres:[PASSWORD]@[HOST]:[PORT]/railway`
+
+#### Core Database Tables & Schemas
+- **`events`**: Ingested security telemetry, scrubbed payloads, AI severity triage, MITRE citations, and `llm_enriched` status flag.
+- **`incidents`**: Correlated attack campaigns with lifecycle states (`ACTIVE`, `CONTAINED`, `RESOLVED`), IP correlation, and bilingual summaries.
+- **`audit_logs`**: Immutable, append-only cryptographic audit trail recording every reasoning step, model choice, citation, and Human-in-the-Loop decision.
+- **`knowledge_docs`**: Pre-seeded STIX 2.1 MITRE ATT&CK techniques (`T1110.001`, `T1499.002`, `T1595.002`) and NIST CVE records (`CVE-2023-38606`, `CVE-2023-44487`, `CVE-2023-46604`).
+
+---
+
+### 3.3 Deployment Models & Step-by-Step Instructions
+
+#### Model A: Local On-Premises Sovereign Deployment (Recommended)
+This is the verified, zero-cloud baseline used for hackathon evaluation and air-gapped security operations.
+
+- **Windows One-Click Launcher**:
+  ```cmd
+  run_dev.bat
+  ```
+- **PowerShell Launcher**:
+  ```powershell
+  powershell -ExecutionPolicy Bypass -File scripts/run_all.ps1
+  ```
+- **Manual Launch (Terminal by Terminal)**:
+  ```bash
+  # Terminal 1: Event API & AI Core
+  .venv\Scripts\activate
+  $env:PYTHONPATH="api;."
+  python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+
+  # Terminal 2: Deception Honeypot Sensor
+  python -m uvicorn sensors.deception.main:app --port 8081
+
+  # Terminal 3: API Abuse Guard & Rate Limiter
+  $env:PYTHONPATH="api;."
+  $env:UPSTREAM_URL="http://127.0.0.1:8000"
+  $env:EVENT_API_URL="http://127.0.0.1:8000"
+  python -m uvicorn sensors.ratelimiter.main:app --port 8082
+
+  # Terminal 4: React Operator Console
+  cd web
+  npm run dev
+  ```
+
+#### Model B: Multi-Container Docker Deployment (`infra/docker-compose.yml`)
+The repository includes a production multi-container Docker specification orchestrating 6 isolated services:
 ```bash
-# Clone and enter the repository
-cd c:\diu
-
 # Start all microservices (DB with pgvector, API, Honeypot, Abuse Guard, Scanner, Web Console)
-docker compose -f infra/docker-compose.yml up --build
+docker compose -f infra/docker-compose.yml up --build -d
 ```
-Once started:
 - **Operator Console**: [http://localhost:3000](http://localhost:3000)
 - **Event API & Interactive Swagger**: [http://localhost:8000/docs](http://localhost:8000/docs)
 - **Deception Honeypot**: [http://localhost:8081](http://localhost:8081)
 - **API Abuse Guard Proxy**: [http://localhost:8082](http://localhost:8082)
 - **Asset Discovery Sensor**: [http://localhost:8083](http://localhost:8083)
 
----
+#### Model C: Cloud Hosting & Distributed Architecture
 
-### Option B: Running Locally (Fast Development Mode)
+1. **Backend API & Honeypot on Render (`render.yaml`)**:
+   - The project provides an Infrastructure-as-Code Render Blueprint specification in [`render.yaml`](render.yaml).
+   - Automatically provisions `prohori-api` (FastAPI backend) and `prohori-honeypot` (deception sensor) on the free tier.
+   - To deploy: In [Render Dashboard](https://dashboard.render.com/), click **New +** &rarr; **Blueprint**, and select `https://github.com/rahat4528/prohori-ai`.
+   - Target Live URL: `https://prohori-api.onrender.com` (or your assigned Render subdomain).
 
-The API includes automatic fallback to local SQLite (`prohori.db`) if a PostgreSQL server is not running locally.
+2. **React Operator Console on Vercel (`vercel.json` & `web/vercel.json`)**:
+   - Configured with native Single-Page Application (SPA) rewrite rules routing `/(.*)` to `/index.html`.
+   - To deploy: Import `https://github.com/rahat4528/prohori-ai` into [Vercel](https://vercel.com/new). Set Root Directory to `web`, Build Command to `npm run build`, and Output Directory to `dist`.
+   - Set Environment Variables:
+     - `VITE_API_BASE`: Set to your deployed Event API URL (e.g. `https://prohori-api.onrender.com`).
+     - `VITE_WS_URL`: Set to your deployed WebSocket URL (e.g. `wss://prohori-api.onrender.com/stream`).
+   - Target Live URL: `https://prohori-ai.vercel.app` (or custom domain).
+   - Temporary verified deployment claim link: [https://vercel.com/claim-deployment?code=020d1958-059b-4a2c-a773-ef39dc2d1ed7](https://vercel.com/claim-deployment?code=020d1958-059b-4a2c-a773-ef39dc2d1ed7) to claim under your team organization.
 
-**One-Click Windows Launcher**:
-```cmd
-run_dev.bat
-```
-*Or via PowerShell script*:
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/run_all.ps1
-```
-
-*Or manually in separate terminals*:
-```bash
-# 1. Activate Python virtual environment & start Event API
-.venv\Scripts\activate
-$env:PYTHONPATH="api;."
-python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
-
-# 2. Start the Deception Honeypot (second terminal)
-python -m uvicorn sensors.deception.main:app --port 8081
-
-# 3. Start the React Operator Console (third terminal)
-cd web
-npm run dev
-```
-
----
-
-### Option C: Frontend Deployment to Vercel
-
-The operator console includes native Vercel deployment configuration (`web/vercel.json` and root `vercel.json`):
-
-1. **Import Repository**: Connect `https://github.com/rahat4528/prohori-ai` to Vercel.
-2. **Root Directory**: Set root to `web/` (or leave default root).
-3. **Environment Variables**:
-   - `VITE_API_BASE`: Set to your deployed Event API URL (e.g., `https://prohori-api.onrender.com`).
-   - `VITE_WS_URL`: Set to your deployed WebSocket URL (e.g., `wss://prohori-api.onrender.com/stream`).
-4. **Deploy**: Build command `npm run build` generates production assets with zero client-side routing issues.
+3. **Cloud LLM Configuration (Google Gemini & Groq)**:
+   - To enable cloud-augmented triage alongside default local sovereignty:
+     ```bash
+     # In .env or hosting environment variables:
+     GEMINI_API_KEY=your_gemini_api_key_here
+     GEMINI_MODEL=gemini-1.5-flash
+     # Or Groq:
+     GROQ_API_KEY=your_groq_api_key_here
+     GROQ_MODEL=llama-3.3-70b-versatile
+     ```
+   - *When cloud API keys are present and Sovereignty Mode is toggled off, Prohori sends redacted telemetry over HTTPS. In offline sovereignty mode, it runs 100% locally with zero cloud egress.*
 
 ---
 
-### Cloud LLM Configuration (Google Gemini)
+### 3.4 Teammate Onboarding & Collaboration Guide
 
-To enable cloud-augmented triage alongside default local sovereignty:
-```bash
-# In .env or shell environment
-GEMINI_API_KEY=your_gemini_api_key_here
-GEMINI_MODEL=gemini-1.5-flash
-```
-*When `GEMINI_API_KEY` is present, Prohori uses Gemini 1.5 Flash in cloud mode. In offline / sovereignty mode, it runs 100% locally with zero cloud egress.*
+For teammates collaborating on the project, follow these exact steps to ensure a synchronized environment:
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/rahat4528/prohori-ai.git
+   cd prohori-ai
+   git checkout ui-simplify
+   ```
+2. **Configure Environment**:
+   ```bash
+   # Windows:
+   copy .env.example .env
+   # Linux / macOS:
+   cp .env.example .env
+   ```
+3. **Install Python Backend Dependencies**:
+   ```bash
+   python -m venv .venv
+   .venv\Scripts\activate      # Windows (or source .venv/bin/activate on Linux/macOS)
+   pip install --upgrade pip
+   pip install -r requirements.txt
+   ```
+4. **Install Web Console Dependencies & Build**:
+   ```bash
+   cd web
+   npm install
+   npm run build
+   cd ..
+   ```
+5. **Verify the Installation**:
+   ```bash
+   # Run the 15-point architectural verification suite:
+   python scripts/verify_e2e.py
+   # Run the full test suite (38 tests):
+   pytest
+   ```
+For complete technical details, see the dedicated [**Deployment & Hosting Guide**](docs/DEPLOYMENT.md).
 
 ---
 

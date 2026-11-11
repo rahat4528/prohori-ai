@@ -32,6 +32,7 @@ Following a strict mentor review, Prohori AI underwent a comprehensive engineeri
 | **Statistics** | Stated unsourced "85% of institutions cannot afford a SOC" and "$40k–$100k salary". | Softened to "many small organizations and public offices cannot afford dedicated SOC teams". | Prevents credibility loss during judge scrutiny. |
 | **Commercial Model** | Quoted $1,200/node and $99/mo as established commercial pricing. | Explicitly labeled as an **unvalidated commercial hypothesis** formulated for hackathon judging criteria. | Honest acknowledgment of early-stage hackathon prototype maturity. |
 | **Pitch Materials** | Markdown pitch outline only; no real PowerPoint file; no QR code. | Real 8-slide PowerPoint deck (`.pptx`) + embedded QR code pointing to repository. | Provides a polished, ready-to-present visual artifact. |
+| **Deployment & Hosting** | Undocumented hosting platforms, missing live URLs and cloud blueprints in root documentation. | Complete Master Services Matrix, verified live endpoints table, Render blueprint (`render.yaml`), Vercel SPA config, and dedicated [`docs/DEPLOYMENT.md`](DEPLOYMENT.md) guide. | Gives teammates and judges complete visibility into every deployed service, port, and live URL. |
 
 ---
 

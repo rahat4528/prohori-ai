@@ -31,6 +31,7 @@ class OllamaProvider(LLMProvider):
             "prompt": prompt,
             "system": system_prompt,
             "stream": False,
+            "keep_alive": "60m",
             "options": {
                 "temperature": 0.2,
                 "num_predict": num_predict

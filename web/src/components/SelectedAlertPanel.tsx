@@ -315,6 +315,28 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
             [{c}]
           </span>
         ))}
+        {event.analyst?.provider && (
+          <span
+            className="font-mono"
+            style={{
+              padding: "4px 8px",
+              borderRadius: "6px",
+              fontSize: "12px",
+              fontWeight: 700,
+              background: event.analyst.provider.includes("deterministic")
+                ? "rgba(148, 163, 184, 0.15)"
+                : "rgba(168, 85, 247, 0.15)",
+              color: event.analyst.provider.includes("deterministic") ? "#94a3b8" : "#c084fc",
+              border: event.analyst.provider.includes("deterministic")
+                ? "1px solid rgba(148, 163, 184, 0.4)"
+                : "1px solid rgba(168, 85, 247, 0.4)"
+            }}
+          >
+            {event.analyst.provider.includes("deterministic")
+              ? `Engine: Offline RAG (${event.analyst.provider})`
+              : `LLM: ${event.analyst.provider}`}
+          </span>
+        )}
       </div>
 
       {/* 3. Section: WHAT HAPPENED (Narrative) */}

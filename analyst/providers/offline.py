@@ -18,7 +18,7 @@ class DeterministicOfflineProvider(LLMProvider):
     def provider_name(self) -> str:
         return "deterministic-offline-rag"
 
-    async def generate(self, prompt: str, system_prompt: str = "") -> str:
+    async def generate(self, prompt: str, system_prompt: str = "", format: str | None = None) -> str:
         """Synthesize high-fidelity cited narrative based on RAG context in prompt."""
         # Check if JSON format is expected
         is_json_request = "json" in prompt.lower() or "json" in system_prompt.lower()

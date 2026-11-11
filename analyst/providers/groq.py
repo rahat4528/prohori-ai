@@ -21,7 +21,7 @@ class GroqProvider(LLMProvider):
     def provider_name(self) -> str:
         return f"groq ({self.model})"
 
-    async def generate(self, prompt: str, system_prompt: str = "") -> str:
+    async def generate(self, prompt: str, system_prompt: str = "", format: str | None = None) -> str:
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"

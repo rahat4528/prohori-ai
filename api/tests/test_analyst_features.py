@@ -6,6 +6,7 @@ Unit and Integration Tests for Prohori Analyst Features:
 - Human-in-the-Loop approval and active perimeter denylist
 """
 
+import asyncio
 import json
 import os
 
@@ -262,5 +263,64 @@ async def test_triage_grounding_validation_filters_hallucinations():
     assert "T1110.001" in result["citations"]
     # mitre_technique must not be the hallucinated T9999.888
     assert result["mitre_technique"] != "T9999.888"
+
+
+@pytest.mark.asyncio
+async def test_decoupled_ingestion_with_background_llm_upgrade(monkeypatch):
+    """Verify that event ingestion returns immediately with deterministic triage,
+
+    and upgrades the event asynchronously in the background via LLM.
+    """
+
+    from analyst.agents.triage import triage_agent
+    from analyst.providers.base import LLMProvider
+
+    class SlowMockNeuralLLM(LLMProvider):
+        @property
+        def provider_name(self) -> str:
+            return "slow-mock-neural-llm"
+
+        async def generate(self, prompt: str, system_prompt: str = "", format: str | None = None) -> str:
+            await asyncio.sleep(0.05)
+            return json.dumps({
+                "severity": "critical",
+                "confidence": 0.99,
+                "narrative_en": "Neural LLM upgraded narrative.",
+                "narrative_bn": "নিউরাল এলএলএম আপগ্রেডেড বিবরণ।",
+                "citations": ["T1110.001"],
+                "mitre_technique": "T1110.001",
+                "recommended_action": "Isolate host.",
+                "requires_human_approval": True
+            })
+
+    # Monkeypatch triage_agent provider to SlowMockNeuralLLM
+    monkeypatch.setattr(triage_agent, "provider", SlowMockNeuralLLM())
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        payload = {
+            "source": "honeypot",
+            "severity": "high",
+            "type": "login_attempt_burst",
+            "details": {"source_ip": "10.0.0.55", "attempts": 20}
+        }
+        # Ingestion must return immediately with deterministic triage
+        resp = await client.post("/events", json=payload)
+        assert resp.status_code == 201
+        data = resp.json()
+        assert data["analyst"]["provider"] == "deterministic-offline-rag"
+
+        # Wait for the background upgrade task to finish
+        await asyncio.sleep(0.15)
+
+        # Fetch event again: it should now be upgraded with LLM reasoning
+        get_resp = await client.get("/events")
+        assert get_resp.status_code == 200
+        events = get_resp.json()["events"]
+        matched = next((e for e in events if e["id"] == data["id"]), None)
+        assert matched is not None
+        assert matched["analyst"]["provider"] == "slow-mock-neural-llm"
+        assert matched["analyst"]["narrative_en"] == "Neural LLM upgraded narrative."
+
 
 

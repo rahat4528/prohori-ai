@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 
 class LLMProvider(ABC):
     @abstractmethod
-    async def generate(self, prompt: str, system_prompt: str = "") -> str:
+    async def generate(self, prompt: str, system_prompt: str = "", format: str | None = None) -> str:
         """Asynchronously generate a response from the model given a user prompt and optional system prompt."""
 
     @property

@@ -3,12 +3,14 @@ Prohori AI - Event Ingestion & Streaming API
 Defensive Security Operations Center Event Bus
 """
 
+import asyncio
 import logging
 import os
 import sys
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 from uuid import UUID
 
 from fastapi import (
@@ -30,7 +32,8 @@ if str(root_dir) not in sys.path:
     sys.path.insert(0, str(root_dir))
 
 from analyst.agents.advisor import response_advisor
-from analyst.agents.triage import triage_agent
+from analyst.agents.triage import TriageAgent, triage_agent
+from analyst.providers.offline import DeterministicOfflineProvider
 from knowledge.retriever import kb_retriever
 
 from .audit import record_audit_entry
@@ -178,6 +181,69 @@ async def get_root_knowledge_doc(doc_id: str):
 
 
 
+deterministic_triage_agent = TriageAgent(provider=DeterministicOfflineProvider())
+
+
+async def upgrade_event_with_llm(event_id: str, raw_event_dict: dict[str, Any]):
+    """Asynchronously upgrades an event with full neural LLM reasoning without blocking ingestion."""
+    try:
+        llm_result = await triage_agent.triage_event(raw_event_dict)
+        if not llm_result:
+            return
+        recommendations = response_advisor.recommend_actions(raw_event_dict)
+        llm_result["recommendations"] = recommendations
+
+        async with AsyncSessionLocal() as session:
+            stmt = select(EventRecord).where(EventRecord.id == event_id)
+            res = await session.execute(stmt)
+            record = res.scalar_one_or_none()
+            if not record:
+                return
+
+            record.analyst = llm_result
+            if llm_result.get("severity"):
+                record.severity = llm_result["severity"]
+
+            await session.commit()
+            await session.refresh(record)
+
+            # Record audit entry for LLM upgrade
+            try:
+                await record_audit_entry(
+                    session=session,
+                    action_type="AI_TRIAGE_UPGRADED_LLM",
+                    actor="AI_SOC_ANALYST",
+                    model_used=llm_result.get("provider", "llm"),
+                    verdict={
+                        "summary_en": llm_result.get("narrative_en"),
+                        "severity": record.severity,
+                        "mitre": llm_result.get("mitre_technique")
+                    },
+                    input_event_id=record.id,
+                    citations=llm_result.get("citations", []),
+                    human_approved=False
+                )
+            except Exception as audit_err:
+                logger.warning(f"Failed to record audit entry on LLM upgrade: {audit_err}")
+
+            event_out = Event(
+                id=record.id,
+                ts=record.ts,
+                source=EventSource(record.source),
+                severity=EventSeverity(record.severity),
+                type=record.type,
+                details=record.details or {},
+                analyst=record.analyst
+            )
+            await ws_manager.broadcast({
+                "type": "event_enriched",
+                "event": event_out.model_dump(mode="json")
+            })
+            logger.info(f"Asynchronously upgraded event {event_id} with {llm_result.get('provider')}")
+    except Exception as e:
+        logger.warning(f"Asynchronous LLM upgrade failed for event {event_id}: {e}")
+
+
 @app.post(
     "/events",
     response_model=Event,
@@ -195,17 +261,23 @@ async def ingest_event(
     """
     analyst_payload = event_in.analyst
     severity_val = event_in.severity.value
+    should_async_upgrade = False
+    raw_event_dict = None
 
     # Auto-run AI SOC Analyst triage on ingest if not already enriched
     if analyst_payload is None and event_in.source != EventSource.ANALYST:
+        raw_event_dict = {
+            "source": event_in.source.value,
+            "severity": event_in.severity.value,
+            "type": event_in.type,
+            "details": event_in.details
+        }
+        is_neural_llm = not isinstance(triage_agent.provider, DeterministicOfflineProvider)
+
         try:
-            raw_event_dict = {
-                "source": event_in.source.value,
-                "severity": event_in.severity.value,
-                "type": event_in.type,
-                "details": event_in.details
-            }
-            triage_result = await triage_agent.triage_event(raw_event_dict)
+            # Immediate fast triage with deterministic RAG engine
+            active_fast_agent = deterministic_triage_agent if is_neural_llm else triage_agent
+            triage_result = await active_fast_agent.triage_event(raw_event_dict)
             recommendations = response_advisor.recommend_actions(raw_event_dict)
             triage_result["recommendations"] = recommendations
             analyst_payload = triage_result
@@ -220,7 +292,7 @@ async def ingest_event(
                     session=db,
                     action_type="AI_TRIAGE_PERFORMED",
                     actor="AI_SOC_ANALYST",
-                    model_used=triage_result.get("provider", "local-rag"),
+                    model_used=triage_result.get("provider", "deterministic-offline-rag"),
                     verdict={
                         "summary_en": triage_result.get("narrative_en"),
                         "severity": severity_val,
@@ -232,9 +304,11 @@ async def ingest_event(
                 )
             except Exception as audit_err:
                 logger.warning(f"Failed to record audit entry: {audit_err}")
-        except Exception as e:
-            logger.warning(f"Auto-triage on ingest skipped due to error: {e}")
 
+            if is_neural_llm:
+                should_async_upgrade = True
+        except Exception as e:
+            logger.warning(f"Fast triage on ingest skipped due to error: {e}")
 
     record = EventRecord(
         id=event_in.id,
@@ -249,7 +323,6 @@ async def ingest_event(
     db.add(record)
     await db.commit()
     await db.refresh(record)
-
 
     event_out = Event(
         id=record.id,
@@ -267,6 +340,10 @@ async def ingest_event(
         "type": "new_event",
         "event": event_dict
     })
+
+    # Trigger asynchronous background upgrade if neural LLM is active
+    if should_async_upgrade and raw_event_dict:
+        asyncio.create_task(upgrade_event_with_llm(record.id, raw_event_dict))
 
     return event_out
 

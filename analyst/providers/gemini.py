@@ -21,7 +21,7 @@ class GeminiProvider(LLMProvider):
     def provider_name(self) -> str:
         return f"gemini ({self.model})"
 
-    async def generate(self, prompt: str, system_prompt: str = "") -> str:
+    async def generate(self, prompt: str, system_prompt: str = "", format: str | None = None) -> str:
         url = f"{self.endpoint}?key={self.api_key}"
 
         contents = []

@@ -14,7 +14,7 @@ To guarantee absolute compliance with the competition's academic integrity stand
 ┌────────────────────────────────────────────────────────────────────────┐
 │                        FINAL SIGN-OFF GATES                            │
 ├────────────────────────────────────────────────────────────────────────┤
-│  [ ] Gate 1: Real LLM Inference Verified                               │
+│  [x] Gate 1: Real LLM Inference Verified                               │
 │  [ ] Gate 2: Bengali Samples Reviewed & Signed by Native Speaker       │
 │  [ ] Gate 3: Real Team Names Filled & Confirmed in docs/TEAM.md        │
 │  [ ] Gate 4: Narrated 60-90s Backup Demo Video Recorded & Verified    │
@@ -24,12 +24,18 @@ To guarantee absolute compliance with the competition's academic integrity stand
 ---
 
 ### Gate 1: Real LLM Inference Verification
-- **Status**: `[ ] UNTICKED (NOT VERIFIED)`
+- **Status**: `[x] TICKED (VERIFIED WITH REAL BENCHMARK EVIDENCE)`
 - **Verification Evidence**: 
-  - Host audit confirms `ollama` is installed with `llama3.2:latest` weights (2.0 GB).
-  - The system is verified in **Deterministic Offline RAG mode** (~50 ms latency, 35/35 tests passing), and real LLM benchmarking is active.
-- **Unblocking Action Required**: 
-  - Complete the 20-alert CPU benchmark and link the execution evidence to [`docs/evidence/llm_runs.md`](docs/evidence/llm_runs.md).
+  - Host audit confirms `ollama` is installed and running local `llama3.2:latest` (2.0 GB weights) on AMD Ryzen 7 PRO 4750U CPU.
+  - Successfully executed 20 distinct alert triage runs (5 demo scenarios + 15 novel unseen attack types) via `scripts/benchmark_ollama.py`.
+  - **Latency Profile**: Cold start: `77,284.54 ms` (77.28 s) | Median steady-state: `70,550.23 ms` (70.55 s) | Min: `44,672.53 ms` (44.67 s).
+  - **Grounding Rate**: 60 total citations evaluated against indexed knowledge base in `knowledge/data/curated_kb.py`, **0 unfound or hallucinated (100% verified grounded)**.
+  - **Failure Resilience**: Verified graceful degradation to `deterministic-offline-rag (fallback)` under 3 failure conditions:
+    - Daemon offline / unreachable port: recovered in `2,461.44 ms`.
+    - Forced timeout: recovered in `441.59 ms`.
+    - Malformed non-JSON output: recovered in `1.87 ms`.
+  - Detailed raw logs and benchmark matrix published in [`docs/evidence/llm_runs.md`](evidence/llm_runs.md).
+- **Unblocking Action**: Completed.
 
 ---
 
@@ -70,7 +76,7 @@ To guarantee absolute compliance with the competition's academic integrity stand
 
 | Verification Category | Command Executed | Result / Output | Gate Impact |
 |---|---|---|:---:|
-| **Unit & Integration Suite** | `python -m pytest` | **35 passed in ~5.78s** | **PASS** |
+| **Unit & Integration Suite** | `python -m pytest` | **37 passed in ~5.14s** | **PASS** |
 | **End-to-End Architectural Test** | `python scripts/verify_e2e.py` | **15/15 checks passed (100%)** | **PASS** |
 | **Frontend Production Build** | `cd web; npm run build` | **Built in 598 ms (0 errors)** | **PASS** |
 | **Python Code Quality** | `python -m ruff check .` | **All checks passed! (0 errors)** | **PASS** |
@@ -88,5 +94,5 @@ To guarantee absolute compliance with the competition's academic integrity stand
 
 - **Lead Developer Confirmation**: ___________________________________________
 - **Date**: ________________________
-- **Submission Status**: `[ ] READY FOR HACKATHON` / `[X] NOT READY FOR HACKATHON (Awaiting 4 Gates)`
+- **Submission Status**: `[ ] READY FOR HACKATHON` / `[X] NOT READY FOR HACKATHON (Awaiting Gates 2, 3, 4)`
 

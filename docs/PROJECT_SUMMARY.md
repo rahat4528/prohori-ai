@@ -88,7 +88,7 @@ Following mentor evaluations and internal engineering audits, the following majo
 
 | Service | Hosting Platform | Host / Port | Live / Local Endpoint | Healthcheck Endpoint |
 |---|---|---|---|---|
-| **Operator Console** | Local / Vercel | `localhost:3000` | [http://localhost:3000](http://localhost:3000) | Root DOM render (`HTTP 200`) |
+| **Operator Console** | Local / Vercel | localhost:3000 / HTTPS | [http://localhost:3000](http://localhost:3000) &bull; [https://prohori-ai.vercel.app](https://prohori-ai.vercel.app) | Root DOM render (HTTP 200) |
 | **Event API & AI Core** | Local / Render | `127.0.0.1:8000` | [http://127.0.0.1:8000](http://127.0.0.1:8000) | [http://127.0.0.1:8000/healthz](http://127.0.0.1:8000/healthz) |
 | **Interactive Swagger** | FastAPI built-in | `127.0.0.1:8000` | [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) | [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) |
 | **ReDoc API Reference**| FastAPI built-in | `127.0.0.1:8000` | [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc) | [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc) |
@@ -105,8 +105,8 @@ Following mentor evaluations and internal engineering audits, the following majo
    - Deployed via Render Dashboard &rarr; **New +** &rarr; **Blueprint** &rarr; Connect `https://github.com/rahat4528/prohori-ai`.
 2. **Vercel Frontend Hosting (`vercel.json` & `web/vercel.json`)**:
    - Single-Page Application (SPA) configuration routing `/(.*)` to `/index.html`.
-   - **Permanent Production Method**: In the [Vercel Dashboard](https://vercel.com/new), import `https://github.com/rahat4528/prohori-ai`, set root directory to `web`, build command to `npm run build`, output directory to `dist`, and set `VITE_API_BASE` and `VITE_WS_URL`. This creates a permanent `.vercel.app` URL that never expires.
-   - **Temporary CLI Claim Link**: `https://vercel.com/claim-deployment?code=b54eff86-d3f4-428d-bd79-e2fa2c85dd8d` *(Note: Anonymous CLI deployments expire after 60 minutes unless claimed into an account)*.
+   - **Live Production URL**: [https://prohori-ai.vercel.app](https://prohori-ai.vercel.app)
+   - **Status**: Deployed to production by Rahat via GitHub integration on Vercel. Automatic CI/CD configured on pushes to main.
 
 ---
 
@@ -252,3 +252,4 @@ All automated software engineering is complete. Exactly 4 human-only items remai
 ### Final Verdict:
 **NOT READY FOR HACKATHON**  
 *(Pending human completion of the 4 checklist items above; software implementation is 100% complete and certified).*
+

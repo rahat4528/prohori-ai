@@ -60,7 +60,7 @@ Every service, its runtime environment, port assignment, live endpoint, and heal
 
 | Subsystem / Service | Tech Stack | Deployment Platform | Port / Protocol | Local / Live URL | Healthcheck / Status Endpoint | Operational Role |
 |---|---|---|---|---|---|---|
-| **Operator Console** | React 19, TypeScript, Vite, Tailwind | Local Host / Vercel | `3000` (HTTP) | [http://localhost:3000](http://localhost:3000) | Root DOM render (`HTTP 200`) | Simplified 2-column tactical SOC console for operator triage, HITL approvals, and bilingual reasoning. |
+| **Operator Console** | React 19, TypeScript, Vite, Tailwind | Local Host / Vercel | 3000 (HTTP) / HTTPS | [http://localhost:3000](http://localhost:3000) &bull; [https://prohori-ai.vercel.app](https://prohori-ai.vercel.app) | Root DOM render (HTTP 200) | Simplified 2-column tactical SOC console for operator triage, HITL approvals, and bilingual reasoning. |
 | **Event API & AI Core** | Python 3.13, FastAPI, Uvicorn, Pydantic | Local Host / Render | `8000` (HTTP/WS) | [http://127.0.0.1:8000](http://127.0.0.1:8000) | `http://127.0.0.1:8000/healthz` | Core telemetry ingestion bus, secret scrubbing, fast deterministic triage, and incident correlation. |
 | **Interactive API Docs** | Swagger UI (OpenAPI 3.1) | FastAPI built-in | `8000` (HTTP) | [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) | `http://127.0.0.1:8000/docs` | Interactive API sandbox for exploring and testing all 18 backend REST endpoints. |
 | **ReDoc API Reference** | ReDoc | FastAPI built-in | `8000` (HTTP) | [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc) | `http://127.0.0.1:8000/redoc` | Clean, printable technical reference documentation for the OpenAPI specification. |
@@ -207,8 +207,8 @@ The frontend is configured with native Single-Page Application (SPA) routing:
 3. Configure Environment Variables:
    - `VITE_API_BASE`: `https://prohori-api.onrender.com` (your deployed backend API)
    - `VITE_WS_URL`: `wss://prohori-api.onrender.com/stream` (your deployed WebSocket)
-4. Click **Deploy**. Vercel assigns a permanent production URL (e.g. `https://prohori-ai.vercel.app`).
-5. **Prebuilt CLI Claim Link**: A temporary verified deployment is available at [https://vercel.com/claim-deployment?code=020d1958-059b-4a2c-a773-ef39dc2d1ed7](https://vercel.com/claim-deployment?code=020d1958-059b-4a2c-a773-ef39dc2d1ed7) to claim under your personal/team Vercel organization.
+4. Click **Deploy**. Vercel creates the permanent production deployment at **[https://prohori-ai.vercel.app](https://prohori-ai.vercel.app)**.
+5. **Verified Live Status**: Deployed and certified live on Vercel Production.
 
 ---
 

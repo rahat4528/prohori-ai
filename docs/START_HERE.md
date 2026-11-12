@@ -97,3 +97,4 @@ gh repo view rahat4528/prohori-ai
 | **Gate 4: Official Team Orionids Roster** | **PENDING** | Team Lead | Awaiting 3 student names and roles in `docs/TEAM.md`. |
 
 Once Tasks 1, 2, 3, and 4 are done, all 4 gates are signed and Prohori AI is **100% READY FOR SUBMISSION**!
+

@@ -57,7 +57,7 @@ const SLIDES = [
       "2. Live WebSocket pushes alert: 'BRUTE FORCE SUSPECTED'.",
       "3. Operator asks in native Bangla: 'কী ঘটেছে? কতটা বিপজ্জনক?'",
       "4. AI Analyst streams response in natural Bengali citing MITRE [T1110.001] and [CWE-307].",
-      "5. Operator clicks 'Approve Defense' (HITL): Firewall block enforced and cryptographically audited."
+      "5. Operator clicks 'Approve Defense' (HITL): Denylist enforced and appended to audit log."
     ],
     bulletPointsBn: [
       "১. ডিকয় ট্র্যাপে আক্রমণ শনাক্ত: 'BRUTE FORCE SUSPECTED' এলার্ট সৃষ্টি।",

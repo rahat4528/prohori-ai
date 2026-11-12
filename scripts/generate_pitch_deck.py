@@ -320,7 +320,7 @@ def create_deck(output_path="docs/Prohori_AI_Pitch_Deck.pptx"):
     diffs = [
         ("GROUNDED THREAT RAG", "Strict MITRE/CVE citation grounding", GREEN_ACCENT, "Every incident summary is cited with MITRE ATT&CK techniques and NVD CVE IDs. Grounded retrieval eliminates speculative hallucinations."),
         ("NATIONAL DATA SOVEREIGNTY", "Zero cloud egress in offline mode", CYAN_ACCENT, "Runs entirely on-premises using local Ollama or deterministic offline models. Sensitive telemetry never leaves local organizational servers."),
-        ("HUMAN-IN-THE-LOOP CONTROL", "Append-only cryptographic audit trail", AMBER_ACCENT, "AI recommends firewall or rate-limit countermeasures, but cannot execute them unilaterally. Every action requires human approval and is permanently logged.")
+        ("HUMAN-IN-THE-LOOP CONTROL", "Append-only database audit trail", AMBER_ACCENT, "AI recommends firewall or rate-limit countermeasures, but cannot execute them unilaterally. Every action requires human approval and is permanently logged.")
     ]
 
     for i, (tag, body, color, desc) in enumerate(diffs):

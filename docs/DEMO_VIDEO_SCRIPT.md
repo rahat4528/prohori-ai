@@ -57,7 +57,7 @@
 > 
 > Finally, observe Responsible AI in action: the AI Analyst recommends an actionable countermeasure — *'Block adversary IP 192.168.1.105 at the perimeter firewall'* — but the AI never executes destructive firewall rules unilaterally. 
 > Arif reviews the reasoning and clicks **'Approve Defense'**. 
-> The status immediately updates to `APPROVED`, and the action is permanently written to our cryptographic append-only audit log. 
+> The status immediately updates to `APPROVED`, and the action is permanently written to our append-only audit log. 
 > Complex threat triage that once took 45 minutes is resolved in thirty seconds."
 
 ---
@@ -123,7 +123,7 @@
    - **`0:10 - 0:25`**: Switch to terminal and press Enter on `python scripts/demo_replay.py`. Switch back to browser. Show the 5-phase alerts streaming smoothly into the live feed with color-coded severity tags.
    - **`0:25 - 0:50`**: In the "Ask the Analyst" panel, click the suggested prompt chip: *"কী ঘটেছে? কতটা বিপজ্জনক?"*. Show the Bengali narrative streaming in real-time with the blue `[T1110.001]` MITRE citation badge.
    - **`0:50 - 1:05`**: Click on the active incident card. Point to the recommended action ("Block 192.168.1.105"). Click the green **"Approve Defense"** button. Show the status change to `APPROVED` and the toast notification.
-   - **`1:05 - 1:15`**: Click the "Audit Log" drawer button in the header. Show the permanent, append-only record with timestamp and cryptographic hash.
+   - **`1:05 - 1:15`**: Click the "Audit Log" drawer button in the header. Show the permanent, append-only record with timestamp and model metadata.
    - **`1:15 - 1:20`**: Toggle language to English to show instant bilingual narrative generation.
 
 3. **Stop Recording**:

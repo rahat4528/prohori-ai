@@ -491,8 +491,8 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
             </button>
             <p style={{ fontSize: "13px", color: "var(--text-tertiary)", margin: 0, textAlign: "center" }}>
               {isBn
-                ? "মানবসক্রিয় অনুমোদন গেট: এই বোতাম চাপলে আক্রমণকারীর আইপি অবিলম্বে ফায়ারওয়ালে ব্লক হবে এবং অডিট ট্রেইলে সংরক্ষিত হবে।"
-                : "Human-in-the-Loop Gate: Immediately blocks the adversary IP at the perimeter and commits an immutable signed audit record."}
+                ? "মানবসক্রিয় অনুমোদন গেট: এই বোতাম চাপলে আক্রমণকারীর আইপি সক্রিয় ডিনাইলিস্টে যুক্ত হয় এবং অডিট ট্রেইলে সংরক্ষিত হয়।"
+                : "Human-in-the-Loop Gate: Adds the adversary IP to the active rate-limiter denylist and records an entry in the append-only audit log."}
             </p>
           </div>
         )}

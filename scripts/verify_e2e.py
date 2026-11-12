@@ -201,7 +201,7 @@ async def run_e2e_verification():
         except Exception as e:
             record("10. Data Sovereignty Status & Toggle", False, str(e))
 
-        # 11. Append-Only Cryptographic Audit Log & Human-in-the-Loop Approval
+        # 11. Append-Only Audit Log & Human-in-the-Loop Approval
         try:
             r_audit = await client.get(f"{API_URL}/audit?limit=10")
             audit_entries = r_audit.json()
@@ -224,10 +224,10 @@ async def run_e2e_verification():
             })
             passed_approve = r_approve.status_code == 200 and r_approve.json().get("status") == "APPROVED"
             
-            record("11. Cryptographic Audit Log & HITL Approval", has_entries and has_audit_fields and passed_approve, 
+            record("11. Append-Only Audit Log & HITL Approval", has_entries and has_audit_fields and passed_approve, 
                    f"Audit entries: {len(audit_entries)}, Schema fields verified: {has_audit_fields}, Approval: {passed_approve}")
         except Exception as e:
-            record("11. Cryptographic Audit Log & HITL Approval", False, str(e))
+            record("11. Append-Only Audit Log & HITL Approval", False, str(e))
 
         # 12. Deception Honeypot Traps (Port 8081)
         try:

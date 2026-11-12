@@ -23,7 +23,7 @@ Here is how Prohori AI changes the game:
 📚 2. Grounded Threat Intelligence (No Hallucinations): Every verdict is grounded in a local pgvector RAG store indexing MITRE ATT&CK techniques, NIST CVE records, and CWE weaknesses, complete with verified citation badges.
 🔒 3. 100% On-Premises Data Sovereignty: Runs completely offline using local models (Ollama / Llama 3.2 or deterministic offline RAG). In default sovereignty mode, zero bytes leave the organization's network.
 ⚡ 4. Real Measured Performance: 30.44 ms median steady-state analysis latency on local commodity hardware (AMD Ryzen 7 PRO 4750U), verified across 20 live automated replay alerts.
-🤝 5. Human-in-the-Loop Safety: The AI recommends firewall blocks and containment, but cannot execute them unilaterally. Operators approve actions with one click, permanently sealed in a cryptographic append-only audit log.
+🤝 5. Human-in-the-Loop Safety: The AI recommends containment actions, but cannot execute them unilaterally. Operators approve actions with one click, permanently recorded in an append-only audit log.
 📡 6. 3 Defensive Sensor Feeds: Fed by an isolated deception honeypot, a token-bucket API abuse guard, and an allowlisted asset scanner.
 
 Proud of our team — Team Orionids from Daffodil International University (Department of CSE) — for conceptualizing, building, and verifying this prototype with 34 passing automated tests, a modern React 19 console, and a high-performance FastAPI backend!
@@ -53,7 +53,7 @@ Prepare and attach the following visual assets to the LinkedIn post:
 | 1 | **Hero Screenshot (Bengali Reasoning)** | Capture from `http://localhost:3000` | High-resolution capture of the "Ask the Analyst" drawer showing the question *"কী ঘটেছে? কতটা বিপজ্জনক?"* and the streaming Bengali response with blue `[T1110.001]` MITRE badge. | [FILL: Attach image] |
 | 2 | **Console Overview** | Capture from `http://localhost:3000` | Full dashboard view showing dark SOC theme, live incident banner `INC-2026-0001`, and color-coded event stream. | [FILL: Attach image] |
 | 3 | **Architecture Diagram** | Graphic from `docs/ARCHITECTURE.md` | Flow diagram illustrating the 3 sensors &rarr; PII scrubber &rarr; pgvector RAG &rarr; AI Analyst &rarr; Console. | [FILL: Attach image] |
-| 4 | **Human-in-the-Loop & Audit Log** | Capture from `http://localhost:3000` | Side-by-side view showing the green "Approve Defense" button and the opened Audit Log drawer with cryptographic hashes. | [FILL: Attach image] |
+| 4 | **Human-in-the-Loop & Audit Log** | Capture from `http://localhost:3000` | Side-by-side view showing the green "Approve Defense" button and the opened Audit Log drawer with append-only entries. | [FILL: Attach image] |
 | 5 | **Demo Video Clip (Optional)** | 15–30s trimmed clip from `docs/assets/prohori_demo_backup_75s.mp4` | Short video showing real-time event streaming and rapid Bengali narrative generation. | [FILL: Attach video] |
 | 6 | **Team Photo** | Photo of team at workstation | Working photo showing the laptop running the Prohori console. | [FILL: Attach photo] |
 
@@ -75,7 +75,7 @@ Early on, generic LLM translations produced awkward phonetic transliterations of
 Many AI SOC solutions claim privacy while quietly sending prompts to cloud APIs. By implementing Ollama (Llama 3.2) and a deterministic offline RAG fallback, we proved that an organization can run high-precision threat analysis without a single byte of telemetry ever leaving the building. On an AMD Ryzen 7 PRO, steady-state analysis clocked in at just 30.44 milliseconds.
 
 3. Responsible AI Demands Human Gates for Destructive Actions:
-Autonomous AI agents that execute firewall iptables blocks or revoke credentials without oversight create massive operational risk. Enforcing a strict Human-in-the-Loop approval gate with cryptographic, append-only audit logging turned a prototype into an enterprise-ready defensive tool that security officers can trust.
+Autonomous AI agents that execute firewall blocks or revoke credentials without oversight create massive operational risk. Enforcing a strict Human-in-the-Loop approval gate with append-only audit logging turned a prototype into an enterprise-ready defensive tool that security officers can trust.
 
 What's next for Prohori?
 - Automated scheduled synchronization with the live NIST NVD API.

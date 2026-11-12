@@ -80,7 +80,7 @@ Prohori AI utilizes SQLAlchemy 2.0 with asynchronous drivers (`aiosqlite` and `a
 1. **Default Local Engine (SQLite)**:
    - URI: `sqlite+aiosqlite:///prohori.db`
    - Zero-configuration, zero-dependency embedded database ideal for hackathon evaluation, local development, and air-gapped demo runs.
-   - Pre-seeded with 256 realistic security events, 25 multi-stage incidents, and 310 cryptographic audit entries.
+   - Pre-seeded with 256 realistic security events, 25 multi-stage incidents, and 310 append-only audit entries.
 2. **Enterprise Production Engine (PostgreSQL 16 + pgvector)**:
    - URI: `postgresql+asyncpg://postgres:postgres@localhost:5432/prohori`
    - Leverages native `pgvector` extension for vector similarity search over MITRE ATT&CK STIX documents and CVE embeddings.
@@ -305,7 +305,7 @@ The backend exposes 18 verified endpoints across ports 8000, 8081, 8082, and 808
 | `GET` | `/analyst/knowledge/{id}` | 8000 | None | Path: MITRE ID or CVE | `200 OK` (JSON) | Retrieves STIX 2.1 knowledge bundles or NIST CVE mitigation records. |
 | `GET` | `/sovereignty/status` | 8000 | None | None | `200 OK` (JSON) | Returns current mode (`OFFLINE_LOCAL`, `LOCAL_LLM`, `CLOUD_HYBRID`). |
 | `POST` | `/sovereignty/toggle` | 8000 | Opt-In (`X-API-Key`) | `mode` | `200 OK` (JSON) | Toggles between local air-gapped sovereignty and cloud acceleration. |
-| `GET` | `/audit` | 8000 | None | Query: `limit`, `offset` | `200 OK` (List[JSON]) | Queries append-only immutable audit trail with cryptographic entries. |
+| `GET` | `/audit` | 8000 | None | Query: `limit`, `offset` | `200 OK` (List[JSON]) | Queries append-only audit trail recording model choices and operator actions. |
 | `POST` | `/audit/approve` | 8000 | Opt-In (`X-API-Key`) | `action_id`, `target`, `action_type`, `operator` | `200 OK` (JSON) | Human-in-the-Loop approval. Blocks adversary IP on live edge proxy. |
 | `GET` | `/stream` | 8000 | None | WebSocket Protocol | `101 Switching Protocols` | Bi-directional WebSocket stream broadcasting live alerts and updates. |
 | `GET` | `/guard/status` | 8082 | None | None | `200 OK` (JSON) | API Abuse Guard status, sliding window limits, and active block counts. |

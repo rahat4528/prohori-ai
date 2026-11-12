@@ -22,6 +22,7 @@ All congress submission documents, pitch materials, and defense guides are index
 
 | Document / Asset | Description | Direct Link |
 |---|---|---|
+| **Start Here (10-Min Checklist)** | 4-step actionable checklist to finalize team names, review, video & submission | [`docs/START_HERE.md`](docs/START_HERE.md) |
 | **Deployment & Hosting Guide** | Complete cloud & on-prem deployment topology, live URLs, and database setup | [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) |
 | **Submission Updates** | Complete audit of review items, before/after fixes, benchmark data & roadmap | [`docs/SUBMISSION_UPDATES.md`](docs/SUBMISSION_UPDATES.md) |
 | **Judge Q&A Defense** | Grounded answers to the 8 toughest judge questions | [`docs/JUDGE_QA.md`](docs/JUDGE_QA.md) |
@@ -135,7 +136,7 @@ Prohori AI utilizes SQLAlchemy 2.0 with asynchronous drivers (`aiosqlite` and `a
 
 1. **Default Local Engine (SQLite)**:
    - URI: `sqlite+aiosqlite:///prohori.db`
-   - Zero-configuration, zero-dependency embedded database pre-seeded with 256 realistic security events, 25 multi-stage incidents, and 310 cryptographic audit entries.
+   - Zero-configuration, zero-dependency embedded database pre-seeded with 256 realistic security events, 25 multi-stage incidents, and 310 append-only audit entries.
 2. **Enterprise Production Engine (PostgreSQL 16 + pgvector)**:
    - URI: `postgresql+asyncpg://postgres:postgres@localhost:5432/prohori`
    - Leverages native `pgvector` extension for vector similarity search over MITRE ATT&CK STIX documents and CVE embeddings.
@@ -152,7 +153,7 @@ Prohori AI utilizes SQLAlchemy 2.0 with asynchronous drivers (`aiosqlite` and `a
 #### Core Database Tables & Schemas
 - **`events`**: Ingested security telemetry, scrubbed payloads, AI severity triage, MITRE citations, and `llm_enriched` status flag.
 - **`incidents`**: Correlated attack campaigns with lifecycle states (`ACTIVE`, `CONTAINED`, `RESOLVED`), IP correlation, and bilingual summaries.
-- **`audit_logs`**: Immutable, append-only cryptographic audit trail recording every reasoning step, model choice, citation, and Human-in-the-Loop decision.
+- **`audit_logs`**: Append-only database audit trail recording every reasoning step, model choice, citation, and Human-in-the-Loop decision.
 - **`knowledge_docs`**: Pre-seeded STIX 2.1 MITRE ATT&CK techniques (`T1110.001`, `T1499.002`, `T1595.002`) and NIST CVE records (`CVE-2023-38606`, `CVE-2023-44487`, `CVE-2023-46604`).
 
 ---

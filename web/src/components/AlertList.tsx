@@ -16,7 +16,6 @@ interface AlertListProps {
   onTriggerDemo: () => void;
 }
 
-
 export const AlertList: React.FC<AlertListProps> = ({
   events,
   selectedEventId,
@@ -48,8 +47,8 @@ export const AlertList: React.FC<AlertListProps> = ({
       style={{
         display: "flex",
         flexDirection: "column",
-        background: "var(--bg-surface)",
-        border: "1px solid var(--border-subtle)",
+        background: "var(--cream)",
+        border: "1.5px solid var(--navy-alpha-20)",
         borderRadius: "12px",
         overflow: "hidden",
         height: "100%",
@@ -61,8 +60,8 @@ export const AlertList: React.FC<AlertListProps> = ({
       <div
         style={{
           padding: "16px 20px",
-          borderBottom: "1px solid var(--border-subtle)",
-          background: "var(--bg-elevated)",
+          borderBottom: "1.5px solid var(--navy-alpha-15)",
+          background: "var(--cream)",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -71,20 +70,20 @@ export const AlertList: React.FC<AlertListProps> = ({
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <ShieldAlert size={20} color="#38bdf8" />
-          <h2 style={{ fontSize: "18px", fontWeight: 700, color: "#f8fafc", margin: 0 }}>
+          <ShieldAlert size={22} color="var(--navy)" />
+          <h2 style={{ fontSize: "19px", fontWeight: 800, color: "var(--navy)", margin: 0 }}>
             {isBn ? "সরাসরি সতর্কতা" : "Live Alerts"}
           </h2>
           <span
             className="font-mono"
             style={{
-              padding: "2px 8px",
+              padding: "3px 10px",
               borderRadius: "999px",
-              background: "rgba(56, 189, 248, 0.15)",
-              color: "#38bdf8",
+              background: "var(--navy-alpha-12)",
+              color: "var(--navy)",
               fontSize: "13px",
-              fontWeight: 700,
-              border: "1px solid rgba(56, 189, 248, 0.35)"
+              fontWeight: 800,
+              border: "1px solid var(--navy-alpha-30)"
             }}
           >
             {filteredEvents.length}
@@ -93,20 +92,20 @@ export const AlertList: React.FC<AlertListProps> = ({
 
         {/* Severity Filter Dropdown */}
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <Filter size={15} color="var(--text-tertiary)" />
+          <Filter size={16} color="var(--navy-alpha-75)" />
           <select
             value={filterSeverity}
             onChange={(e) => setFilterSeverity(e.target.value)}
             style={{
-              background: "var(--bg-surface)",
-              color: "#f8fafc",
-              border: "1px solid var(--border-medium)",
-              borderRadius: "6px",
-              padding: "6px 12px",
+              background: "var(--cream)",
+              color: "var(--navy)",
+              border: "1.5px solid var(--navy-alpha-30)",
+              borderRadius: "8px",
+              padding: "8px 12px",
               fontSize: "14px",
-              fontWeight: 600,
+              fontWeight: 700,
               cursor: "pointer",
-              minHeight: "36px"
+              minHeight: "44px"
             }}
             aria-label={isBn ? "তীব্রতা অনুযায়ী ফিল্টার" : "Filter alerts by severity"}
           >
@@ -120,9 +119,9 @@ export const AlertList: React.FC<AlertListProps> = ({
       </div>
 
       {/* Search Filter Bar */}
-      <div style={{ padding: "12px 16px", borderBottom: "1px solid var(--border-subtle)", background: "var(--bg-surface)" }}>
+      <div style={{ padding: "12px 18px", borderBottom: "1.5px solid var(--navy-alpha-15)", background: "var(--cream)" }}>
         <div style={{ position: "relative", width: "100%" }}>
-          <Search size={15} color="var(--text-tertiary)" style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)" }} />
+          <Search size={16} color="var(--navy-alpha-75)" style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)" }} />
           <input
             type="text"
             placeholder={isBn ? "আইপি, আক্রমণ বা কৌশল দিয়ে খুঁজুন..." : "Filter by IP, technique, attack name..."}
@@ -130,12 +129,14 @@ export const AlertList: React.FC<AlertListProps> = ({
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{
               width: "100%",
-              padding: "8px 12px 8px 36px",
-              background: "var(--bg-elevated)",
-              border: "1px solid var(--border-medium)",
-              borderRadius: "6px",
-              color: "#f8fafc",
-              fontSize: "14px"
+              padding: "10px 14px 10px 40px",
+              background: "var(--cream)",
+              border: "1.5px solid var(--navy-alpha-25)",
+              borderRadius: "8px",
+              color: "var(--navy)",
+              fontSize: "15px",
+              fontWeight: 600,
+              minHeight: "44px"
             }}
             aria-label={isBn ? "সতর্কতা খুঁজুন" : "Search alerts"}
           />
@@ -147,11 +148,12 @@ export const AlertList: React.FC<AlertListProps> = ({
         style={{
           flex: 1,
           overflowY: "auto",
-          padding: "12px 16px",
+          padding: "14px 18px",
           display: "flex",
           flexDirection: "column",
-          gap: "10px",
-          maxHeight: "calc(100vh - 230px)"
+          gap: "12px",
+          maxHeight: "calc(100vh - 230px)",
+          background: "var(--cream)"
         }}
         role="feed"
         aria-busy={false}
@@ -163,32 +165,33 @@ export const AlertList: React.FC<AlertListProps> = ({
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              padding: "48px 24px",
+              padding: "52px 24px",
               textAlign: "center",
-              color: "var(--text-secondary)",
-              gap: "14px"
+              color: "var(--navy)",
+              gap: "16px"
             }}
           >
-            <ShieldCheck size={48} color="#10b981" />
-            <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#f8fafc" }}>
+            <ShieldCheck size={52} color="var(--navy)" />
+            <h3 style={{ fontSize: "20px", fontWeight: 800, color: "var(--navy)" }}>
               {isBn ? "কোনো হুমকি পাওয়া যায়নি" : "No Active Security Alerts"}
             </h3>
-            <p style={{ fontSize: "15px", maxWidth: "340px", color: "var(--text-secondary)", margin: 0 }}>
+            <p style={{ fontSize: "16px", maxWidth: "360px", color: "var(--navy-alpha-75)", margin: 0, lineHeight: 1.5 }}>
               {isBn
                 ? "সিস্টেম স্বাভাবিক রয়েছে। আক্রমণ শনাক্তকরণ ও এআই বিশ্লেষণ দেখতে 'ডেমো চালান' বোতামে ক্লিক করুন।"
                 : "All systems running normally. Click 'Run demo' above to test real threat triage and AI reasoning."}
             </p>
             <button
               onClick={onTriggerDemo}
-              className="btn btn-secondary"
+              className="btn btn-primary"
               style={{
-                marginTop: "8px",
-                padding: "8px 18px",
-                fontSize: "14px",
-                fontWeight: 600,
-                borderColor: "#38bdf8",
-                color: "#38bdf8",
-                borderRadius: "6px",
+                marginTop: "10px",
+                padding: "10px 22px",
+                fontSize: "15px",
+                fontWeight: 800,
+                background: "var(--coral)",
+                color: "var(--navy)",
+                border: "1.5px solid var(--coral)",
+                borderRadius: "8px",
                 minHeight: "44px"
               }}
             >
@@ -221,12 +224,13 @@ export const AlertList: React.FC<AlertListProps> = ({
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  gap: "8px",
-                  padding: "14px 16px",
+                  gap: "10px",
+                  padding: "16px 18px",
                   borderRadius: "10px",
-                  background: isSelected ? "var(--bg-elevated)" : "var(--bg-card)",
-                  border: isSelected ? "2px solid #38bdf8" : "1px solid var(--border-subtle)",
-                  boxShadow: isSelected ? "0 0 16px rgba(56, 189, 248, 0.2)" : "var(--shadow-sm)",
+                  background: isSelected ? "var(--navy-alpha-04)" : "var(--cream)",
+                  border: isSelected ? "1.5px solid var(--navy-alpha-30)" : "1.5px solid var(--navy-alpha-15)",
+                  borderLeft: isSelected ? "5px solid var(--coral)" : "1.5px solid var(--navy-alpha-15)",
+                  boxShadow: isSelected ? "var(--shadow-md)" : "var(--shadow-sm)",
                   cursor: "pointer",
                   transition: "all 0.15s ease",
                   position: "relative"
@@ -240,33 +244,33 @@ export const AlertList: React.FC<AlertListProps> = ({
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
-                      gap: "5px",
-                      padding: "3px 8px",
+                      gap: "6px",
+                      padding: "4px 10px",
                       borderRadius: "6px",
                       fontSize: "13px",
-                      fontWeight: 700,
+                      fontWeight: 800,
                       background: sev.bg,
                       color: sev.color,
-                      border: `1px solid ${sev.border}`
+                      border: `1.5px solid ${sev.border}`
                     }}
                   >
-                    <SevIcon size={13} />
+                    <SevIcon size={14} color={sev.color} />
                     <span>{sev.label}</span>
                   </span>
 
-                  <span className="font-mono" style={{ fontSize: "12px", color: "var(--text-tertiary)" }}>
+                  <span className="font-mono" style={{ fontSize: "13px", color: "var(--navy-alpha-75)", fontWeight: 600 }}>
                     {formattedTime}
                   </span>
                 </div>
 
-                {/* Main Title (Plain Words) */}
-                <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#f8fafc", margin: 0, lineHeight: 1.35 }}>
+                {/* Main Title */}
+                <h3 style={{ fontSize: "17px", fontWeight: 800, color: "var(--navy)", margin: 0, lineHeight: 1.4 }}>
                   {friendlyTitle}
                 </h3>
 
                 {/* Attacker & Grounding Chips */}
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "6px", fontSize: "13px" }}>
-                  <span className="font-mono" style={{ color: "var(--text-secondary)" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px", fontSize: "14px" }}>
+                  <span className="font-mono" style={{ color: "var(--navy-alpha-85)", fontWeight: 700 }}>
                     {sourceIp} {targetInfo ? `· ${targetInfo}` : ""}
                   </span>
 
@@ -274,13 +278,13 @@ export const AlertList: React.FC<AlertListProps> = ({
                     <span
                       className="font-mono"
                       style={{
-                        padding: "2px 6px",
-                        borderRadius: "4px",
-                        fontSize: "11px",
-                        fontWeight: 700,
-                        background: "rgba(56, 189, 248, 0.12)",
-                        color: "#38bdf8",
-                        border: "1px solid rgba(56, 189, 248, 0.3)"
+                        padding: "3px 8px",
+                        borderRadius: "6px",
+                        fontSize: "12px",
+                        fontWeight: 800,
+                        background: "var(--navy)",
+                        color: "var(--cream)",
+                        border: "1px solid var(--navy)"
                       }}
                       title={`MITRE ATT&CK Technique: ${mitre}`}
                     >

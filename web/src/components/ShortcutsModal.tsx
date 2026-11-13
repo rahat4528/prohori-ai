@@ -32,6 +32,7 @@ export const ShortcutsModal: React.FC<ShortcutsModalProps> = ({
     { key: "Shift + P", desc: isBn ? "৮-স্লাইড পিচ ডেক খুলুন" : "Open 8-Slide Pitch Deck" },
     { key: "Shift + S", desc: isBn ? "জাতীয় ডেটা সার্বভৌমত্ব মোড টগল" : "Toggle Data Sovereignty Mode" },
     { key: "Shift + L", desc: isBn ? "ভাষা পরিবর্তন করুন (বাংলা / EN)" : "Toggle Language (Bangla / English)" },
+    { key: "Shift + R", desc: isBn ? "ডেমো রিস্টার্ট বা পরিষ্কার করুন" : "Reset demo state to empty" },
     { key: "?", desc: isBn ? "কিবোর্ড শর্টকাট সহায়তা প্রদর্শন" : "Show this keyboard shortcuts guide" },
     { key: "Esc", desc: isBn ? "খোলা ড্রয়ার বা উইন্ডো বন্ধ করুন" : "Close active modal or drawer" }
   ];
@@ -41,9 +42,9 @@ export const ShortcutsModal: React.FC<ShortcutsModalProps> = ({
       style={{
         position: "fixed",
         inset: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.75)",
+        backgroundColor: "var(--navy-alpha-75)",
         backdropFilter: "blur(4px)",
-        zIndex: 200,
+        zIndex: 2000,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -56,11 +57,12 @@ export const ShortcutsModal: React.FC<ShortcutsModalProps> = ({
     >
       <div
         style={{
-          background: "var(--bg-elevated)",
-          border: "1px solid var(--border-active)",
+          background: "var(--cream)",
+          color: "var(--navy)",
+          border: "1px solid var(--navy-alpha-25)",
           borderRadius: "14px",
           width: "100%",
-          maxWidth: "460px",
+          maxWidth: "480px",
           boxShadow: "var(--shadow-lg)",
           overflow: "hidden"
         }}
@@ -70,35 +72,36 @@ export const ShortcutsModal: React.FC<ShortcutsModalProps> = ({
         <div
           style={{
             padding: "16px 20px",
-            borderBottom: "1px solid var(--border-subtle)",
+            borderBottom: "1px solid var(--navy-alpha-15)",
+            background: "var(--navy-alpha-04)",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between"
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <Keyboard size={20} color="#38bdf8" />
-            <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#f8fafc", margin: 0 }}>
+            <Keyboard size={20} color="var(--navy)" />
+            <h3 style={{ fontSize: "17px", fontWeight: 800, color: "var(--navy)", margin: 0 }}>
               {isBn ? "কিবোর্ড শর্টকাট গাইড" : "Keyboard Shortcuts"}
             </h3>
           </div>
           <button
             onClick={onClose}
+            className="btn btn-secondary-cream"
             style={{
-              background: "transparent",
+              padding: "4px 8px",
+              minHeight: "32px",
               border: "none",
-              color: "var(--text-secondary)",
-              cursor: "pointer",
-              padding: "4px"
+              background: "transparent"
             }}
             aria-label={isBn ? "বন্ধ করুন" : "Close"}
           >
-            <X size={20} />
+            <X size={20} color="var(--navy)" />
           </button>
         </div>
 
         {/* Shortcuts List */}
-        <div style={{ padding: "16px 20px", display: "flex", flexDirection: "column", gap: "12px" }}>
+        <div style={{ padding: "16px 20px", display: "flex", flexDirection: "column", gap: "10px" }}>
           {shortcuts.map((s) => (
             <div
               key={s.key}
@@ -107,18 +110,18 @@ export const ShortcutsModal: React.FC<ShortcutsModalProps> = ({
                 alignItems: "center",
                 justifyContent: "space-between",
                 padding: "8px 0",
-                borderBottom: "1px solid var(--border-subtle)"
+                borderBottom: "1px solid var(--navy-alpha-12)"
               }}
             >
-              <span style={{ fontSize: "15px", color: "var(--text-secondary)" }}>{s.desc}</span>
+              <span style={{ fontSize: "14px", color: "var(--navy)", fontWeight: 600 }}>{s.desc}</span>
               <kbd
                 className="font-mono"
                 style={{
-                  padding: "4px 8px",
+                  padding: "4px 10px",
                   borderRadius: "6px",
-                  background: "var(--bg-surface)",
-                  border: "1px solid var(--border-medium)",
-                  color: "#38bdf8",
+                  background: "var(--navy)",
+                  border: "1px solid var(--navy)",
+                  color: "var(--cream)",
                   fontSize: "13px",
                   fontWeight: 700
                 }}

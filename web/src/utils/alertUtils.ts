@@ -39,7 +39,7 @@ export function getFriendlyEventTitle(type: string, lang: "en" | "bn"): string {
   }
 }
 
-// Severity presentation with Icon + Shape + Text
+// Severity presentation with Strict 90/10 Palette and Accessible Shapes
 export function getSeverityConfig(severity: EventSeverity, lang: "en" | "bn") {
   const isBn = lang === "bn";
   switch (severity) {
@@ -47,38 +47,42 @@ export function getSeverityConfig(severity: EventSeverity, lang: "en" | "bn") {
       return {
         label: isBn ? "জরুরি (Critical)" : "Critical",
         icon: AlertOctagon,
-        color: "#f87171",
-        bg: "rgba(239, 68, 68, 0.2)",
-        border: "rgba(239, 68, 68, 0.5)",
+        color: "var(--navy)",
+        bg: "var(--coral)",
+        border: "var(--coral)",
+        className: "severity-badge-critical",
         shape: "🛑"
       };
     case "high":
       return {
         label: isBn ? "উচ্চ (High)" : "High",
         icon: Flame,
-        color: "#fb923c",
-        bg: "rgba(249, 115, 22, 0.2)",
-        border: "rgba(249, 115, 22, 0.5)",
-        shape: "⚠️"
+        color: "var(--navy)",
+        bg: "transparent",
+        border: "var(--coral)",
+        className: "severity-badge-high",
+        shape: "▲"
       };
     case "medium":
       return {
         label: isBn ? "মাঝারি (Medium)" : "Medium",
         icon: AlertTriangle,
-        color: "#facc15",
-        bg: "rgba(234, 179, 8, 0.2)",
-        border: "rgba(234, 179, 8, 0.5)",
-        shape: "⚡"
+        color: "var(--navy)",
+        bg: "var(--navy-alpha-12)",
+        border: "var(--navy-alpha-40)",
+        className: "severity-badge-medium",
+        shape: "◆"
       };
     case "low":
     default:
       return {
         label: isBn ? "নিম্ন (Low)" : "Low",
         icon: Info,
-        color: "#38bdf8",
-        bg: "rgba(6, 182, 212, 0.2)",
-        border: "rgba(6, 182, 212, 0.5)",
-        shape: "ℹ️"
+        color: "var(--navy-alpha-75)",
+        bg: "transparent",
+        border: "var(--navy-alpha-25)",
+        className: "severity-badge-low",
+        shape: "●"
       };
   }
 }

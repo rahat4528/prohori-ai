@@ -88,7 +88,7 @@ export const AuditLogDrawer: React.FC<AuditLogDrawerProps> = ({
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(3, 7, 18, 0.8)",
+        background: "var(--navy-alpha-75)",
         backdropFilter: "blur(6px)",
         zIndex: 2000,
         display: "flex",
@@ -99,9 +99,12 @@ export const AuditLogDrawer: React.FC<AuditLogDrawerProps> = ({
     >
       <div
         onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-label="Immutable Audit Log"
         style={{
-          background: "var(--bg-surface)",
-          border: "1px solid var(--border-medium)",
+          background: "var(--cream)",
+          color: "var(--navy)",
+          border: "1px solid var(--navy-alpha-25)",
           borderRadius: "12px",
           width: "920px",
           maxWidth: "96vw",
@@ -110,7 +113,6 @@ export const AuditLogDrawer: React.FC<AuditLogDrawerProps> = ({
           flexDirection: "column",
           boxShadow: "var(--shadow-lg)"
         }}
-        className="animate-fade-in"
       >
         {/* Header */}
         <div style={{
@@ -118,22 +120,22 @@ export const AuditLogDrawer: React.FC<AuditLogDrawerProps> = ({
           justifyContent: "space-between",
           alignItems: "center",
           padding: "16px 22px",
-          borderBottom: "1px solid var(--border-subtle)",
+          borderBottom: "1px solid var(--navy-alpha-15)",
           flexWrap: "wrap",
           gap: "10px"
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <History size={20} color="#34d399" />
+            <History size={20} color="var(--navy)" />
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <h2 style={{ fontSize: "14px", fontWeight: 800, color: "#f8fafc", margin: 0 }}>
+                <h2 style={{ fontSize: "16px", fontWeight: 800, color: "var(--navy)", margin: 0 }}>
                   IMMUTABLE AUDIT LOG
                 </h2>
-                <span className="badge" style={{ background: "rgba(16, 185, 129, 0.15)", color: "#6ee7b7", border: "1px solid rgba(16, 185, 129, 0.3)" }}>
+                <span className="badge" style={{ background: "var(--navy-alpha-12)", color: "var(--navy)", border: "1px solid var(--navy-alpha-25)" }}>
                   RESPONSIBLE AI VERIFIED
                 </span>
               </div>
-              <span style={{ fontSize: "11px", color: "var(--text-tertiary)" }}>
+              <span style={{ fontSize: "13px", color: "var(--navy-alpha-75)" }}>
                 অপরিবর্তনীয় অডিট ট্রেইল ও ক্রিপ্টোগ্রাফিক টাইমস্ট্যাম্প
               </span>
             </div>
@@ -142,18 +144,19 @@ export const AuditLogDrawer: React.FC<AuditLogDrawerProps> = ({
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <button
               onClick={handleExportJson}
-              className="btn btn-secondary"
-              style={{ fontSize: "11px", padding: "4px 10px" }}
+              className="btn btn-secondary-cream"
+              style={{ fontSize: "13px", padding: "6px 12px", minHeight: "36px" }}
               title="Export complete audit trail to JSON for regulatory compliance"
             >
-              <Download size={13} />
+              <Download size={14} />
               <span>Export Audit Trail</span>
             </button>
             <button
               onClick={onClose}
-              className="btn btn-ghost"
-              style={{ padding: "6px" }}
+              className="btn btn-secondary-cream"
+              style={{ padding: "6px 10px", minHeight: "36px" }}
               title="Close audit log (Esc)"
+              aria-label="Close"
             >
               <X size={18} />
             </button>
@@ -161,17 +164,17 @@ export const AuditLogDrawer: React.FC<AuditLogDrawerProps> = ({
         </div>
 
         {/* Filter bar */}
-        <div style={{ padding: "10px 22px", borderBottom: "1px solid var(--border-subtle)", background: "var(--bg-canvas)", display: "flex", alignItems: "center", gap: "10px" }}>
-          <Search size={14} color="var(--text-tertiary)" />
+        <div style={{ padding: "10px 22px", borderBottom: "1px solid var(--navy-alpha-15)", background: "var(--navy-alpha-04)", display: "flex", alignItems: "center", gap: "10px" }}>
+          <Search size={16} color="var(--navy-alpha-75)" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Filter audit entries by action, operator, model, or verdict..."
             className="input-control"
-            style={{ flex: 1, padding: "6px 12px", height: "32px", fontSize: "12px" }}
+            style={{ flex: 1, padding: "8px 12px", height: "38px", fontSize: "14px" }}
           />
-          <span style={{ fontSize: "11px", color: "var(--text-tertiary)" }} className="font-mono">
+          <span style={{ fontSize: "13px", color: "var(--navy-alpha-75)" }} className="font-mono">
             {filteredLogs.length} entries
           </span>
         </div>
@@ -179,58 +182,59 @@ export const AuditLogDrawer: React.FC<AuditLogDrawerProps> = ({
         {/* Content list */}
         <div style={{ flex: 1, overflowY: "auto", padding: "16px 22px" }}>
           {loading ? (
-            <div style={{ textAlign: "center", padding: "40px", color: "var(--text-tertiary)" }}>
+            <div style={{ textAlign: "center", padding: "40px", color: "var(--navy-alpha-75)", fontSize: "15px" }}>
               Loading audit logs from database...
             </div>
           ) : filteredLogs.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "40px", color: "var(--text-tertiary)" }}>
+            <div style={{ textAlign: "center", padding: "40px", color: "var(--navy-alpha-75)", fontSize: "15px" }}>
               No audit records matching your criteria.
             </div>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               {filteredLogs.map((log) => (
                 <div
                   key={log.id}
                   style={{
-                    background: "var(--bg-card-subtle)",
-                    border: "1px solid var(--border-subtle)",
+                    background: "var(--cream)",
+                    border: "1px solid var(--navy-alpha-20)",
                     borderRadius: "8px",
-                    padding: "12px 14px",
+                    padding: "14px 16px",
                     display: "flex",
                     flexDirection: "column",
-                    gap: "8px"
+                    gap: "10px",
+                    boxShadow: "var(--shadow-sm)"
                   }}
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "6px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
                       <span className="badge font-mono" style={{
-                        background: log.action_type.includes("APPROVE") ? "rgba(16, 185, 129, 0.15)" : "rgba(59, 130, 246, 0.15)",
-                        color: log.action_type.includes("APPROVE") ? "#34d399" : "#93c5fd",
-                        border: `1px solid ${log.action_type.includes("APPROVE") ? "rgba(16, 185, 129, 0.3)" : "rgba(59, 130, 246, 0.3)"}`
+                        background: log.action_type.includes("APPROVE") ? "var(--navy)" : "var(--navy-alpha-12)",
+                        color: log.action_type.includes("APPROVE") ? "var(--cream)" : "var(--navy)",
+                        border: `1px solid ${log.action_type.includes("APPROVE") ? "var(--navy)" : "var(--navy-alpha-30)"}`
                       }}>
                         {log.action_type}
                       </span>
-                      <span style={{ fontSize: "11px", color: "var(--text-secondary)" }}>
-                        Actor: <strong style={{ color: "var(--text-primary)" }}>{log.actor}</strong>
+                      <span style={{ fontSize: "13px", color: "var(--navy-alpha-85)" }}>
+                        Actor: <strong style={{ color: "var(--navy)" }}>{log.actor}</strong>
                       </span>
-                      <span className="badge font-mono" style={{ background: "var(--bg-elevated)", color: "#a5b4fc" }}>
+                      <span className="badge font-mono" style={{ background: "var(--navy-alpha-08)", color: "var(--navy)", border: "1px solid var(--navy-alpha-20)" }}>
                         Model: {log.model_used}
                       </span>
                     </div>
 
                     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                       {log.human_approved ? (
-                        <span className="badge" style={{ background: "rgba(16, 185, 129, 0.15)", color: "#34d399", border: "1px solid rgba(16, 185, 129, 0.3)" }}>
-                          <UserCheck size={11} style={{ marginRight: "3px" }} />
+                        <span className="badge" style={{ background: "var(--coral)", color: "var(--navy)", border: "1px solid var(--coral)" }}>
+                          <UserCheck size={12} style={{ marginRight: "3px" }} />
                           HUMAN APPROVED
                         </span>
                       ) : (
-                        <span className="badge" style={{ background: "rgba(56, 189, 248, 0.15)", color: "#38bdf8", border: "1px solid rgba(56, 189, 248, 0.3)" }}>
-                          <Bot size={11} style={{ marginRight: "3px" }} />
+                        <span className="badge" style={{ background: "var(--navy-alpha-15)", color: "var(--navy)", border: "1px solid var(--navy-alpha-30)" }}>
+                          <Bot size={12} style={{ marginRight: "3px" }} />
                           AUTONOMOUS TRIAGE
                         </span>
                       )}
-                      <span style={{ fontSize: "11px", color: "var(--text-tertiary)" }} className="font-mono">
+                      <span style={{ fontSize: "12px", color: "var(--navy-alpha-75)" }} className="font-mono">
                         {log.ts?.slice(0, 19).replace("T", " ")}
                       </span>
                     </div>
@@ -239,9 +243,9 @@ export const AuditLogDrawer: React.FC<AuditLogDrawerProps> = ({
                   {/* Citations */}
                   {log.citations && log.citations.length > 0 && (
                     <div style={{ display: "flex", gap: "6px", alignItems: "center", flexWrap: "wrap" }}>
-                      <span style={{ fontSize: "10px", color: "var(--text-tertiary)", textTransform: "uppercase", fontWeight: 700 }}>Citations:</span>
+                      <span style={{ fontSize: "11px", color: "var(--navy-alpha-75)", textTransform: "uppercase", fontWeight: 700 }}>Citations:</span>
                       {log.citations.map((c, i) => (
-                        <span key={i} className="badge font-mono" style={{ background: "rgba(56, 189, 248, 0.1)", color: "#7dd3fc" }}>
+                        <span key={i} className="badge font-mono" style={{ background: "var(--navy-alpha-08)", color: "var(--navy)", border: "1px solid var(--navy-alpha-20)" }}>
                           {c}
                         </span>
                       ))}
@@ -249,7 +253,7 @@ export const AuditLogDrawer: React.FC<AuditLogDrawerProps> = ({
                   )}
 
                   {/* Verdict summary */}
-                  <div style={{ fontSize: "11px", color: "var(--text-secondary)", background: "var(--bg-canvas)", padding: "8px 12px", borderRadius: "5px", border: "1px solid var(--border-subtle)" }} className="font-mono">
+                  <div style={{ fontSize: "12px", color: "var(--navy)", background: "var(--navy-alpha-04)", padding: "10px 14px", borderRadius: "6px", border: "1px solid var(--navy-alpha-15)" }} className="font-mono">
                     {JSON.stringify(log.verdict, null, 1).replace(/\n\s*/g, " ")}
                   </div>
                 </div>

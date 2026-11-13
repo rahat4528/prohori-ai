@@ -63,13 +63,13 @@ export const EventFeed: React.FC<EventFeedProps> = ({
   };
 
   return (
-    <div className="soc-card" style={{ display: "flex", flexDirection: "column" }}>
+    <div className="soc-card" style={{ display: "flex", flexDirection: "column", background: "var(--cream)", color: "var(--navy)" }}>
       {/* Header bar */}
       <div className="soc-card-header">
         <div className="soc-title">
-          <Activity size={16} color="#38bdf8" />
+          <Activity size={16} color="var(--navy)" />
           <span>LIVE DEFENSIVE TELEMETRY FEED (লাইভ ইভেন্ট ফিড)</span>
-          <span className="badge" style={{ background: "rgba(56, 189, 248, 0.12)", color: "#7dd3fc" }}>
+          <span className="badge" style={{ background: "var(--navy-alpha-12)", color: "var(--navy)" }}>
             {filteredEvents.length} / {events.length}
           </span>
         </div>
@@ -78,7 +78,7 @@ export const EventFeed: React.FC<EventFeedProps> = ({
         <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
           {/* Quick Search */}
           <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
-            <Search size={13} style={{ position: "absolute", left: "10px", color: "var(--text-tertiary)" }} />
+            <Search size={13} style={{ position: "absolute", left: "10px", color: "var(--navy-alpha-75)" }} />
             <input
               type="text"
               value={searchQuery}
@@ -101,7 +101,7 @@ export const EventFeed: React.FC<EventFeedProps> = ({
                   right: "6px",
                   background: "transparent",
                   border: "none",
-                  color: "var(--text-secondary)",
+                  color: "var(--navy-alpha-75)",
                   cursor: "pointer"
                 }}
               >
@@ -147,8 +147,8 @@ export const EventFeed: React.FC<EventFeedProps> = ({
           {hasActiveFilters && (
             <button
               onClick={handleResetFilters}
-              className="btn btn-ghost"
-              style={{ height: "30px", padding: "0 8px", fontSize: "11px", color: "#f87171" }}
+              className="btn btn-secondary-cream"
+              style={{ height: "30px", padding: "0 8px", fontSize: "11px" }}
               title="Reset all search & filters"
             >
               <X size={12} />
@@ -159,10 +159,10 @@ export const EventFeed: React.FC<EventFeedProps> = ({
       </div>
 
       {/* Events Table Container with Sticky Header */}
-      <div style={{ overflowX: "auto", maxHeight: "450px", overflowY: "auto", borderRadius: "6px", border: "1px solid var(--border-subtle)" }}>
+      <div style={{ overflowX: "auto", maxHeight: "450px", overflowY: "auto", borderRadius: "6px", border: "1px solid var(--navy-alpha-20)" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "12px" }}>
-          <thead style={{ position: "sticky", top: 0, zIndex: 10, background: "var(--bg-elevated)", borderBottom: "1px solid var(--border-medium)" }}>
-            <tr style={{ color: "var(--text-secondary)", textTransform: "uppercase", fontSize: "10px", letterSpacing: "0.06em" }}>
+          <thead style={{ position: "sticky", top: 0, zIndex: 10, background: "var(--navy-alpha-08)", borderBottom: "1px solid var(--navy-alpha-20)" }}>
+            <tr style={{ color: "var(--navy)", textTransform: "uppercase", fontSize: "10px", letterSpacing: "0.06em" }}>
               <th style={{ padding: "10px 12px" }}>Timestamp</th>
               <th style={{ padding: "10px 12px" }}>Source</th>
               <th style={{ padding: "10px 12px" }}>Severity</th>
@@ -175,10 +175,10 @@ export const EventFeed: React.FC<EventFeedProps> = ({
           <tbody>
             {filteredEvents.length === 0 ? (
               <tr>
-                <td colSpan={7} style={{ textAlign: "center", padding: "40px 20px", color: "var(--text-tertiary)" }}>
+                <td colSpan={7} style={{ textAlign: "center", padding: "40px 20px", color: "var(--navy-alpha-75)" }}>
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
-                    <ShieldAlert size={24} color="#64748b" />
-                    <span style={{ fontSize: "13px", color: "var(--text-secondary)" }}>
+                    <ShieldAlert size={24} color="var(--navy)" />
+                    <span style={{ fontSize: "13px", color: "var(--navy)" }}>
                       No telemetry events match your criteria
                     </span>
                     <span style={{ fontSize: "11px" }}>
@@ -201,44 +201,38 @@ export const EventFeed: React.FC<EventFeedProps> = ({
                     key={ev.id}
                     onClick={() => onSelectEvent(ev)}
                     style={{
-                      borderBottom: "1px solid #111a28",
-                      background: isSelected ? "rgba(56, 189, 248, 0.12)" : "transparent",
+                      borderBottom: "1px solid var(--navy-alpha-12)",
+                      background: isSelected ? "var(--coral-alpha-15)" : "transparent",
                       cursor: "pointer",
                       transition: "background 0.15s ease"
                     }}
-                    onMouseEnter={(e) => {
-                      if (!isSelected) e.currentTarget.style.background = "var(--bg-surface-hover)";
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isSelected) e.currentTarget.style.background = "transparent";
-                    }}
                   >
                     {/* Timestamp */}
-                    <td style={{ padding: "9px 12px", color: "var(--text-secondary)", whiteSpace: "nowrap" }} className="font-mono">
+                    <td style={{ padding: "9px 12px", color: "var(--navy-alpha-75)", whiteSpace: "nowrap" }} className="font-mono">
                       {ev.ts ? ev.ts.slice(11, 19) : "--:--:--"}
                     </td>
 
                     {/* Sensor Source */}
                     <td style={{ padding: "9px 12px" }}>
-                      <span className={`badge source-${ev.source}`}>
+                      <span className="badge" style={{ background: "var(--navy)", color: "var(--cream)" }}>
                         {ev.source}
                       </span>
                     </td>
 
                     {/* Severity */}
                     <td style={{ padding: "9px 12px" }}>
-                      <span className={`badge badge-${ev.severity}`}>
+                      <span className={`badge severity-badge-${ev.severity.toLowerCase()}`}>
                         {ev.severity}
                       </span>
                     </td>
 
                     {/* Event Type */}
-                    <td style={{ padding: "9px 12px", fontWeight: 600, color: "var(--text-primary)" }} className="font-mono">
+                    <td style={{ padding: "9px 12px", fontWeight: 600, color: "var(--navy)" }} className="font-mono">
                       {ev.type}
                     </td>
 
                     {/* Source IP / Details */}
-                    <td style={{ padding: "9px 12px", color: "#93c5fd" }} className="font-mono">
+                    <td style={{ padding: "9px 12px", color: "var(--navy)" }} className="font-mono">
                       {ip}
                     </td>
 
@@ -250,17 +244,17 @@ export const EventFeed: React.FC<EventFeedProps> = ({
                           textOverflow: "ellipsis",
                           whiteSpace: "nowrap",
                           fontSize: "11px",
-                          color: "#7dd3fc"
+                          color: "var(--navy)"
                         }}>
                           {ev.analyst?.citations?.[0] && (
-                            <span style={{ marginRight: "4px", fontWeight: 700, color: "#38bdf8" }} className="font-mono">
+                            <span style={{ marginRight: "4px", fontWeight: 700, color: "var(--navy)" }} className="font-mono">
                               [{ev.analyst.citations[0]}]
                             </span>
                           )}
                           {narrative}
                         </div>
                       ) : (
-                        <span style={{ fontSize: "11px", color: "var(--text-muted)", fontStyle: "italic" }}>
+                        <span style={{ fontSize: "11px", color: "var(--navy-alpha-75)", fontStyle: "italic" }}>
                           Awaiting analyst triage...
                         </span>
                       )}
@@ -270,9 +264,9 @@ export const EventFeed: React.FC<EventFeedProps> = ({
                     <td style={{ padding: "9px 12px", textAlign: "right" }}>
                       <button
                         style={{
-                          background: isSelected ? "#2563eb" : "var(--bg-elevated)",
-                          border: "1px solid var(--border-subtle)",
-                          color: "#ffffff",
+                          background: isSelected ? "var(--coral)" : "var(--navy-alpha-10)",
+                          border: "1px solid var(--navy-alpha-20)",
+                          color: "var(--navy)",
                           borderRadius: "4px",
                           padding: "4px 8px",
                           cursor: "pointer",

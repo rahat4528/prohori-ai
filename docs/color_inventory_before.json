@@ -1,0 +1,1439 @@
+{
+  "total_occurrences": 190,
+  "distinct_hex_count": 42,
+  "distinct_rgb_count": 56,
+  "distinct_hex": [
+    "#080D16",
+    "#080E18",
+    "#08121F",
+    "#0C1322",
+    "#10B981",
+    "#111827",
+    "#111A28",
+    "#131D2E",
+    "#14213D",
+    "#19273C",
+    "#1C2B40",
+    "#1E1B4B",
+    "#1E2E46",
+    "#1E3A5F",
+    "#1F293D",
+    "#2563EB",
+    "#311019",
+    "#34D399",
+    "#38BDF8",
+    "#3B82F6",
+    "#475569",
+    "#60A5FA",
+    "#64748B",
+    "#6EE7B7",
+    "#7DD3FC",
+    "#93C5FD",
+    "#94A3B8",
+    "#A5B4FC",
+    "#C084FC",
+    "#CBD5E1",
+    "#D8B4FE",
+    "#E2E8F0",
+    "#EAB308",
+    "#EF4444",
+    "#F4EDE0",
+    "#F59E0B",
+    "#F87171",
+    "#F8FAFC",
+    "#F97316",
+    "#FCA5A5",
+    "#FF6258",
+    "#FFFFFF"
+  ],
+  "distinct_rgb": [
+    "rgba(0,0,0,0.3)",
+    "rgba(0,0,0,0.4)",
+    "rgba(100, 116, 139, 0.15)",
+    "rgba(100, 116, 139, 0.3)",
+    "rgba(16, 185, 129, 0.12)",
+    "rgba(16, 185, 129, 0.15)",
+    "rgba(16, 185, 129, 0.3)",
+    "rgba(16, 185, 129, 0.4)",
+    "rgba(168, 85, 247, 0.1)",
+    "rgba(168, 85, 247, 0.12)",
+    "rgba(168, 85, 247, 0.15)",
+    "rgba(168, 85, 247, 0.3)",
+    "rgba(20, 33, 61, 0.04)",
+    "rgba(20, 33, 61, 0.08)",
+    "rgba(20, 33, 61, 0.12)",
+    "rgba(20, 33, 61, 0.15)",
+    "rgba(20, 33, 61, 0.20)",
+    "rgba(20, 33, 61, 0.25)",
+    "rgba(20, 33, 61, 0.40)",
+    "rgba(20, 33, 61, 0.65)",
+    "rgba(20, 33, 61, 0.75)",
+    "rgba(20, 33, 61, 0.85)",
+    "rgba(20, 33, 61, 0.90)",
+    "rgba(239, 68, 68, 0.1)",
+    "rgba(239, 68, 68, 0.15)",
+    "rgba(239, 68, 68, 0.3)",
+    "rgba(239, 68, 68, 0.4)",
+    "rgba(244, 237, 224, 0.05)",
+    "rgba(244, 237, 224, 0.10)",
+    "rgba(244, 237, 224, 0.15)",
+    "rgba(244, 237, 224, 0.20)",
+    "rgba(244, 237, 224, 0.30)",
+    "rgba(244, 237, 224, 0.40)",
+    "rgba(244, 237, 224, 0.65)",
+    "rgba(244, 237, 224, 0.75)",
+    "rgba(244, 237, 224, 0.85)",
+    "rgba(244, 237, 224, 0.90)",
+    "rgba(255, 98, 88, 0.10)",
+    "rgba(255, 98, 88, 0.15)",
+    "rgba(255, 98, 88, 0.20)",
+    "rgba(255, 98, 88, 0.30)",
+    "rgba(255, 98, 88, 0.50)",
+    "rgba(255, 98, 88, 0.80)",
+    "rgba(3, 7, 18, 0.8)",
+    "rgba(37, 99, 235, 0.15)",
+    "rgba(56, 189, 248, 0.02)",
+    "rgba(56, 189, 248, 0.1)",
+    "rgba(56, 189, 248, 0.12)",
+    "rgba(56, 189, 248, 0.15)",
+    "rgba(56, 189, 248, 0.25)",
+    "rgba(56, 189, 248, 0.3)",
+    "rgba(56, 189, 248, 0.35)",
+    "rgba(59, 130, 246, 0.1)",
+    "rgba(59, 130, 246, 0.12)",
+    "rgba(59, 130, 246, 0.15)",
+    "rgba(59, 130, 246, 0.3)"
+  ],
+  "findings": [
+    {
+      "file": "web/src/index.css",
+      "line": 4,
+      "type": "hex",
+      "value": "#14213D",
+      "context": "\u2022 Primary (dominant ~60%):   Navy  #14213D (rgb: 20, 33, 61)"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 5,
+      "type": "hex",
+      "value": "#F4EDE0",
+      "context": "\u2022 Secondary (dominant ~30%): Cream #F4EDE0 (rgb: 244, 237, 224)"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 6,
+      "type": "hex",
+      "value": "#FF6258",
+      "context": "\u2022 Accent (attention ~10%):  Coral #FF6258 (rgb: 255, 98, 88)"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 49,
+      "type": "hex",
+      "value": "#14213D",
+      "context": "--navy: #14213D;"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 50,
+      "type": "hex",
+      "value": "#F4EDE0",
+      "context": "--cream: #F4EDE0;"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 51,
+      "type": "hex",
+      "value": "#FF6258",
+      "context": "--coral: #FF6258;"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 54,
+      "type": "rgb",
+      "value": "rgba(20, 33, 61, 0.04)",
+      "context": "--navy-alpha-04: rgba(20, 33, 61, 0.04);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 55,
+      "type": "rgb",
+      "value": "rgba(20, 33, 61, 0.08)",
+      "context": "--navy-alpha-08: rgba(20, 33, 61, 0.08);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 56,
+      "type": "rgb",
+      "value": "rgba(20, 33, 61, 0.12)",
+      "context": "--navy-alpha-12: rgba(20, 33, 61, 0.12);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 57,
+      "type": "rgb",
+      "value": "rgba(20, 33, 61, 0.15)",
+      "context": "--navy-alpha-15: rgba(20, 33, 61, 0.15);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 58,
+      "type": "rgb",
+      "value": "rgba(20, 33, 61, 0.20)",
+      "context": "--navy-alpha-20: rgba(20, 33, 61, 0.20);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 59,
+      "type": "rgb",
+      "value": "rgba(20, 33, 61, 0.25)",
+      "context": "--navy-alpha-25: rgba(20, 33, 61, 0.25);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 60,
+      "type": "rgb",
+      "value": "rgba(20, 33, 61, 0.40)",
+      "context": "--navy-alpha-40: rgba(20, 33, 61, 0.40);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 61,
+      "type": "rgb",
+      "value": "rgba(20, 33, 61, 0.65)",
+      "context": "--navy-alpha-65: rgba(20, 33, 61, 0.65);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 62,
+      "type": "rgb",
+      "value": "rgba(20, 33, 61, 0.75)",
+      "context": "--navy-alpha-75: rgba(20, 33, 61, 0.75);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 63,
+      "type": "rgb",
+      "value": "rgba(20, 33, 61, 0.85)",
+      "context": "--navy-alpha-85: rgba(20, 33, 61, 0.85);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 64,
+      "type": "rgb",
+      "value": "rgba(20, 33, 61, 0.90)",
+      "context": "--navy-alpha-90: rgba(20, 33, 61, 0.90);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 67,
+      "type": "rgb",
+      "value": "rgba(244, 237, 224, 0.05)",
+      "context": "--cream-alpha-05: rgba(244, 237, 224, 0.05);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 68,
+      "type": "rgb",
+      "value": "rgba(244, 237, 224, 0.10)",
+      "context": "--cream-alpha-10: rgba(244, 237, 224, 0.10);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 69,
+      "type": "rgb",
+      "value": "rgba(244, 237, 224, 0.15)",
+      "context": "--cream-alpha-15: rgba(244, 237, 224, 0.15);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 70,
+      "type": "rgb",
+      "value": "rgba(244, 237, 224, 0.20)",
+      "context": "--cream-alpha-20: rgba(244, 237, 224, 0.20);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 71,
+      "type": "rgb",
+      "value": "rgba(244, 237, 224, 0.30)",
+      "context": "--cream-alpha-30: rgba(244, 237, 224, 0.30);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 72,
+      "type": "rgb",
+      "value": "rgba(244, 237, 224, 0.40)",
+      "context": "--cream-alpha-40: rgba(244, 237, 224, 0.40);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 73,
+      "type": "rgb",
+      "value": "rgba(244, 237, 224, 0.65)",
+      "context": "--cream-alpha-65: rgba(244, 237, 224, 0.65);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 74,
+      "type": "rgb",
+      "value": "rgba(244, 237, 224, 0.75)",
+      "context": "--cream-alpha-75: rgba(244, 237, 224, 0.75);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 75,
+      "type": "rgb",
+      "value": "rgba(244, 237, 224, 0.85)",
+      "context": "--cream-alpha-85: rgba(244, 237, 224, 0.85);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 76,
+      "type": "rgb",
+      "value": "rgba(244, 237, 224, 0.90)",
+      "context": "--cream-alpha-90: rgba(244, 237, 224, 0.90);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 79,
+      "type": "rgb",
+      "value": "rgba(255, 98, 88, 0.10)",
+      "context": "--coral-alpha-10: rgba(255, 98, 88, 0.10);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 80,
+      "type": "rgb",
+      "value": "rgba(255, 98, 88, 0.15)",
+      "context": "--coral-alpha-15: rgba(255, 98, 88, 0.15);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 81,
+      "type": "rgb",
+      "value": "rgba(255, 98, 88, 0.20)",
+      "context": "--coral-alpha-20: rgba(255, 98, 88, 0.20);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 82,
+      "type": "rgb",
+      "value": "rgba(255, 98, 88, 0.30)",
+      "context": "--coral-alpha-30: rgba(255, 98, 88, 0.30);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 83,
+      "type": "rgb",
+      "value": "rgba(255, 98, 88, 0.50)",
+      "context": "--coral-alpha-50: rgba(255, 98, 88, 0.50);"
+    },
+    {
+      "file": "web/src/index.css",
+      "line": 84,
+      "type": "rgb",
+      "value": "rgba(255, 98, 88, 0.80)",
+      "context": "--coral-alpha-80: rgba(255, 98, 88, 0.80);"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 185,
+      "type": "hex",
+      "value": "#2563eb",
+      "context": "<div className=\"soc-card\" style={{ borderColor: \"#2563eb\", boxShadow: \"0 0 30px rgba(37, 99, 235, 0.15)\" }}>"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 185,
+      "type": "rgb",
+      "value": "rgba(37, 99, 235, 0.15)",
+      "context": "<div className=\"soc-card\" style={{ borderColor: \"#2563eb\", boxShadow: \"0 0 30px rgba(37, 99, 235, 0.15)\" }}>"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 188,
+      "type": "hex",
+      "value": "#38bdf8",
+      "context": "<div className=\"soc-title\" style={{ color: \"#38bdf8\" }}>"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 192,
+      "type": "hex",
+      "value": "#7dd3fc",
+      "context": "<span className=\"badge\" style={{ background: \"rgba(56, 189, 248, 0.15)\", color: \"#7dd3fc\", border: \"1px solid rgba(56, 189, 248, 0.3)\" }}>"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 192,
+      "type": "rgb",
+      "value": "rgba(56, 189, 248, 0.15)",
+      "context": "<span className=\"badge\" style={{ background: \"rgba(56, 189, 248, 0.15)\", color: \"#7dd3fc\", border: \"1px solid rgba(56, 189, 248, 0.3)\" }}>"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 192,
+      "type": "rgb",
+      "value": "rgba(56, 189, 248, 0.3)",
+      "context": "<span className=\"badge\" style={{ background: \"rgba(56, 189, 248, 0.15)\", color: \"#7dd3fc\", border: \"1px solid rgba(56, 189, 248, 0.3)\" }}>"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 207,
+      "type": "hex",
+      "value": "#131d2e",
+      "context": "background: \"#131d2e\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 208,
+      "type": "hex",
+      "value": "#1e2e46",
+      "context": "border: \"1px solid #1e2e46\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 209,
+      "type": "hex",
+      "value": "#94a3b8",
+      "context": "color: \"#94a3b8\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 220,
+      "type": "hex",
+      "value": "#38bdf8",
+      "context": "e.currentTarget.style.borderColor = \"#38bdf8\";"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 221,
+      "type": "hex",
+      "value": "#f8fafc",
+      "context": "e.currentTarget.style.color = \"#f8fafc\";"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 222,
+      "type": "hex",
+      "value": "#19273c",
+      "context": "e.currentTarget.style.background = \"#19273c\";"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 225,
+      "type": "hex",
+      "value": "#1e2e46",
+      "context": "e.currentTarget.style.borderColor = \"#1e2e46\";"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 226,
+      "type": "hex",
+      "value": "#94a3b8",
+      "context": "e.currentTarget.style.color = \"#94a3b8\";"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 227,
+      "type": "hex",
+      "value": "#131d2e",
+      "context": "e.currentTarget.style.background = \"#131d2e\";"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 230,
+      "type": "hex",
+      "value": "#38bdf8",
+      "context": "<Sparkles size={11} color=\"#38bdf8\" />"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 280,
+      "type": "hex",
+      "value": "#080e18",
+      "context": "background: \"#080e18\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 281,
+      "type": "hex",
+      "value": "#1c2b40",
+      "context": "border: \"1px solid #1c2b40\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 285,
+      "type": "rgb",
+      "value": "rgba(0,0,0,0.4)",
+      "context": "boxShadow: \"0 4px 16px rgba(0,0,0,0.4)\""
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 292,
+      "type": "hex",
+      "value": "#6ee7b7",
+      "context": "<span className=\"badge\" style={{ background: \"rgba(16, 185, 129, 0.15)\", color: \"#6ee7b7\", border: \"1px solid rgba(16, 185, 129, 0.3)\" }}>"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 292,
+      "type": "rgb",
+      "value": "rgba(16, 185, 129, 0.15)",
+      "context": "<span className=\"badge\" style={{ background: \"rgba(16, 185, 129, 0.15)\", color: \"#6ee7b7\", border: \"1px solid rgba(16, 185, 129, 0.3)\" }}>"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 292,
+      "type": "rgb",
+      "value": "rgba(16, 185, 129, 0.3)",
+      "context": "<span className=\"badge\" style={{ background: \"rgba(16, 185, 129, 0.15)\", color: \"#6ee7b7\", border: \"1px solid rgba(16, 185, 129, 0.3)\" }}>"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 299,
+      "type": "rgb",
+      "value": "rgba(100, 116, 139, 0.15)",
+      "context": "? \"rgba(100, 116, 139, 0.15)\""
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 300,
+      "type": "rgb",
+      "value": "rgba(168, 85, 247, 0.15)",
+      "context": ": \"rgba(168, 85, 247, 0.15)\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 301,
+      "type": "hex",
+      "value": "#94a3b8",
+      "context": "color: response.provider.includes(\"deterministic\") ? \"#94a3b8\" : \"#d8b4fe\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 301,
+      "type": "hex",
+      "value": "#d8b4fe",
+      "context": "color: response.provider.includes(\"deterministic\") ? \"#94a3b8\" : \"#d8b4fe\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 303,
+      "type": "rgb",
+      "value": "rgba(100, 116, 139, 0.3)",
+      "context": "? \"1px solid rgba(100, 116, 139, 0.3)\""
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 304,
+      "type": "rgb",
+      "value": "rgba(168, 85, 247, 0.3)",
+      "context": ": \"1px solid rgba(168, 85, 247, 0.3)\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 312,
+      "type": "hex",
+      "value": "#38bdf8",
+      "context": "<span className=\"badge pulse-active\" style={{ background: \"rgba(56, 189, 248, 0.15)\", color: \"#38bdf8\", border: \"1px solid rgba(56, 189, 248, 0.3)\" }}>"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 312,
+      "type": "rgb",
+      "value": "rgba(56, 189, 248, 0.15)",
+      "context": "<span className=\"badge pulse-active\" style={{ background: \"rgba(56, 189, 248, 0.15)\", color: \"#38bdf8\", border: \"1px solid rgba(56, 189, 248, 0.3)\" }}>"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 312,
+      "type": "rgb",
+      "value": "rgba(56, 189, 248, 0.3)",
+      "context": "<span className=\"badge pulse-active\" style={{ background: \"rgba(56, 189, 248, 0.15)\", color: \"#38bdf8\", border: \"1px solid rgba(56, 189, 248, 0.3)\" }}>"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 326,
+      "type": "hex",
+      "value": "#34d399",
+      "context": "{copied ? <Check size={12} color=\"#34d399\" /> : <Copy size={12} />}"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 353,
+      "type": "rgb",
+      "value": "rgba(56, 189, 248, 0.15)",
+      "context": "background: \"rgba(56, 189, 248, 0.15)\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 354,
+      "type": "hex",
+      "value": "#38bdf8",
+      "context": "color: \"#38bdf8\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 355,
+      "type": "rgb",
+      "value": "rgba(56, 189, 248, 0.35)",
+      "context": "border: \"1px solid rgba(56, 189, 248, 0.35)\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 374,
+      "type": "hex",
+      "value": "#e2e8f0",
+      "context": "color: \"#e2e8f0\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 376,
+      "type": "hex",
+      "value": "#38bdf8",
+      "context": "borderLeft: \"3px solid #38bdf8\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 379,
+      "type": "rgb",
+      "value": "rgba(56, 189, 248, 0.02)",
+      "context": "background: \"rgba(56, 189, 248, 0.02)\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 386,
+      "type": "hex",
+      "value": "#38bdf8",
+      "context": "<span style={{ display: \"inline-block\", width: \"8px\", height: \"14px\", background: \"#38bdf8\", marginLeft: \"4px\", verticalAlign: \"middle\" }} className=\"pulse-active\" />"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 395,
+      "type": "hex",
+      "value": "#111827",
+      "context": "background: \"#111827\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 396,
+      "type": "hex",
+      "value": "#1f293d",
+      "context": "border: \"1px solid #1f293d\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 403,
+      "type": "hex",
+      "value": "#f59e0b",
+      "context": "<ShieldAlert size={16} color=\"#f59e0b\" />"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 404,
+      "type": "hex",
+      "value": "#cbd5e1",
+      "context": "<span style={{ fontSize: \"12px\", color: \"#cbd5e1\" }}>"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 412,
+      "type": "hex",
+      "value": "#34d399",
+      "context": "<div style={{ display: \"flex\", alignItems: \"center\", gap: \"5px\", color: \"#34d399\", fontSize: \"11px\", fontWeight: 700 }}>"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 436,
+      "type": "rgb",
+      "value": "rgba(3, 7, 18, 0.8)",
+      "context": "background: \"rgba(3, 7, 18, 0.8)\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 448,
+      "type": "hex",
+      "value": "#0c1322",
+      "context": "background: \"#0c1322\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 449,
+      "type": "hex",
+      "value": "#38bdf8",
+      "context": "border: \"1px solid #38bdf8\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 453,
+      "type": "rgb",
+      "value": "rgba(56, 189, 248, 0.25)",
+      "context": "boxShadow: \"0 0 35px rgba(56, 189, 248, 0.25)\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 463,
+      "type": "hex",
+      "value": "#38bdf8",
+      "context": "<BookOpen size={18} color=\"#38bdf8\" />"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 464,
+      "type": "hex",
+      "value": "#f8fafc",
+      "context": "<span className=\"font-mono\" style={{ fontSize: \"16px\", fontWeight: 700, color: \"#f8fafc\" }}>"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 467,
+      "type": "hex",
+      "value": "#38bdf8",
+      "context": "<span className=\"badge\" style={{ background: \"rgba(56, 189, 248, 0.15)\", color: \"#38bdf8\", textTransform: \"uppercase\" }}>"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 467,
+      "type": "rgb",
+      "value": "rgba(56, 189, 248, 0.15)",
+      "context": "<span className=\"badge\" style={{ background: \"rgba(56, 189, 248, 0.15)\", color: \"#38bdf8\", textTransform: \"uppercase\" }}>"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 471,
+      "type": "hex",
+      "value": "#93c5fd",
+      "context": "<h3 style={{ margin: 0, fontSize: \"15px\", color: \"#93c5fd\", fontWeight: 600 }}>"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 477,
+      "type": "hex",
+      "value": "#94a3b8",
+      "context": "style={{ background: \"transparent\", border: \"none\", color: \"#94a3b8\", cursor: \"pointer\" }}"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 485,
+      "type": "hex",
+      "value": "#64748b",
+      "context": "<div style={{ fontSize: \"11px\", color: \"#64748b\", textTransform: \"uppercase\", fontWeight: 700, marginBottom: \"4px\" }}>"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 488,
+      "type": "hex",
+      "value": "#cbd5e1",
+      "context": "<p style={{ fontSize: \"13px\", color: \"#cbd5e1\", lineHeight: 1.6, margin: 0 }}>"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 495,
+      "type": "hex",
+      "value": "#08121f",
+      "context": "background: \"#08121f\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 496,
+      "type": "hex",
+      "value": "#1e3a5f",
+      "context": "border: \"1px solid #1e3a5f\","
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 502,
+      "type": "hex",
+      "value": "#34d399",
+      "context": "<ShieldCheck size={16} color=\"#34d399\" />"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 503,
+      "type": "hex",
+      "value": "#34d399",
+      "context": "<span style={{ fontSize: \"12px\", fontWeight: 700, color: \"#34d399\" }}>"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 507,
+      "type": "hex",
+      "value": "#e2e8f0",
+      "context": "<p style={{ fontSize: \"12px\", color: \"#e2e8f0\", lineHeight: 1.55, margin: 0 }}>"
+    },
+    {
+      "file": "web/src/components/AskAnalyst.tsx",
+      "line": 525,
+      "type": "hex",
+      "value": "#38bdf8",
+      "context": "<div style={{ fontSize: \"11px\", color: \"#38bdf8\", marginTop: \"6px\" }}>Loading citation context...</div>"
+    },
+    {
+      "file": "web/src/components/EventFeed.tsx",
+      "line": 70,
+      "type": "hex",
+      "value": "#38bdf8",
+      "context": "<Activity size={16} color=\"#38bdf8\" />"
+    },
+    {
+      "file": "web/src/components/EventFeed.tsx",
+      "line": 72,
+      "type": "hex",
+      "value": "#7dd3fc",
+      "context": "<span className=\"badge\" style={{ background: \"rgba(56, 189, 248, 0.12)\", color: \"#7dd3fc\" }}>"
+    },
+    {
+      "file": "web/src/components/EventFeed.tsx",
+      "line": 72,
+      "type": "rgb",
+      "value": "rgba(56, 189, 248, 0.12)",
+      "context": "<span className=\"badge\" style={{ background: \"rgba(56, 189, 248, 0.12)\", color: \"#7dd3fc\" }}>"
+    },
+    {
+      "file": "web/src/components/EventFeed.tsx",
+      "line": 151,
+      "type": "hex",
+      "value": "#f87171",
+      "context": "style={{ height: \"30px\", padding: \"0 8px\", fontSize: \"11px\", color: \"#f87171\" }}"
+    },
+    {
+      "file": "web/src/components/EventFeed.tsx",
+      "line": 180,
+      "type": "hex",
+      "value": "#64748b",
+      "context": "<ShieldAlert size={24} color=\"#64748b\" />"
+    },
+    {
+      "file": "web/src/components/EventFeed.tsx",
+      "line": 204,
+      "type": "hex",
+      "value": "#111a28",
+      "context": "borderBottom: \"1px solid #111a28\","
+    },
+    {
+      "file": "web/src/components/EventFeed.tsx",
+      "line": 205,
+      "type": "rgb",
+      "value": "rgba(56, 189, 248, 0.12)",
+      "context": "background: isSelected ? \"rgba(56, 189, 248, 0.12)\" : \"transparent\","
+    },
+    {
+      "file": "web/src/components/EventFeed.tsx",
+      "line": 241,
+      "type": "hex",
+      "value": "#93c5fd",
+      "context": "<td style={{ padding: \"9px 12px\", color: \"#93c5fd\" }} className=\"font-mono\">"
+    },
+    {
+      "file": "web/src/components/EventFeed.tsx",
+      "line": 253,
+      "type": "hex",
+      "value": "#7dd3fc",
+      "context": "color: \"#7dd3fc\""
+    },
+    {
+      "file": "web/src/components/EventFeed.tsx",
+      "line": 256,
+      "type": "hex",
+      "value": "#38bdf8",
+      "context": "<span style={{ marginRight: \"4px\", fontWeight: 700, color: \"#38bdf8\" }} className=\"font-mono\">"
+    },
+    {
+      "file": "web/src/components/EventFeed.tsx",
+      "line": 273,
+      "type": "hex",
+      "value": "#2563eb",
+      "context": "background: isSelected ? \"#2563eb\" : \"var(--bg-elevated)\","
+    },
+    {
+      "file": "web/src/components/EventFeed.tsx",
+      "line": 275,
+      "type": "hex",
+      "value": "#ffffff",
+      "context": "color: \"#ffffff\","
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 108,
+      "type": "hex",
+      "value": "#34d399",
+      "context": "<GitCommit size={16} color=\"#34d399\" />"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 110,
+      "type": "hex",
+      "value": "#6ee7b7",
+      "context": "<span className=\"badge\" style={{ background: \"rgba(16, 185, 129, 0.12)\", color: \"#6ee7b7\" }}>"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 110,
+      "type": "rgb",
+      "value": "rgba(16, 185, 129, 0.12)",
+      "context": "<span className=\"badge\" style={{ background: \"rgba(16, 185, 129, 0.12)\", color: \"#6ee7b7\" }}>"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 122,
+      "type": "hex",
+      "value": "#2563eb",
+      "context": "background: statusFilter === st ? \"#2563eb\" : \"transparent\","
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 123,
+      "type": "hex",
+      "value": "#ffffff",
+      "context": "color: statusFilter === st ? \"#ffffff\" : \"var(--text-secondary)\","
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 141,
+      "type": "hex",
+      "value": "#080d16",
+      "context": "background: \"#080d16\","
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 149,
+      "type": "hex",
+      "value": "#38bdf8",
+      "context": "<BarChart2 size={14} color=\"#38bdf8\" />"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 155,
+      "type": "hex",
+      "value": "#ef4444",
+      "context": "<span style={{ color: \"#ef4444\" }}>&bull; Critical</span>"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 156,
+      "type": "hex",
+      "value": "#f97316",
+      "context": "<span style={{ color: \"#f97316\" }}>&bull; High</span>"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 157,
+      "type": "hex",
+      "value": "#eab308",
+      "context": "<span style={{ color: \"#eab308\" }}>&bull; Medium</span>"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 158,
+      "type": "hex",
+      "value": "#10b981",
+      "context": "<span style={{ color: \"#10b981\" }}>&bull; Low</span>"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 199,
+      "type": "hex",
+      "value": "#38bdf8",
+      "context": "outline: isHovered ? \"2px solid #38bdf8\" : \"none\","
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 202,
+      "type": "hex",
+      "value": "#10b981",
+      "context": "{lowH > 0 && <div style={{ height: `${lowH}px`, background: \"#10b981\" }} />}"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 203,
+      "type": "hex",
+      "value": "#eab308",
+      "context": "{medH > 0 && <div style={{ height: `${medH}px`, background: \"#eab308\" }} />}"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 204,
+      "type": "hex",
+      "value": "#f97316",
+      "context": "{highH > 0 && <div style={{ height: `${highH}px`, background: \"#f97316\" }} />}"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 205,
+      "type": "hex",
+      "value": "#ef4444",
+      "context": "{critH > 0 && <div style={{ height: `${critH}px`, background: \"#ef4444\" }} />}"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 208,
+      "type": "hex",
+      "value": "#38bdf8",
+      "context": "<span style={{ fontSize: \"9px\", color: isHovered ? \"#38bdf8\" : \"var(--text-tertiary)\", marginTop: \"4px\" }} className=\"font-mono\">"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 219,
+      "type": "hex",
+      "value": "#93c5fd",
+      "context": "color: \"#93c5fd\","
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 254,
+      "type": "hex",
+      "value": "#10b981",
+      "context": "? \"#10b981\""
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 256,
+      "type": "hex",
+      "value": "#3b82f6",
+      "context": "? \"#3b82f6\""
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 258,
+      "type": "hex",
+      "value": "#ef4444",
+      "context": "? \"#ef4444\""
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 259,
+      "type": "hex",
+      "value": "#f97316",
+      "context": ": \"#f97316\""
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 263,
+      "type": "rgb",
+      "value": "rgba(0,0,0,0.3)",
+      "context": "boxShadow: \"0 2px 8px rgba(0,0,0,0.3)\""
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 269,
+      "type": "hex",
+      "value": "#f8fafc",
+      "context": "<span style={{ fontWeight: 800, color: \"#f8fafc\", fontSize: \"13px\" }} className=\"font-mono\">"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 272,
+      "type": "hex",
+      "value": "#93c5fd",
+      "context": "<span className=\"badge font-mono\" style={{ background: \"rgba(59, 130, 246, 0.15)\", color: \"#93c5fd\" }}>"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 272,
+      "type": "rgb",
+      "value": "rgba(59, 130, 246, 0.15)",
+      "context": "<span className=\"badge font-mono\" style={{ background: \"rgba(59, 130, 246, 0.15)\", color: \"#93c5fd\" }}>"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 284,
+      "type": "rgb",
+      "value": "rgba(16, 185, 129, 0.15)",
+      "context": "? \"rgba(16, 185, 129, 0.15)\""
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 286,
+      "type": "rgb",
+      "value": "rgba(59, 130, 246, 0.15)",
+      "context": "? \"rgba(59, 130, 246, 0.15)\""
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 287,
+      "type": "rgb",
+      "value": "rgba(239, 68, 68, 0.15)",
+      "context": ": \"rgba(239, 68, 68, 0.15)\","
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 288,
+      "type": "hex",
+      "value": "#34d399",
+      "context": "color: isResolved ? \"#34d399\" : isApproved ? \"#60a5fa\" : \"#f87171\","
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 288,
+      "type": "hex",
+      "value": "#60a5fa",
+      "context": "color: isResolved ? \"#34d399\" : isApproved ? \"#60a5fa\" : \"#f87171\","
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 288,
+      "type": "hex",
+      "value": "#f87171",
+      "context": "color: isResolved ? \"#34d399\" : isApproved ? \"#60a5fa\" : \"#f87171\","
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 289,
+      "type": "rgb",
+      "value": "rgba(16, 185, 129, 0.3)",
+      "context": "border: `1px solid ${isResolved ? \"rgba(16, 185, 129, 0.3)\" : isApproved ? \"rgba(59, 130, 246, 0.3)\" : \"rgba(239, 68, 68, 0.3)\"}`"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 289,
+      "type": "rgb",
+      "value": "rgba(59, 130, 246, 0.3)",
+      "context": "border: `1px solid ${isResolved ? \"rgba(16, 185, 129, 0.3)\" : isApproved ? \"rgba(59, 130, 246, 0.3)\" : \"rgba(239, 68, 68, 0.3)\"}`"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 289,
+      "type": "rgb",
+      "value": "rgba(239, 68, 68, 0.3)",
+      "context": "border: `1px solid ${isResolved ? \"rgba(16, 185, 129, 0.3)\" : isApproved ? \"rgba(59, 130, 246, 0.3)\" : \"rgba(239, 68, 68, 0.3)\"}`"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 306,
+      "type": "hex",
+      "value": "#111827",
+      "context": "<span className=\"badge\" style={{ background: \"#111827\", color: \"#94a3b8\", fontSize: \"10px\" }}>"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 306,
+      "type": "hex",
+      "value": "#94a3b8",
+      "context": "<span className=\"badge\" style={{ background: \"#111827\", color: \"#94a3b8\", fontSize: \"10px\" }}>"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 309,
+      "type": "hex",
+      "value": "#475569",
+      "context": "<span style={{ color: \"#475569\", fontSize: \"10px\" }}>\u2794</span>"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 310,
+      "type": "hex",
+      "value": "#1e1b4b",
+      "context": "<span className=\"badge\" style={{ background: \"#1e1b4b\", color: \"#a5b4fc\", fontSize: \"10px\" }}>"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 310,
+      "type": "hex",
+      "value": "#a5b4fc",
+      "context": "<span className=\"badge\" style={{ background: \"#1e1b4b\", color: \"#a5b4fc\", fontSize: \"10px\" }}>"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 313,
+      "type": "hex",
+      "value": "#475569",
+      "context": "<span style={{ color: \"#475569\", fontSize: \"10px\" }}>\u2794</span>"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 314,
+      "type": "hex",
+      "value": "#311019",
+      "context": "<span className=\"badge\" style={{ background: \"#311019\", color: \"#fca5a5\", fontSize: \"10px\" }}>"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 314,
+      "type": "hex",
+      "value": "#fca5a5",
+      "context": "<span className=\"badge\" style={{ background: \"#311019\", color: \"#fca5a5\", fontSize: \"10px\" }}>"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 320,
+      "type": "hex",
+      "value": "#cbd5e1",
+      "context": "<p style={{ fontSize: \"12px\", color: \"#cbd5e1\", lineHeight: 1.55, margin: \"8px 0 10px 0\" }}>"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 331,
+      "type": "hex",
+      "value": "#34d399",
+      "context": "<div style={{ display: \"flex\", alignItems: \"center\", gap: \"4px\", color: \"#34d399\", fontSize: \"11px\", fontWeight: 700 }}>"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 337,
+      "type": "hex",
+      "value": "#60a5fa",
+      "context": "<div style={{ display: \"flex\", alignItems: \"center\", gap: \"4px\", color: \"#60a5fa\", fontSize: \"11px\", fontWeight: 700 }}>"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 345,
+      "type": "hex",
+      "value": "#34d399",
+      "context": "style={{ padding: \"3px 9px\", fontSize: \"11px\", color: \"#34d399\", borderColor: \"rgba(16, 185, 129, 0.4)\" }}"
+    },
+    {
+      "file": "web/src/components/IncidentTimeline.tsx",
+      "line": 345,
+      "type": "rgb",
+      "value": "rgba(16, 185, 129, 0.4)",
+      "context": "style={{ padding: \"3px 9px\", fontSize: \"11px\", color: \"#34d399\", borderColor: \"rgba(16, 185, 129, 0.4)\" }}"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 48,
+      "type": "hex",
+      "value": "#38bdf8",
+      "context": "borderTop: \"3px solid #38bdf8\","
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 56,
+      "type": "hex",
+      "value": "#38bdf8",
+      "context": "<ShieldCheck size={16} color=\"#38bdf8\" />"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 58,
+      "type": "hex",
+      "value": "#f8fafc",
+      "context": "<div className=\"font-mono\" style={{ fontSize: \"26px\", fontWeight: 800, marginTop: \"6px\", color: \"#f8fafc\" }}>"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 63,
+      "type": "hex",
+      "value": "#7dd3fc",
+      "context": "<span className=\"badge\" style={{ background: \"rgba(56, 189, 248, 0.1)\", color: \"#7dd3fc\", fontSize: \"10px\", padding: \"1px 6px\" }}>"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 63,
+      "type": "rgb",
+      "value": "rgba(56, 189, 248, 0.1)",
+      "context": "<span className=\"badge\" style={{ background: \"rgba(56, 189, 248, 0.1)\", color: \"#7dd3fc\", fontSize: \"10px\", padding: \"1px 6px\" }}>"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 76,
+      "type": "hex",
+      "value": "#ef4444",
+      "context": "borderTop: \"3px solid #ef4444\","
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 77,
+      "type": "rgb",
+      "value": "rgba(239, 68, 68, 0.4)",
+      "context": "borderColor: criticalHighCount > 0 ? \"rgba(239, 68, 68, 0.4)\" : \"var(--border-subtle)\","
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 79,
+      "type": "rgb",
+      "value": "rgba(239, 68, 68, 0.1)",
+      "context": "background: selectedSeverity === \"critical\" ? \"rgba(239, 68, 68, 0.1)\" : \"var(--bg-card)\""
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 83,
+      "type": "hex",
+      "value": "#fca5a5",
+      "context": "<span style={{ fontSize: \"11px\", color: \"#fca5a5\", textTransform: \"uppercase\", fontWeight: 700 }}>"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 86,
+      "type": "hex",
+      "value": "#ef4444",
+      "context": "<AlertTriangle size={16} color=\"#ef4444\" className={criticalHighCount > 0 ? \"pulse-active\" : \"\"} />"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 88,
+      "type": "hex",
+      "value": "#ef4444",
+      "context": "<div className=\"font-mono\" style={{ fontSize: \"26px\", fontWeight: 800, marginTop: \"6px\", color: \"#ef4444\" }}>"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 92,
+      "type": "hex",
+      "value": "#fca5a5",
+      "context": "<span style={{ fontSize: \"10px\", color: \"#fca5a5\" }}>Urgent triage needed</span>"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 93,
+      "type": "hex",
+      "value": "#ef4444",
+      "context": "<span className=\"badge\" style={{ background: \"rgba(239, 68, 68, 0.15)\", color: \"#ef4444\", fontSize: \"10px\", padding: \"1px 6px\" }}>"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 93,
+      "type": "rgb",
+      "value": "rgba(239, 68, 68, 0.15)",
+      "context": "<span className=\"badge\" style={{ background: \"rgba(239, 68, 68, 0.15)\", color: \"#ef4444\", fontSize: \"10px\", padding: \"1px 6px\" }}>"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 106,
+      "type": "hex",
+      "value": "#c084fc",
+      "context": "borderTop: \"3px solid #c084fc\","
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 107,
+      "type": "rgb",
+      "value": "rgba(168, 85, 247, 0.1)",
+      "context": "background: selectedSource === \"honeypot\" ? \"rgba(168, 85, 247, 0.1)\" : \"var(--bg-card)\""
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 111,
+      "type": "hex",
+      "value": "#d8b4fe",
+      "context": "<span style={{ fontSize: \"11px\", color: \"#d8b4fe\", textTransform: \"uppercase\", fontWeight: 700 }}>"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 114,
+      "type": "hex",
+      "value": "#c084fc",
+      "context": "<Flame size={16} color=\"#c084fc\" />"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 116,
+      "type": "hex",
+      "value": "#c084fc",
+      "context": "<div className=\"font-mono\" style={{ fontSize: \"26px\", fontWeight: 800, marginTop: \"6px\", color: \"#c084fc\" }}>"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 121,
+      "type": "hex",
+      "value": "#d8b4fe",
+      "context": "<span className=\"badge\" style={{ background: \"rgba(168, 85, 247, 0.12)\", color: \"#d8b4fe\", fontSize: \"10px\", padding: \"1px 6px\" }}>"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 121,
+      "type": "rgb",
+      "value": "rgba(168, 85, 247, 0.12)",
+      "context": "<span className=\"badge\" style={{ background: \"rgba(168, 85, 247, 0.12)\", color: \"#d8b4fe\", fontSize: \"10px\", padding: \"1px 6px\" }}>"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 134,
+      "type": "hex",
+      "value": "#60a5fa",
+      "context": "borderTop: \"3px solid #60a5fa\","
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 135,
+      "type": "rgb",
+      "value": "rgba(59, 130, 246, 0.1)",
+      "context": "background: selectedSource === \"ratelimiter\" ? \"rgba(59, 130, 246, 0.1)\" : \"var(--bg-card)\""
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 139,
+      "type": "hex",
+      "value": "#93c5fd",
+      "context": "<span style={{ fontSize: \"11px\", color: \"#93c5fd\", textTransform: \"uppercase\", fontWeight: 700 }}>"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 142,
+      "type": "hex",
+      "value": "#60a5fa",
+      "context": "<Ban size={16} color=\"#60a5fa\" />"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 144,
+      "type": "hex",
+      "value": "#60a5fa",
+      "context": "<div className=\"font-mono\" style={{ fontSize: \"26px\", fontWeight: 800, marginTop: \"6px\", color: \"#60a5fa\" }}>"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 149,
+      "type": "hex",
+      "value": "#93c5fd",
+      "context": "<span className=\"badge\" style={{ background: \"rgba(59, 130, 246, 0.12)\", color: \"#93c5fd\", fontSize: \"10px\", padding: \"1px 6px\" }}>"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 149,
+      "type": "rgb",
+      "value": "rgba(59, 130, 246, 0.12)",
+      "context": "<span className=\"badge\" style={{ background: \"rgba(59, 130, 246, 0.12)\", color: \"#93c5fd\", fontSize: \"10px\", padding: \"1px 6px\" }}>"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 160,
+      "type": "hex",
+      "value": "#34d399",
+      "context": "borderTop: \"3px solid #34d399\","
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 165,
+      "type": "hex",
+      "value": "#6ee7b7",
+      "context": "<span style={{ fontSize: \"11px\", color: \"#6ee7b7\", textTransform: \"uppercase\", fontWeight: 700 }}>"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 168,
+      "type": "hex",
+      "value": "#34d399",
+      "context": "<Network size={16} color=\"#34d399\" />"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 170,
+      "type": "hex",
+      "value": "#34d399",
+      "context": "<div className=\"font-mono\" style={{ fontSize: \"26px\", fontWeight: 800, marginTop: \"6px\", color: \"#34d399\" }}>"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 175,
+      "type": "hex",
+      "value": "#6ee7b7",
+      "context": "<span className=\"badge\" style={{ background: \"rgba(16, 185, 129, 0.12)\", color: \"#6ee7b7\", fontSize: \"10px\", padding: \"1px 6px\" }}>"
+    },
+    {
+      "file": "web/src/components/TopCounters.tsx",
+      "line": 175,
+      "type": "rgb",
+      "value": "rgba(16, 185, 129, 0.12)",
+      "context": "<span className=\"badge\" style={{ background: \"rgba(16, 185, 129, 0.12)\", color: \"#6ee7b7\", fontSize: \"10px\", padding: \"1px 6px\" }}>"
+    },
+    {
+      "file": "web/index.html",
+      "line": 7,
+      "type": "hex",
+      "value": "#14213D",
+      "context": "<meta name=\"theme-color\" content=\"#14213D\" />"
+    }
+  ]
+}

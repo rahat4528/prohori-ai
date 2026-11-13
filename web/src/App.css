@@ -4,16 +4,18 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background-color: var(--navy);
+  color: var(--cream);
 }
 
 /* Print styles for audit compliance exports */
 @media print {
   body {
-    background: #ffffff !important;
-    color: #000000 !important;
+    background: var(--cream) !important;
+    color: var(--navy) !important;
   }
   .soc-card {
-    border: 1px solid #cccccc !important;
+    border: 1px solid var(--navy-alpha-40) !important;
     box-shadow: none !important;
   }
 }

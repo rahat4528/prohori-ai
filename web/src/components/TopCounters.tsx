@@ -45,22 +45,23 @@ export const TopCounters: React.FC<TopCountersProps> = ({
         style={{
           padding: "14px 16px",
           cursor: "pointer",
-          borderTop: "3px solid #38bdf8",
-          background: selectedSeverity === "all" && selectedSource === "all" ? "var(--bg-elevated)" : "var(--bg-card)"
+          borderTop: "3px solid var(--coral)",
+          background: "var(--cream)",
+          color: "var(--navy)"
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontSize: "11px", color: "var(--text-secondary)", textTransform: "uppercase", fontWeight: 700 }}>
+          <span style={{ fontSize: "11px", color: "var(--navy-alpha-75)", textTransform: "uppercase", fontWeight: 700 }}>
             Ingested Events
           </span>
-          <ShieldCheck size={16} color="#38bdf8" />
+          <ShieldCheck size={16} color="var(--navy)" />
         </div>
-        <div className="font-mono" style={{ fontSize: "26px", fontWeight: 800, marginTop: "6px", color: "#f8fafc" }}>
+        <div className="font-mono" style={{ fontSize: "26px", fontWeight: 800, marginTop: "6px", color: "var(--navy)" }}>
           {events.length}
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "4px" }}>
-          <span style={{ fontSize: "10px", color: "var(--text-tertiary)" }}>Unified event bus</span>
-          <span className="badge" style={{ background: "rgba(56, 189, 248, 0.1)", color: "#7dd3fc", fontSize: "10px", padding: "1px 6px" }}>
+          <span style={{ fontSize: "10px", color: "var(--navy-alpha-75)" }}>Unified event bus</span>
+          <span className="badge" style={{ background: "var(--navy-alpha-08)", color: "var(--navy)", fontSize: "10px", padding: "1px 6px" }}>
             STREAMING
           </span>
         </div>
@@ -73,24 +74,23 @@ export const TopCounters: React.FC<TopCountersProps> = ({
         style={{
           padding: "14px 16px",
           cursor: "pointer",
-          borderTop: "3px solid #ef4444",
-          borderColor: criticalHighCount > 0 ? "rgba(239, 68, 68, 0.4)" : "var(--border-subtle)",
-          boxShadow: criticalHighCount > 0 ? "var(--shadow-glow-critical)" : "var(--shadow-md)",
-          background: selectedSeverity === "critical" ? "rgba(239, 68, 68, 0.1)" : "var(--bg-card)"
+          borderTop: "3px solid var(--coral)",
+          background: "var(--cream)",
+          color: "var(--navy)"
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontSize: "11px", color: "#fca5a5", textTransform: "uppercase", fontWeight: 700 }}>
+          <span style={{ fontSize: "11px", color: "var(--navy)", textTransform: "uppercase", fontWeight: 700 }}>
             Critical Alerts
           </span>
-          <AlertTriangle size={16} color="#ef4444" className={criticalHighCount > 0 ? "pulse-active" : ""} />
+          <AlertTriangle size={16} color="var(--coral)" />
         </div>
-        <div className="font-mono" style={{ fontSize: "26px", fontWeight: 800, marginTop: "6px", color: "#ef4444" }}>
+        <div className="font-mono" style={{ fontSize: "26px", fontWeight: 800, marginTop: "6px", color: "var(--coral)" }}>
           {criticalHighCount}
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "4px" }}>
-          <span style={{ fontSize: "10px", color: "#fca5a5" }}>Urgent triage needed</span>
-          <span className="badge" style={{ background: "rgba(239, 68, 68, 0.15)", color: "#ef4444", fontSize: "10px", padding: "1px 6px" }}>
+          <span style={{ fontSize: "10px", color: "var(--navy-alpha-75)" }}>Urgent triage needed</span>
+          <span className="badge" style={{ background: "var(--coral)", color: "var(--navy)", fontSize: "10px", padding: "1px 6px" }}>
             {criticalHighCount > 0 ? "ACTION" : "CLEAR"}
           </span>
         </div>
@@ -103,22 +103,23 @@ export const TopCounters: React.FC<TopCountersProps> = ({
         style={{
           padding: "14px 16px",
           cursor: "pointer",
-          borderTop: "3px solid #c084fc",
-          background: selectedSource === "honeypot" ? "rgba(168, 85, 247, 0.1)" : "var(--bg-card)"
+          borderTop: "3px solid var(--navy)",
+          background: "var(--cream)",
+          color: "var(--navy)"
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontSize: "11px", color: "#d8b4fe", textTransform: "uppercase", fontWeight: 700 }}>
+          <span style={{ fontSize: "11px", color: "var(--navy)", textTransform: "uppercase", fontWeight: 700 }}>
             Honeypot Hits
           </span>
-          <Flame size={16} color="#c084fc" />
+          <Flame size={16} color="var(--navy)" />
         </div>
-        <div className="font-mono" style={{ fontSize: "26px", fontWeight: 800, marginTop: "6px", color: "#c084fc" }}>
+        <div className="font-mono" style={{ fontSize: "26px", fontWeight: 800, marginTop: "6px", color: "var(--navy)" }}>
           {honeypotHits}
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "4px" }}>
-          <span style={{ fontSize: "10px", color: "var(--text-tertiary)" }}>Decoy traps engaged</span>
-          <span className="badge" style={{ background: "rgba(168, 85, 247, 0.12)", color: "#d8b4fe", fontSize: "10px", padding: "1px 6px" }}>
+          <span style={{ fontSize: "10px", color: "var(--navy-alpha-75)" }}>Decoy traps engaged</span>
+          <span className="badge" style={{ background: "var(--navy-alpha-12)", color: "var(--navy)", fontSize: "10px", padding: "1px 6px" }}>
             PORT 8081
           </span>
         </div>
@@ -131,22 +132,23 @@ export const TopCounters: React.FC<TopCountersProps> = ({
         style={{
           padding: "14px 16px",
           cursor: "pointer",
-          borderTop: "3px solid #60a5fa",
-          background: selectedSource === "ratelimiter" ? "rgba(59, 130, 246, 0.1)" : "var(--bg-card)"
+          borderTop: "3px solid var(--navy)",
+          background: "var(--cream)",
+          color: "var(--navy)"
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontSize: "11px", color: "#93c5fd", textTransform: "uppercase", fontWeight: 700 }}>
+          <span style={{ fontSize: "11px", color: "var(--navy)", textTransform: "uppercase", fontWeight: 700 }}>
             Abuse Blocks
           </span>
-          <Ban size={16} color="#60a5fa" />
+          <Ban size={16} color="var(--navy)" />
         </div>
-        <div className="font-mono" style={{ fontSize: "26px", fontWeight: 800, marginTop: "6px", color: "#60a5fa" }}>
+        <div className="font-mono" style={{ fontSize: "26px", fontWeight: 800, marginTop: "6px", color: "var(--navy)" }}>
           {blockedRequests}
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "4px" }}>
-          <span style={{ fontSize: "10px", color: "var(--text-tertiary)" }}>HTTP 429 throttles</span>
-          <span className="badge" style={{ background: "rgba(59, 130, 246, 0.12)", color: "#93c5fd", fontSize: "10px", padding: "1px 6px" }}>
+          <span style={{ fontSize: "10px", color: "var(--navy-alpha-75)" }}>HTTP 429 throttles</span>
+          <span className="badge" style={{ background: "var(--navy-alpha-12)", color: "var(--navy)", fontSize: "10px", padding: "1px 6px" }}>
             ACTIVE
           </span>
         </div>
@@ -157,22 +159,23 @@ export const TopCounters: React.FC<TopCountersProps> = ({
         className="soc-card"
         style={{
           padding: "14px 16px",
-          borderTop: "3px solid #34d399",
-          background: "var(--bg-card)"
+          borderTop: "3px solid var(--navy)",
+          background: "var(--cream)",
+          color: "var(--navy)"
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontSize: "11px", color: "#6ee7b7", textTransform: "uppercase", fontWeight: 700 }}>
+          <span style={{ fontSize: "11px", color: "var(--navy)", textTransform: "uppercase", fontWeight: 700 }}>
             Correlated Incidents
           </span>
-          <Network size={16} color="#34d399" />
+          <Network size={16} color="var(--navy)" />
         </div>
-        <div className="font-mono" style={{ fontSize: "26px", fontWeight: 800, marginTop: "6px", color: "#34d399" }}>
+        <div className="font-mono" style={{ fontSize: "26px", fontWeight: 800, marginTop: "6px", color: "var(--navy)" }}>
           {incidentCount}
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "4px" }}>
-          <span style={{ fontSize: "10px", color: "var(--text-tertiary)" }}>Multi-stage campaigns</span>
-          <span className="badge" style={{ background: "rgba(16, 185, 129, 0.12)", color: "#6ee7b7", fontSize: "10px", padding: "1px 6px" }}>
+          <span style={{ fontSize: "10px", color: "var(--navy-alpha-75)" }}>Multi-stage campaigns</span>
+          <span className="badge" style={{ background: "var(--navy-alpha-12)", color: "var(--navy)", fontSize: "10px", padding: "1px 6px" }}>
             KILL-CHAIN
           </span>
         </div>

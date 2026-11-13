@@ -13,7 +13,6 @@ const SLIDES = [
     titleEn: "The Cybersecurity Crisis in Emerging Economies",
     titleBn: "উন্নয়নশীল অর্থনীতির সাইবার নিরাপত্তা সংকট",
     icon: ShieldAlert,
-    color: "#ef4444",
     bulletPointsEn: [
       "Bangladesh is digitizing rapidly ($100B+ annual digital transactions), yet 85% of SMEs, banks, and public offices lack dedicated SOC personnel.",
       "Traditional enterprise SOC analysts cost $40,000–$100,000/year each and suffer extreme alert fatigue (1,000+ alerts daily; 45m MTTU).",
@@ -31,7 +30,6 @@ const SLIDES = [
     titleEn: "Prohori AI — The Self-Hostable AI SOC Analyst",
     titleBn: "প্রহরী এআই — স্ব-হোস্টযোগ্য এআই এসওসি প্ল্যাটফর্ম",
     icon: Cpu,
-    color: "#38bdf8",
     bulletPointsEn: [
       "Not just a colored-light dashboard: Prohori is an active agentic AI SOC Analyst.",
       "Four defensive sensors feed a single unified bus; the AI Analyst triages, correlates, and explains threats in English and Bengali (বাংলা).",
@@ -51,7 +49,6 @@ const SLIDES = [
     titleEn: "The Money-Shot Live Demo",
     titleBn: "লাইভ ডেমো ও কার্যকারিতা",
     icon: Award,
-    color: "#34d399",
     bulletPointsEn: [
       "1. Benign attack traffic trips Deception Sensor (honeypot decoy surface).",
       "2. Live WebSocket pushes alert: 'BRUTE FORCE SUSPECTED'.",
@@ -73,7 +70,6 @@ const SLIDES = [
     titleEn: "Architecture & Data Lineage",
     titleBn: "সিস্টেম আর্কিটেকচার ও ডেটা প্রবাহ",
     icon: Database,
-    color: "#a855f7",
     bulletPointsEn: [
       "Defensive Layer: Deception Honeypot (Port 8081), API Abuse Guard (Port 8082), Asset Discovery (Port 8083).",
       "Core Ingestion Bus: FastAPI + PostgreSQL (pgvector embeddings for ATT&CK techniques & CVEs).",
@@ -93,7 +89,6 @@ const SLIDES = [
     titleEn: "Responsible AI, Safety & Sovereignty",
     titleBn: "দায়িত্বশীল এআই, নিরাপত্তা ও ডেটা সার্বভৌমত্ব",
     icon: ShieldAlert,
-    color: "#f59e0b",
     bulletPointsEn: [
       "Zero Hallucination: AI reasoning strictly grounded in MITRE ATT&CK & CVE knowledge vectors.",
       "Zero Offensive Execution: Honeypot is simulated; never executes commands; Scanner strictly limited to allowlisted targets.",
@@ -113,7 +108,6 @@ const SLIDES = [
     titleEn: "Competitive Advantage",
     titleBn: "প্রতিযোগিতামূলক সুবিধা",
     icon: TrendingUp,
-    color: "#06b6d4",
     bulletPointsEn: [
       "Enterprise SOC (Splunk / CrowdStrike): $150K+/yr, complex setup, foreign cloud egress, English-only.",
       "Generic GenAI Wrappers: High hallucination, no defensive telemetry bus, leaks prompts to 3rd-party clouds.",
@@ -131,7 +125,6 @@ const SLIDES = [
     titleEn: "Cost & Sustainability Model",
     titleBn: "বাজেট ও টেকসই ব্যবসায়িক মডেল",
     icon: DollarSign,
-    color: "#10b981",
     bulletPointsEn: [
       "Built entirely on free-tier, open-source building blocks: FastAPI, PostgreSQL, Ollama, React + Vite.",
       "Zero-cost baseline: Operates fully offline on consumer hardware with zero cloud API bills.",
@@ -149,7 +142,6 @@ const SLIDES = [
     titleEn: "Team Orionids — The Mission & Execution",
     titleBn: "টিম ওরিওনিডস — লক্ষ্য ও বাস্তবায়ন",
     icon: Users,
-    color: "#38bdf8",
     bulletPointsEn: [
       "Built with pride by Team Orionids for the International AI Builders Congress 2026.",
       "Vision: Democratize enterprise-grade cybersecurity for emerging digital nations.",
@@ -204,7 +196,7 @@ export const PitchDeckModal: React.FC<PitchDeckModalProps> = ({
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(3, 7, 18, 0.85)",
+        background: "var(--navy-alpha-75)",
         backdropFilter: "blur(8px)",
         zIndex: 2000,
         display: "flex",
@@ -216,18 +208,18 @@ export const PitchDeckModal: React.FC<PitchDeckModalProps> = ({
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          background: "var(--bg-surface)",
-          border: "1px solid var(--border-medium)",
+          background: "var(--cream)",
+          color: "var(--navy)",
+          border: "1px solid var(--navy-alpha-25)",
           borderRadius: "14px",
           width: "880px",
           maxWidth: "96vw",
           minHeight: "520px",
           display: "flex",
           flexDirection: "column",
-          boxShadow: "0 24px 60px rgba(0, 0, 0, 0.85)",
+          boxShadow: "var(--shadow-lg)",
           overflow: "hidden"
         }}
-        className="animate-fade-in"
       >
         {/* Header Bar */}
         <div style={{
@@ -235,33 +227,33 @@ export const PitchDeckModal: React.FC<PitchDeckModalProps> = ({
           justifyContent: "space-between",
           alignItems: "center",
           padding: "16px 24px",
-          borderBottom: "1px solid var(--border-subtle)",
-          background: "var(--bg-canvas)",
+          borderBottom: "1px solid var(--navy-alpha-15)",
+          background: "var(--navy-alpha-04)",
           flexWrap: "wrap",
           gap: "10px"
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <span className="badge" style={{ background: "rgba(56, 189, 248, 0.15)", color: "#38bdf8", border: "1px solid rgba(56, 189, 248, 0.35)" }}>
+            <span className="badge" style={{ background: "var(--navy)", color: "var(--cream)", border: "1px solid var(--navy)" }}>
               CONGRESS 2026 PITCH DECK
             </span>
-            <span style={{ fontSize: "12px", color: "var(--text-tertiary)" }} className="font-mono">
+            <span style={{ fontSize: "13px", color: "var(--navy-alpha-75)" }} className="font-mono">
               Slide {slide.number} of {SLIDES.length}
             </span>
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             {/* In-Deck Language Toggle */}
-            <div style={{ display: "flex", background: "var(--bg-elevated)", borderRadius: "4px", border: "1px solid var(--border-subtle)", padding: "2px" }}>
+            <div style={{ display: "flex", background: "var(--navy-alpha-08)", borderRadius: "6px", border: "1px solid var(--navy-alpha-20)", padding: "2px" }}>
               <button
                 onClick={() => setDeckLangOverride("en")}
                 style={{
-                  background: deckLang === "en" ? "#2563eb" : "transparent",
-                  color: "#ffffff",
+                  background: deckLang === "en" ? "var(--coral)" : "transparent",
+                  color: "var(--navy)",
                   border: "none",
-                  borderRadius: "3px",
-                  fontSize: "10px",
+                  borderRadius: "4px",
+                  fontSize: "12px",
                   fontWeight: 700,
-                  padding: "2px 8px",
+                  padding: "4px 10px",
                   cursor: "pointer"
                 }}
               >
@@ -270,13 +262,13 @@ export const PitchDeckModal: React.FC<PitchDeckModalProps> = ({
               <button
                 onClick={() => setDeckLangOverride("bn")}
                 style={{
-                  background: deckLang === "bn" ? "#2563eb" : "transparent",
-                  color: "#ffffff",
+                  background: deckLang === "bn" ? "var(--coral)" : "transparent",
+                  color: "var(--navy)",
                   border: "none",
-                  borderRadius: "3px",
-                  fontSize: "10px",
+                  borderRadius: "4px",
+                  fontSize: "12px",
                   fontWeight: 700,
-                  padding: "2px 8px",
+                  padding: "4px 10px",
                   cursor: "pointer"
                 }}
               >
@@ -286,9 +278,10 @@ export const PitchDeckModal: React.FC<PitchDeckModalProps> = ({
 
             <button
               onClick={onClose}
-              className="btn btn-ghost"
-              style={{ padding: "6px" }}
+              className="btn btn-secondary-cream"
+              style={{ padding: "6px 10px", minHeight: "36px" }}
               title="Close presentation (Esc)"
+              aria-label="Close presentation"
             >
               <X size={18} />
             </button>
@@ -301,18 +294,18 @@ export const PitchDeckModal: React.FC<PitchDeckModalProps> = ({
             {/* Slide Title */}
             <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "22px" }}>
               <div style={{
-                background: `${slide.color}20`,
-                border: `1px solid ${slide.color}50`,
+                background: "var(--coral-alpha-15)",
+                border: "1px solid var(--coral)",
                 borderRadius: "10px",
                 padding: "10px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                color: slide.color
+                color: "var(--navy)"
               }}>
-                <Icon size={26} />
+                <Icon size={26} color="var(--navy)" />
               </div>
-              <h2 style={{ fontSize: "20px", fontWeight: 800, color: "#f8fafc", margin: 0, letterSpacing: "-0.01em" }}>
+              <h2 style={{ fontSize: "22px", fontWeight: 800, color: "var(--navy)", margin: 0, letterSpacing: "-0.01em" }}>
                 {title}
               </h2>
             </div>
@@ -320,8 +313,8 @@ export const PitchDeckModal: React.FC<PitchDeckModalProps> = ({
             {/* Bullets */}
             <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "14px" }}>
               {bullets.map((b, i) => (
-                <li key={i} style={{ display: "flex", alignItems: "flex-start", gap: "12px", fontSize: "14px", color: "#cbd5e1", lineHeight: 1.6 }}>
-                  <span style={{ color: slide.color, fontWeight: 800, fontSize: "16px", lineHeight: "20px" }}>&bull;</span>
+                <li key={i} style={{ display: "flex", alignItems: "flex-start", gap: "12px", fontSize: "15px", color: "var(--navy)", lineHeight: 1.6 }}>
+                  <span style={{ color: "var(--coral)", fontWeight: 800, fontSize: "18px", lineHeight: "22px" }}>&bull;</span>
                   <span>{b}</span>
                 </li>
               ))}
@@ -330,14 +323,14 @@ export const PitchDeckModal: React.FC<PitchDeckModalProps> = ({
 
           {/* Highlight Callout */}
           <div style={{
-            background: "var(--bg-card-subtle)",
-            border: `1px solid ${slide.color}35`,
-            borderLeft: `4px solid ${slide.color}`,
+            background: "var(--navy-alpha-04)",
+            border: "1px solid var(--navy-alpha-20)",
+            borderLeft: "4px solid var(--coral)",
             borderRadius: "6px",
-            padding: "12px 18px",
-            fontSize: "13px",
-            fontWeight: 600,
-            color: "#e2e8f0",
+            padding: "14px 18px",
+            fontSize: "14px",
+            fontWeight: 700,
+            color: "var(--navy)",
             marginTop: "20px"
           }}>
             {slide.highlight}
@@ -350,16 +343,16 @@ export const PitchDeckModal: React.FC<PitchDeckModalProps> = ({
           justifyContent: "space-between",
           alignItems: "center",
           padding: "14px 24px",
-          borderTop: "1px solid var(--border-subtle)",
-          background: "var(--bg-canvas)"
+          borderTop: "1px solid var(--navy-alpha-15)",
+          background: "var(--navy-alpha-04)"
         }}>
           <button
             onClick={() => setCurrentSlide((prev) => Math.max(0, prev - 1))}
             disabled={currentSlide === 0}
-            className="btn btn-secondary"
-            style={{ fontSize: "12px" }}
+            className="btn btn-secondary-cream"
+            style={{ fontSize: "14px", minHeight: "40px" }}
           >
-            <ChevronLeft size={15} />
+            <ChevronLeft size={16} />
             <span>Previous</span>
           </button>
 
@@ -373,7 +366,7 @@ export const PitchDeckModal: React.FC<PitchDeckModalProps> = ({
                   width: i === currentSlide ? "26px" : "8px",
                   height: "8px",
                   borderRadius: "4px",
-                  background: i === currentSlide ? "#38bdf8" : "var(--border-subtle)",
+                  background: i === currentSlide ? "var(--coral)" : "var(--navy-alpha-25)",
                   cursor: "pointer",
                   transition: "all 0.2s ease"
                 }}
@@ -386,10 +379,10 @@ export const PitchDeckModal: React.FC<PitchDeckModalProps> = ({
             onClick={() => setCurrentSlide((prev) => Math.min(SLIDES.length - 1, prev + 1))}
             disabled={currentSlide === SLIDES.length - 1}
             className="btn btn-primary"
-            style={{ fontSize: "12px" }}
+            style={{ fontSize: "14px", minHeight: "40px" }}
           >
             <span>Next</span>
-            <ChevronRight size={15} />
+            <ChevronRight size={16} />
           </button>
         </div>
       </div>

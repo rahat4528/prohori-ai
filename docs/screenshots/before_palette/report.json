@@ -1,0 +1,20 @@
+{
+  "mode": "before_palette",
+  "console_errors_and_warnings": [
+    "[1920x1080][en][warning] WebSocket connection to 'ws://localhost:8000/stream' failed: WebSocket is closed before the connection is established.",
+    "[1920x1080][bn][warning] WebSocket connection to 'ws://localhost:8000/stream' failed: WebSocket is closed before the connection is established.",
+    "[1366x768][en][warning] WebSocket connection to 'ws://localhost:8000/stream' failed: WebSocket is closed before the connection is established.",
+    "[1366x768][bn][warning] WebSocket connection to 'ws://localhost:8000/stream' failed: WebSocket is closed before the connection is established.",
+    "[1024x768][en][warning] WebSocket connection to 'ws://localhost:8000/stream' failed: WebSocket is closed before the connection is established.",
+    "[1024x768][bn][warning] WebSocket connection to 'ws://localhost:8000/stream' failed: WebSocket is closed before the connection is established.",
+    "[390x844][en][warning] WebSocket connection to 'ws://localhost:8000/stream' failed: WebSocket is closed before the connection is established.",
+    "[390x844][bn][warning] WebSocket connection to 'ws://localhost:8000/stream' failed: WebSocket is closed before the connection is established."
+  ],
+  "external_requests": [
+    "http://localhost:8000/events?limit=100",
+    "http://localhost:8000/sovereignty/status",
+    "http://localhost:8000/analyst/incidents",
+    "http://localhost:8000/audit?limit=50",
+    "http://localhost:8000/events"
+  ]
+}

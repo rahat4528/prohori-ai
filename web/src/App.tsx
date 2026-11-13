@@ -131,6 +131,10 @@ export const App: React.FC = () => {
                   i.incident_id === data.incident_id ? { ...i, status: data.status } : i
                 )
               );
+            } else if (data.type === "demo_reset") {
+              setEvents([]);
+              setSelectedEvent(null);
+              setIncidents([]);
             }
           } catch (e) {
             console.error("Error processing websocket message:", e);
@@ -195,6 +199,21 @@ export const App: React.FC = () => {
       console.error("Failed to post demo event:", err);
     }
   }, [isMobile]);
+
+  // 3b. Reset demo to clean slate
+  const handleResetDemo = useCallback(async () => {
+    try {
+      await fetch(`${API_BASE}/demo/reset`, {
+        method: "POST",
+        headers: jsonHeaders
+      });
+      setEvents([]);
+      setSelectedEvent(null);
+      setIncidents([]);
+    } catch (err) {
+      console.error("Failed to reset demo:", err);
+    }
+  }, []);
 
   // 4. Toggle Data Sovereignty Mode
   const handleToggleSovereignty = async () => {
@@ -291,11 +310,14 @@ export const App: React.FC = () => {
       } else if (e.shiftKey && e.key === "L") {
         e.preventDefault();
         setGlobalLanguage((prev) => (prev === "en" ? "bn" : "en"));
+      } else if (e.shiftKey && e.key === "R") {
+        e.preventDefault();
+        handleResetDemo();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleTriggerDemo]);
+  }, [handleTriggerDemo, handleResetDemo]);
 
   const isBn = globalLanguage === "bn";
 
@@ -307,6 +329,7 @@ export const App: React.FC = () => {
         globalLanguage={globalLanguage}
         setGlobalLanguage={setGlobalLanguage}
         onTriggerDemo={handleTriggerDemo}
+        onResetDemo={handleResetDemo}
         onOpenAudit={() => setIsAuditOpen(true)}
         onOpenPitchDeck={() => setIsPitchDeckOpen(true)}
         isLocalSovereignty={isLocalSovereignty}
@@ -372,23 +395,23 @@ export const App: React.FC = () => {
       <footer
         style={{
           marginTop: "28px",
-          padding: "14px 20px",
-          background: "var(--bg-surface)",
-          border: "1px solid var(--border-subtle)",
+          padding: "16px 22px",
+          background: "var(--navy)",
+          border: "1px solid var(--cream-alpha-20)",
           borderRadius: "10px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           flexWrap: "wrap",
           gap: "12px",
-          fontSize: "13px",
-          color: "var(--text-tertiary)"
+          fontSize: "14px",
+          color: "var(--cream-alpha-75)"
         }}
         role="contentinfo"
       >
         <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap" }}>
-          <span style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)", fontWeight: 600 }}>
-            <Shield size={15} color="#38bdf8" />
+          <span style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--cream)", fontWeight: 600 }}>
+            <Shield size={16} color="var(--cream)" />
             <span>Prohori Sentinel &bull; International AI Builders Congress 2026</span>
           </span>
           <span
@@ -397,10 +420,11 @@ export const App: React.FC = () => {
               display: "inline-flex",
               alignItems: "center",
               gap: "4px",
-              background: "rgba(16, 185, 129, 0.12)",
-              color: "#34d399",
-              padding: "3px 8px",
-              borderRadius: "4px",
+              background: "var(--cream-alpha-10)",
+              color: "var(--cream)",
+              border: "1px solid var(--cream-alpha-20)",
+              padding: "4px 10px",
+              borderRadius: "6px",
               fontSize: "12px",
               fontWeight: 600
             }}
@@ -414,10 +438,11 @@ export const App: React.FC = () => {
               display: "inline-flex",
               alignItems: "center",
               gap: "4px",
-              background: "rgba(56, 189, 248, 0.12)",
-              color: "#38bdf8",
-              padding: "3px 8px",
-              borderRadius: "4px",
+              background: "var(--cream-alpha-10)",
+              color: "var(--cream)",
+              border: "1px solid var(--cream-alpha-20)",
+              padding: "4px 10px",
+              borderRadius: "6px",
               fontSize: "12px",
               fontWeight: 600
             }}
@@ -432,9 +457,9 @@ export const App: React.FC = () => {
             href={`${API_BASE}/docs`}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: "#38bdf8", textDecoration: "none", display: "flex", alignItems: "center", gap: "4px", fontWeight: 600 }}
+            style={{ color: "var(--coral)", textDecoration: "none", display: "flex", alignItems: "center", gap: "6px", fontWeight: 700 }}
           >
-            <BookOpen size={13} />
+            <BookOpen size={14} />
             <span>Interactive API Docs</span>
           </a>
           <button
@@ -442,16 +467,16 @@ export const App: React.FC = () => {
             style={{
               background: "transparent",
               border: "none",
-              color: "var(--text-secondary)",
+              color: "var(--cream)",
               cursor: "pointer",
-              fontSize: "13px",
+              fontSize: "14px",
               textDecoration: "underline"
             }}
           >
             {isBn ? "কাঁচা ফরেনসিক তথ্য" : "Raw Forensic Event"}
           </button>
-          <span className="font-mono" style={{ color: "var(--text-tertiary)", fontSize: "12px" }}>
-            [? : Shortcuts | Shift+D: Demo | Shift+A: Audit | Shift+P: Pitch Deck]
+          <span className="font-mono" style={{ color: "var(--cream-alpha-65)", fontSize: "12px" }}>
+            [? : Shortcuts | Shift+D: Demo | Shift+A: Audit | Shift+P: Pitch Deck | Shift+R: Reset]
           </span>
         </div>
       </footer>

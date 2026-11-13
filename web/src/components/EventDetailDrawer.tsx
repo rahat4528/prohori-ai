@@ -84,9 +84,9 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
         style={{
           position: "fixed",
           inset: 0,
-          background: "rgba(3, 7, 18, 0.65)",
-          backdropFilter: "blur(3px)",
-          zIndex: 999
+          background: "var(--navy-alpha-75)",
+          backdropFilter: "blur(4px)",
+          zIndex: 1999
         }}
       />
 
@@ -97,61 +97,62 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
           top: 0,
           right: 0,
           bottom: 0,
-          width: "520px",
+          width: "540px",
           maxWidth: "92vw",
-          background: "var(--bg-surface)",
-          borderLeft: "1px solid var(--border-medium)",
+          background: "var(--cream)",
+          color: "var(--navy)",
+          borderLeft: "1px solid var(--navy-alpha-25)",
           boxShadow: "var(--shadow-lg)",
-          zIndex: 1000,
+          zIndex: 2000,
           display: "flex",
           flexDirection: "column",
-          padding: "22px",
+          padding: "24px",
           overflowY: "auto"
         }}
-        className="animate-slide-in"
       >
         {/* Header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--border-subtle)", paddingBottom: "14px", marginBottom: "16px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--navy-alpha-15)", paddingBottom: "16px", marginBottom: "18px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <Shield size={20} color="#38bdf8" />
+            <Shield size={22} color="var(--navy)" />
             <div>
-              <h2 style={{ fontSize: "14px", fontWeight: 800, color: "#f8fafc", margin: 0, letterSpacing: "0.03em" }}>
+              <h2 style={{ fontSize: "16px", fontWeight: 800, color: "var(--navy)", margin: 0, letterSpacing: "0.03em" }}>
                 EVENT INSPECTOR
               </h2>
-              <span style={{ fontSize: "11px", color: "var(--text-tertiary)" }}>
+              <span style={{ fontSize: "13px", color: "var(--navy-alpha-75)" }}>
                 বিস্তারিত টেলিমেট্রি ও এআই বিশ্লেষণ
               </span>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="btn btn-ghost"
-            style={{ padding: "6px" }}
+            className="btn btn-secondary-cream"
+            style={{ padding: "6px 10px", minHeight: "36px" }}
             title="Close inspector (Esc)"
+            aria-label="Close inspector"
           >
             <X size={18} />
           </button>
         </div>
 
         {/* Primary Attributes Grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "16px" }}>
-          <div style={{ background: "var(--bg-elevated)", padding: "10px 12px", borderRadius: "6px", border: "1px solid var(--border-subtle)" }}>
-            <div style={{ fontSize: "10px", color: "var(--text-tertiary)", textTransform: "uppercase", fontWeight: 700 }}>Event Source</div>
-            <span className={`badge source-${event.source}`} style={{ marginTop: "4px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "18px" }}>
+          <div style={{ background: "var(--navy-alpha-04)", padding: "12px 14px", borderRadius: "8px", border: "1px solid var(--navy-alpha-15)" }}>
+            <div style={{ fontSize: "11px", color: "var(--navy-alpha-75)", textTransform: "uppercase", fontWeight: 700 }}>Event Source</div>
+            <span className="badge" style={{ marginTop: "6px", background: "var(--navy)", color: "var(--cream)" }}>
               {event.source}
             </span>
           </div>
 
-          <div style={{ background: "var(--bg-elevated)", padding: "10px 12px", borderRadius: "6px", border: "1px solid var(--border-subtle)" }}>
-            <div style={{ fontSize: "10px", color: "var(--text-tertiary)", textTransform: "uppercase", fontWeight: 700 }}>Severity Level</div>
-            <span className={`badge badge-${event.severity}`} style={{ marginTop: "4px" }}>
+          <div style={{ background: "var(--navy-alpha-04)", padding: "12px 14px", borderRadius: "8px", border: "1px solid var(--navy-alpha-15)" }}>
+            <div style={{ fontSize: "11px", color: "var(--navy-alpha-75)", textTransform: "uppercase", fontWeight: 700 }}>Severity Level</div>
+            <span className={`badge severity-badge-${event.severity.toLowerCase()}`} style={{ marginTop: "6px" }}>
               {event.severity}
             </span>
           </div>
 
-          <div style={{ background: "var(--bg-elevated)", padding: "10px 12px", borderRadius: "6px", border: "1px solid var(--border-subtle)", gridColumn: "span 2" }}>
-            <div style={{ fontSize: "10px", color: "var(--text-tertiary)", textTransform: "uppercase", fontWeight: 700 }}>Event ID & Timestamp</div>
-            <div style={{ fontSize: "11px", color: "var(--text-secondary)", marginTop: "3px" }} className="font-mono">
+          <div style={{ background: "var(--navy-alpha-04)", padding: "12px 14px", borderRadius: "8px", border: "1px solid var(--navy-alpha-15)", gridColumn: "span 2" }}>
+            <div style={{ fontSize: "11px", color: "var(--navy-alpha-75)", textTransform: "uppercase", fontWeight: 700 }}>Event ID & Timestamp</div>
+            <div style={{ fontSize: "13px", color: "var(--navy)", marginTop: "4px" }} className="font-mono">
               {event.id} &bull; {event.ts}
             </div>
           </div>
@@ -159,30 +160,30 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
 
         {/* AI SOC Analyst Intelligence Section */}
         <div style={{
-          background: "var(--bg-card-subtle)",
-          border: "1px solid #1e3a5f",
+          background: "var(--navy-alpha-04)",
+          border: "1px solid var(--navy-alpha-20)",
           borderRadius: "8px",
-          padding: "16px",
-          marginBottom: "16px"
+          padding: "18px",
+          marginBottom: "18px"
         }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#38bdf8", fontWeight: 700, fontSize: "12px" }}>
-              <Bot size={16} />
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--navy)", fontWeight: 800, fontSize: "13px" }}>
+              <Bot size={18} color="var(--navy)" />
               <span>AI SOC ANALYST TRIAGE NARRATIVE</span>
             </div>
 
             {/* Language Tabs */}
-            <div style={{ display: "flex", background: "var(--bg-canvas)", borderRadius: "4px", border: "1px solid var(--border-subtle)", padding: "2px" }}>
+            <div style={{ display: "flex", background: "var(--cream)", borderRadius: "6px", border: "1px solid var(--navy-alpha-20)", padding: "2px" }}>
               <button
                 onClick={() => setLangTabOverride("en")}
                 style={{
-                  background: langTab === "en" ? "#2563eb" : "transparent",
-                  color: "#ffffff",
+                  background: langTab === "en" ? "var(--coral)" : "transparent",
+                  color: "var(--navy)",
                   border: "none",
-                  borderRadius: "3px",
-                  fontSize: "10px",
+                  borderRadius: "4px",
+                  fontSize: "12px",
                   fontWeight: 700,
-                  padding: "2px 8px",
+                  padding: "4px 10px",
                   cursor: "pointer"
                 }}
               >
@@ -191,13 +192,13 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
               <button
                 onClick={() => setLangTabOverride("bn")}
                 style={{
-                  background: langTab === "bn" ? "#2563eb" : "transparent",
-                  color: "#ffffff",
+                  background: langTab === "bn" ? "var(--coral)" : "transparent",
+                  color: "var(--navy)",
                   border: "none",
-                  borderRadius: "3px",
-                  fontSize: "10px",
+                  borderRadius: "4px",
+                  fontSize: "12px",
                   fontWeight: 700,
-                  padding: "2px 8px",
+                  padding: "4px 10px",
                   cursor: "pointer"
                 }}
               >
@@ -209,18 +210,18 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
           {analyst ? (
             <div>
               {/* Citations & Confidence */}
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "10px" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "12px" }}>
                 {analyst.citations?.map((c, i) => (
                   <span
                     key={i}
                     className="badge font-mono"
-                    style={{ background: "rgba(56, 189, 248, 0.15)", color: "#38bdf8", border: "1px solid rgba(56, 189, 248, 0.35)" }}
+                    style={{ background: "var(--navy-alpha-08)", color: "var(--navy)", border: "1px solid var(--navy-alpha-25)" }}
                   >
                     Citation: {c}
                   </span>
                 ))}
                 {analyst.confidence && (
-                  <span className="badge font-mono" style={{ background: "rgba(16, 185, 129, 0.15)", color: "#34d399", border: "1px solid rgba(16, 185, 129, 0.35)" }}>
+                  <span className="badge font-mono" style={{ background: "var(--navy-alpha-12)", color: "var(--navy)", border: "1px solid var(--navy-alpha-30)" }}>
                     Confidence: {Math.round(analyst.confidence * 100)}%
                   </span>
                 )}
@@ -228,17 +229,13 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
                   <span
                     className="badge font-mono"
                     style={{
-                      background: analyst.provider.includes("deterministic")
-                        ? "rgba(100, 116, 139, 0.15)"
-                        : "rgba(168, 85, 247, 0.15)",
-                      color: analyst.provider.includes("deterministic") ? "#94a3b8" : "#d8b4fe",
-                      border: analyst.provider.includes("deterministic")
-                        ? "1px solid rgba(100, 116, 139, 0.35)"
-                        : "1px solid rgba(168, 85, 247, 0.35)",
+                      background: "var(--navy)",
+                      color: "var(--cream)",
+                      border: "1px solid var(--navy)"
                     }}
                   >
                     {analyst.provider.includes("deterministic")
-                      ? `Engine: Offline RAG (${analyst.provider})`
+                      ? `Engine: Offline RAG`
                       : `LLM: ${analyst.provider}`}
                   </span>
                 )}
@@ -246,12 +243,12 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
 
               {/* Narrative Paragraph */}
               <div style={{
-                fontSize: "12px",
+                fontSize: "14px",
                 lineHeight: 1.65,
-                color: "#e2e8f0",
-                borderLeft: "3px solid #38bdf8",
-                paddingLeft: "12px",
-                marginBottom: "14px",
+                color: "var(--navy)",
+                borderLeft: "3px solid var(--coral)",
+                paddingLeft: "14px",
+                marginBottom: "16px",
                 whiteSpace: "pre-line"
               }}>
                 {narrative || analyst.narrative_en}
@@ -260,33 +257,33 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
               {/* Recommended Countermeasure Box */}
               {analyst.recommended_action && (
                 <div style={{
-                  background: "var(--bg-canvas)",
-                  border: "1px solid var(--border-subtle)",
-                  borderRadius: "6px",
-                  padding: "12px",
-                  marginTop: "10px"
+                  background: "var(--cream)",
+                  border: "1px solid var(--navy-alpha-20)",
+                  borderRadius: "8px",
+                  padding: "14px",
+                  marginTop: "12px"
                 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px" }}>
-                    <ShieldAlert size={14} color="#f59e0b" />
-                    <span style={{ fontSize: "11px", color: "#f59e0b", fontWeight: 700, textTransform: "uppercase" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+                    <ShieldAlert size={16} color="var(--navy)" />
+                    <span style={{ fontSize: "12px", color: "var(--navy)", fontWeight: 800, textTransform: "uppercase" }}>
                       Recommended Defensive Countermeasure (HITL)
                     </span>
                   </div>
-                  <div style={{ fontSize: "12px", color: "var(--text-secondary)", marginBottom: "10px", lineHeight: 1.5 }}>
+                  <div style={{ fontSize: "13px", color: "var(--navy)", marginBottom: "12px", lineHeight: 1.5 }}>
                     {analyst.recommended_action}
                   </div>
 
                   {actionApproved ? (
-                    <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#34d399", fontSize: "11px", fontWeight: 700 }}>
-                      <CheckCircle size={15} />
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "var(--navy)", color: "var(--cream)", padding: "8px 12px", borderRadius: "6px", fontSize: "12px", fontWeight: 700 }}>
+                      <CheckCircle size={16} />
                       <span>APPROVED & ACTIVE IN PERIMETER DENYLIST</span>
                     </div>
                   ) : (
                     <button
                       onClick={handleApproveAction}
                       disabled={approving}
-                      className="btn btn-success"
-                      style={{ padding: "5px 12px", fontSize: "11px" }}
+                      className="btn btn-primary"
+                      style={{ padding: "8px 16px", fontSize: "13px", minHeight: "40px" }}
                     >
                       {approving ? "Enforcing Block..." : "Approve Countermeasure (Human-in-the-Loop)"}
                     </button>
@@ -295,9 +292,9 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
               )}
             </div>
           ) : (
-            <div style={{ textAlign: "center", padding: "16px", color: "var(--text-tertiary)" }}>
-              <AlertOctagon size={24} style={{ margin: "0 auto 6px", display: "block", color: "#f59e0b" }} />
-              <p style={{ fontSize: "12px" }}>No AI triage record exists for this event yet.</p>
+            <div style={{ textAlign: "center", padding: "16px", color: "var(--navy-alpha-75)" }}>
+              <AlertOctagon size={24} style={{ margin: "0 auto 6px", display: "block", color: "var(--navy)" }} />
+              <p style={{ fontSize: "14px" }}>No AI triage record exists for this event yet.</p>
             </div>
           )}
 
@@ -305,27 +302,27 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
           <button
             onClick={handleRetriageClick}
             disabled={retriaging}
-            className="btn btn-secondary"
-            style={{ width: "100%", marginTop: "12px", padding: "8px" }}
+            className="btn btn-secondary-cream"
+            style={{ width: "100%", marginTop: "14px", padding: "10px", minHeight: "42px" }}
           >
-            <RefreshCw size={13} className={retriaging ? "pulse-active" : ""} />
+            <RefreshCw size={15} />
             <span>{retriaging ? "Running Grounded RAG Triage..." : "Re-Run Autonomous Triage"}</span>
           </button>
         </div>
 
         {/* Raw Event Details (JSON) */}
         <div style={{ flex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "11px", color: "var(--text-tertiary)", textTransform: "uppercase", fontWeight: 700, marginBottom: "6px" }}>
-            <FileText size={13} />
+          <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px", color: "var(--navy-alpha-75)", textTransform: "uppercase", fontWeight: 700, marginBottom: "8px" }}>
+            <FileText size={14} />
             <span>Raw Sensor Telemetry Details</span>
           </div>
           <pre style={{
-            background: "#04070c",
-            border: "1px solid var(--border-subtle)",
-            borderRadius: "6px",
-            padding: "12px",
-            fontSize: "11px",
-            color: "#94a3b8",
+            background: "var(--navy)",
+            border: "1px solid var(--navy-alpha-30)",
+            borderRadius: "8px",
+            padding: "14px",
+            fontSize: "12px",
+            color: "var(--cream)",
             overflowX: "auto",
             maxHeight: "220px",
             lineHeight: 1.5

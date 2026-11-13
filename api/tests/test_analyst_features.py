@@ -323,4 +323,99 @@ async def test_decoupled_ingestion_with_background_llm_upgrade(monkeypatch):
         assert matched["analyst"]["narrative_en"] == "Neural LLM upgraded narrative."
 
 
+@pytest.mark.asyncio
+async def test_ask_analyst_firewall_intent():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        payload = {
+            "query": "What firewall commands block this attack?",
+            "language": "en",
+            "event_context": {
+                "source": "honeypot",
+                "severity": "high",
+                "type": "brute_force_suspected",
+                "details": {"source_ip": "192.168.1.189", "username_tried": "admin"}
+            }
+        }
+        resp = await client.post("/analyst/ask", json=payload)
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "iptables" in data["answer"]
+        assert "192.168.1.189" in data["answer"]
+        assert "T1110.001" in str(data["citations"])
+
+
+@pytest.mark.asyncio
+async def test_ask_analyst_vector_intent():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        payload = {
+            "query": "What is the primary attack vector and impact?",
+            "language": "en",
+            "event_context": {
+                "source": "honeypot",
+                "severity": "high",
+                "type": "brute_force_suspected",
+                "details": {"source_ip": "192.168.1.189", "simulated_surface": "/admin/login"}
+            }
+        }
+        resp = await client.post("/analyst/ask", json=payload)
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "Primary Vector" in data["answer"]
+        assert "T1110.001" in data["answer"]
+
+
+@pytest.mark.asyncio
+async def test_ask_analyst_insider_threat_evaluation():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        payload = {
+            "query": "Is this an insider threat or external scan?",
+            "language": "en",
+            "event_context": {
+                "source": "honeypot",
+                "severity": "high",
+                "type": "brute_force_suspected",
+                "details": {"source_ip": "192.168.1.189"}
+            }
+        }
+        resp = await client.post("/analyst/ask", json=payload)
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "RFC 1918" in data["answer"]
+        assert "insider threat" in data["answer"].lower()
+
+
+@pytest.mark.asyncio
+async def test_ask_analyst_bangla_queries():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        payload = {
+            "query": "ফায়ারওয়ালে এই আক্রমণ প্রতিহত করার কমান্ড কী?",
+            "language": "bn",
+            "event_context": {
+                "source": "honeypot",
+                "severity": "high",
+                "type": "brute_force_suspected",
+                "details": {"source_ip": "192.168.1.189"}
+            }
+        }
+        resp = await client.post("/analyst/ask", json=payload)
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["language"] == "bn"
+        assert "iptables" in data["answer"]
+        assert "প্রহরী" in data["answer"]
+
+
+@pytest.mark.asyncio
+async def test_ask_analyst_validation_error_on_empty():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        resp = await client.post("/analyst/ask", json={"query": "   "})
+        assert resp.status_code == 422
+
+
+
 

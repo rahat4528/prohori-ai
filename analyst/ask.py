@@ -3,11 +3,13 @@ Prohori AI - "Ask the Analyst" Natural Language Reasoning Engine
 Handles free-text operator questions with grounded, cited bilingual responses.
 """
 
+import json
 import logging
 import re
 from typing import Any
 
 from analyst.providers import LLMProvider, get_llm_provider
+from analyst.providers.offline import DeterministicOfflineProvider
 from analyst.redaction import redact_string
 from knowledge.retriever import kb_retriever
 
@@ -27,33 +29,79 @@ class AnalystAssistant:
         self,
         question: str,
         recent_events: list[dict[str, Any]],
-        language_override: str | None = None
+        language_override: str | None = None,
+        event_context: dict[str, Any] | None = None
     ) -> dict[str, Any]:
-        """Answer free-text security question grounded in recent events and MITRE/CVE knowledge."""
+        """Answer free-text security question grounded in target event, telemetry, and MITRE/CVE knowledge."""
         # Scrub question of potential PII
         clean_question = redact_string(question)
 
         # Determine target language
         target_lang = language_override or ("bn" if is_bangla_text(clean_question) else "en")
 
+        # Prioritize target event context
+        target_event = event_context or (recent_events[0] if recent_events else {})
+        event_type = target_event.get("type", "unknown")
+        details = target_event.get("details", {})
+        query_terms = f"{clean_question} {event_type} {json.dumps(details)}"
+
         # Retrieve matching knowledge items
-        retrieved_docs = kb_retriever.retrieve(clean_question, top_k=3)
+        retrieved_docs = kb_retriever.retrieve(query_terms, top_k=3)
         citations = [doc["id"] for doc in retrieved_docs]
 
+        # Ensure event's known MITRE citation is in citations list if available
+        event_analyst = target_event.get("analyst", {}) or {}
+        event_mitre = event_analyst.get("mitre_technique")
+        if event_mitre and event_mitre not in citations:
+            citations.insert(0, event_mitre)
+
+        # Format referenced event IDs
+        referenced_event_ids = []
+        if target_event.get("id"):
+            referenced_event_ids.append(str(target_event["id"]))
+        for ev in recent_events[:4]:
+            ev_id = str(ev.get("id", ""))
+            if ev_id and ev_id not in referenced_event_ids:
+                referenced_event_ids.append(ev_id)
+
+        active_provider = self.provider.provider_name
+        active_model = getattr(self.provider, "model", "deterministic-rules-stix2.1")
+
+        # Fast path & fallback: Deterministic Offline RAG engine
+        if isinstance(self.provider, DeterministicOfflineProvider):
+            answer_text, cited_ids = self.provider.generate_answer(
+                question=clean_question,
+                event_context=target_event,
+                recent_events=recent_events,
+                target_lang=target_lang,
+                retrieved_docs=retrieved_docs
+            )
+            for cid in cited_ids:
+                if cid not in citations:
+                    citations.append(cid)
+            return {
+                "question": clean_question,
+                "answer": answer_text,
+                "language": target_lang,
+                "citations": citations,
+                "referenced_event_ids": referenced_event_ids,
+                "provider": active_provider,
+                "model": active_model
+            }
+
+        # Otherwise, query configured external LLM (Ollama, Gemini, Groq)
         kb_context = "\n".join([
             f"- [{d['id']}] {d['title']}: {d['content']}. Mitigation: {d['mitigation']}"
             for d in retrieved_docs
         ])
 
-        # Format top 5 recent events for context
-        event_summaries = []
-        referenced_event_ids = []
-        for ev in recent_events[:5]:
-            referenced_event_ids.append(str(ev.get("id")))
-            event_summaries.append(
-                f"- [{ev.get('ts')}] Source: {ev.get('source')}, Type: {ev.get('type')}, Severity: {ev.get('severity')}, Details: {ev.get('details')}"
-            )
-        events_context = "\n".join(event_summaries) if event_summaries else "No recent events recorded."
+        target_context = (
+            f"TARGET SECURITY EVENT UNDER INVESTIGATION:\n"
+            f"- Source: {target_event.get('source')}\n"
+            f"- Type: {target_event.get('type')}\n"
+            f"- Severity: {target_event.get('severity')}\n"
+            f"- Details: {json.dumps(details, indent=2)}\n"
+        )
 
         lang_instruction = (
             "Provide your complete response in fluent, natural-sounding BANGLA (বাংলা) for Bangladeshi security officers."
@@ -62,21 +110,19 @@ class AnalystAssistant:
         )
 
         prompt = f"""
+{target_context}
+
+GROUNDED KNOWLEDGE BASE CONTEXT (MITRE ATT&CK & CVEs):
+{kb_context}
+
 QUESTION FROM SECURITY OPERATOR / JUDGE:
 "{clean_question}"
 
 OPERATOR INSTRUCTION:
 {lang_instruction}
 
-GROUNDED KNOWLEDGE BASE CONTEXT (MITRE ATT&CK & CVEs):
-{kb_context}
-
-RECENT TELEMETRY EVENTS IN THE STORE:
-{events_context}
-
-Provide a direct, authoritative, and helpful answer.
-You MUST cite the relevant MITRE ATT&CK technique (e.g. [T1110.001], [T1499.002]) or CVE if applicable.
-Do not hallucinate facts outside the telemetry and knowledge base.
+Provide a direct, authoritative, and helpful answer answering the operator's specific question.
+Cite relevant MITRE ATT&CK techniques (e.g. [T1110.001], [T1499.002]) or CVEs.
 """
 
         system_prompt = (
@@ -85,15 +131,21 @@ Do not hallucinate facts outside the telemetry and knowledge base.
             f"Respond strictly in {'Bangla (বাংলা)' if target_lang == 'bn' else 'English'}."
         )
 
-        active_provider = self.provider.provider_name
-        active_model = getattr(self.provider, "model", "deterministic-rules-stix2.1")
         try:
             answer_text = await self.provider.generate(prompt, system_prompt=system_prompt)
         except Exception as e:
-            logger.warning(f"Error generating answer with LLM ({e}), using offline engine.")
-            from analyst.providers.offline import DeterministicOfflineProvider
+            logger.warning(f"Error generating answer with LLM ({e}), falling back to deterministic RAG engine.")
             offline_prov = DeterministicOfflineProvider()
-            answer_text = await offline_prov.generate(f"{clean_question} {target_lang}")
+            answer_text, cited_ids = offline_prov.generate_answer(
+                question=clean_question,
+                event_context=target_event,
+                recent_events=recent_events,
+                target_lang=target_lang,
+                retrieved_docs=retrieved_docs
+            )
+            for cid in cited_ids:
+                if cid not in citations:
+                    citations.append(cid)
             active_provider = "deterministic-offline-rag (fallback)"
             active_model = "deterministic-rules-stix2.1"
 
@@ -109,4 +161,3 @@ Do not hallucinate facts outside the telemetry and knowledge base.
 
 
 analyst_assistant = AnalystAssistant()
-

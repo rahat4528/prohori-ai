@@ -23,7 +23,7 @@ from fastapi import (
     status,
 )
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy import desc, func, select
+from sqlalchemy import delete, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 # Ensure project root is available for sensor imports
@@ -41,7 +41,7 @@ from .auth import verify_api_key
 from .config import settings
 from .connection_mgr import ws_manager
 from .database import AsyncSessionLocal, check_db_health, get_db, init_db
-from .db_models import EventRecord
+from .db_models import EventRecord, IncidentRecord
 from .models import (
     Event,
     EventCreate,
@@ -438,6 +438,21 @@ async def get_event(
         details=record.details or {},
         analyst=record.analyst
     )
+
+
+@app.post(
+    "/demo/reset",
+    summary="Reset demo state to clean slate"
+)
+async def reset_demo(
+    db: AsyncSession = Depends(get_db)
+):
+    """Clear events and incidents so the stage demo can start with an empty alert list."""
+    await db.execute(delete(EventRecord))
+    await db.execute(delete(IncidentRecord))
+    await db.commit()
+    await ws_manager.broadcast({"type": "demo_reset"})
+    return {"status": "ok", "message": "Demo state reset to clean slate"}
 
 
 @app.websocket("/stream")

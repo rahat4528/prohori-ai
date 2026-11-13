@@ -5,6 +5,7 @@ Exposes autonomous triage, 'Ask the Analyst', and incident correlation.
 
 import asyncio
 import json
+from typing import Any
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -29,16 +30,18 @@ router = APIRouter(prefix="/analyst", tags=["AI SOC Analyst"])
 
 
 class AskRequest(BaseModel):
-    query: str | None = Field(None, min_length=2, max_length=500, description="Free-text operator question")
-    question: str | None = Field(None, min_length=2, max_length=500, description="Alternative field for operator question")
+    query: str | None = Field(None, max_length=500, description="Free-text operator question")
+    question: str | None = Field(None, max_length=500, description="Alternative field for operator question")
     language: str | None = Field(None, description="'en' for English, 'bn' for Bangla")
+    event_context: dict[str, Any] | None = Field(None, description="Context of the currently selected security event")
 
     @model_validator(mode="after")
     def validate_query_or_question(self):
-        if not self.query and not self.question:
-            raise ValueError("Either 'query' or 'question' must be provided.")
-        if not self.query and self.question:
-            self.query = self.question
+        raw_text = self.query or self.question
+        if not raw_text or not raw_text.strip():
+            raise ValueError("A non-empty 'query' or 'question' must be provided.")
+        self.query = raw_text.strip()
+        self.question = raw_text.strip()
         return self
 
 
@@ -146,7 +149,8 @@ async def ask_analyst(payload: AskRequest, db: AsyncSession = Depends(get_db)):
     answer_dict = await analyst_assistant.answer_question(
         question=payload.query,
         recent_events=recent_events,
-        language_override=payload.language
+        language_override=payload.language,
+        event_context=payload.event_context
     )
 
     return AskResponse(**answer_dict)
@@ -174,7 +178,8 @@ async def ask_analyst_stream(payload: AskRequest, db: AsyncSession = Depends(get
     answer_dict = await analyst_assistant.answer_question(
         question=payload.query,
         recent_events=recent_events,
-        language_override=payload.language
+        language_override=payload.language,
+        event_context=payload.event_context
     )
 
     full_answer = answer_dict.get("answer", "")

@@ -145,7 +145,7 @@ if HAS_RATE_LIMITER:
         limiter=default_limiter,
         event_api_url="http://127.0.0.1:8000",
         event_callback=on_rate_limit_block,
-        exempt_paths=["/healthz", "/docs", "/openapi.json", "/stream"]
+        exempt_paths=["/", "/healthz", "/docs", "/openapi.json", "/stream"]
     )
 
 
@@ -157,6 +157,24 @@ app.include_router(sovereignty_router)
 app.include_router(docs_router)
 
 
+
+
+@app.get("/", summary="Root API discovery and status endpoint")
+async def root():
+    """Root discovery endpoint providing service status, metadata, and direct endpoint links."""
+    return {
+        "name": settings.APP_NAME,
+        "version": settings.APP_VERSION,
+        "status": "operational",
+        "docs": "/docs",
+        "health": "/healthz",
+        "endpoints": {
+            "events": "/events",
+            "analyst_ask": "/analyst/ask",
+            "incidents": "/analyst/incidents",
+            "audit_log": "/audit/log"
+        }
+    }
 
 
 @app.get("/healthz", summary="Health check")

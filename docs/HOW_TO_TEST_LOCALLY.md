@@ -254,3 +254,4 @@ Make sure `PYTHONPATH` includes `api` and the project root:
 
 ### 4. Browser Cache or Stale Session
 If the browser shows an old layout, press `Ctrl + F5` (or `Cmd + Shift + R`) to force a hard refresh.
+

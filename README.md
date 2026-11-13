@@ -45,6 +45,7 @@ Everything about Prohori AI — from clean PC setup to deep engineering architec
 
 | Document / Asset | Description | Direct Link |
 |---|---|---|
+| **Complete Engineering Manual** | **All-in-one manual: Project details, history, setup, testing & deployment** | [`docs/COMPLETE_DOCUMENTATION.md`](docs/COMPLETE_DOCUMENTATION.md) |
 | **How to Test Locally (Clean PC)** | **Step-by-step beginner guide to clone, run, and test on any clean computer** | [`docs/HOW_TO_TEST_LOCALLY.md`](docs/HOW_TO_TEST_LOCALLY.md) |
 | **Development Log & Engineering History** | **Complete chronological record of all implementation phases, fixes, and decisions** | [`docs/DEVELOPMENT_LOG.md`](docs/DEVELOPMENT_LOG.md) |
 | **Deployment & Cloud Hosting Guide** | Render Blueprint (`exs-dbrh0kec6qcc73dstli0`), Vercel, and Docker setup | [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) |

@@ -305,8 +305,7 @@ flowchart TD
 ```bash
 git clone https://github.com/rahat4528/prohori-ai.git
 cd prohori-ai
-# Work on feature branches; keep main clean
-git checkout ui-simplify
+git checkout main
 ```
 
 ### Step 2: Environment Configuration

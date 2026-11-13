@@ -186,3 +186,4 @@ Created a comprehensive, step-by-step guide enabling any teammate or judge on a 
 | [`docs/PITCH_DECK.md`](PITCH_DECK.md) | 8-slide presentation deck calibrated to measured live demo timings |
 | [`render.yaml`](../render.yaml) | Declarative Render Blueprint specification (ID: `exs-dbrh0kec6qcc73dstli0`) |
 | [`.python-version`](../.python-version) | Pinned Python runtime version (3.13.1) for Render deployments |
+

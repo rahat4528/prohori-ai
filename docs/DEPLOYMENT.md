@@ -178,19 +178,93 @@ docker compose -f infra/docker-compose.yml down
 ### Model C: Cloud Hosting & Distributed Architecture
 
 #### 1. Backend API & Honeypot on Render (`render.yaml`)
-The project provides an Infrastructure-as-Code Render Blueprint specification in [`render.yaml`](../render.yaml):
-- **Service 1 (`prohori-api`)**: Python web service running `uvicorn app.main:app --host 0.0.0.0 --port $PORT`.
-- **Service 2 (`prohori-honeypot`)**: Python web service running the deception sensor, automatically bound to `prohori-api`.
 
-**How to Deploy on Render**:
-1. Log in to your [Render Dashboard](https://dashboard.render.com/).
-2. Click **New +** &rarr; **Blueprint**.
-3. Connect the repository: `https://github.com/rahat4528/prohori-ai`.
-4. Render detects `render.yaml` and provisions both services on the free tier.
-5. In the environment settings for `prohori-api`, set:
-   - `GEMINI_API_KEY`: *(Optional, for cloud LLM acceleration)*
-   - `DATABASE_URL`: *(Your managed Postgres URL or leave default SQLite)*
-6. Target Live URL: `https://prohori-api.onrender.com` (or your assigned Render subdomain).
+Prohori AI's cloud backend infrastructure is declared declaratively via an Infrastructure-as-Code Render Blueprint specification in [`render.yaml`](../render.yaml).
+
+- **Hosting Platform**: **Render** (Cloud Application Platform, Free Tier Linux container, Python 3.13 runtime, Uvicorn ASGI server).
+- **Blueprint Instance ID**: `exs-dbrh0kec6qcc73dstli0`
+- **Render Blueprint Management Console**: [https://dashboard.render.com/blueprints/exs-dbrh0kec6qcc73dstli0](https://dashboard.render.com/blueprints/exs-dbrh0kec6qcc73dstli0)
+- **Local Sovereign Backend (On-Premises)**: `http://127.0.0.1:8000` (Certified 100% operational; 43/43 tests passing)
+- **Production Frontend Console**: [https://prohori-ai.vercel.app](https://prohori-ai.vercel.app) (Certified live on Vercel)
+
+##### Deployed Services in Blueprint `exs-dbrh0kec6qcc73dstli0`:
+1. **`prohori-api`** (Main Event Bus & AI SOC Analyst Core):
+   - **Runtime**: Python 3.13 (`uvicorn app.main:app --host 0.0.0.0 --port $PORT`)
+   - **Service Role**: Telemetry ingestion, secret scrubbing, fast deterministic triage, RAG reasoning over MITRE ATT&CK & CVEs, and incident correlation.
+   - **Service Endpoint**: Access via your Render service overview under Blueprint [`exs-dbrh0kec6qcc73dstli0`](https://dashboard.render.com/blueprints/exs-dbrh0kec6qcc73dstli0).
+2. **`prohori-honeypot`** (Simulated Deception Trap):
+   - **Runtime**: Python 3.13 (`uvicorn sensors.deception.main:app --host 0.0.0.0 --port $PORT`)
+   - **Service Role**: High-interaction decoy traps capturing unauthorized reconnaissance probes (`/.env`, `/wp-admin`) and password guessing attacks (`/auth/login`). Automatically forwards security events to `prohori-api`.
+
+##### Exhaustive Backend API Endpoints Reference:
+The backend exposes 18 verified REST & WebSocket endpoints across 4 functional domains:
+
+| Method | Endpoint Path | Module | Authentication | Request Payload / Params | Purpose & Operational Behavior |
+|---|---|---|---|---|---|
+| `GET` | `/healthz` | System | Public | None | Health check returning API uptime, database status (`connected`), and version (`1.0.0`). |
+| `POST` | `/events` | Ingestion | Opt-in (`X-API-Key`) | `EventCreate` (JSON) | Ingests raw telemetry; immediately redacts credentials/PII; triggers autonomous triage (<35ms). |
+| `GET` | `/events` | Ingestion | Public | `limit`, `offset`, `source`, `severity` | Retrieves historical and live security events with pagination and filtering. |
+| `GET` | `/events/{id}` | Ingestion | Public | Path: `id` (UUID) | Retrieves specific event with full forensic details, MITRE citations, and analyst narratives. |
+| `POST` | `/demo/reset` | Testing | Opt-in (`X-API-Key`) | None | Resets in-memory/database state to a clean slate for pitch demonstrations. |
+| `POST` | `/analyst/triage/{id}` | Analyst | Opt-in (`X-API-Key`) | Path: `id` (UUID) | Manually re-runs autonomous AI triage and MITRE ATT&CK grounding on an event. |
+| `POST` | `/analyst/ask` | Chatbot | Public | `AskRequest` (`query`, `language`, `event_context`) | AI SOC Analyst Q&A. Answers firewall commands, primary vector, attacker IP, and insider threat assessment in EN/BN. |
+| `POST` | `/analyst/ask/stream` | Chatbot | Public | `AskRequest` (`query`, `language`) | SSE (Server-Sent Events) streaming delivering token-by-token reasoning in real time. |
+| `GET` | `/analyst/incidents` | Correlation | Public | None | Returns correlated multi-stage attack incidents grouped by source IP. |
+| `PATCH` | `/analyst/incidents/{id}/status` | Incident | Opt-in (`X-API-Key`) | `IncidentStatusUpdate` (`status`: ACTIVE/CONTAINED/RESOLVED) | Human operator transitions incident lifecycle; logs operator ID and operational notes. |
+| `GET` | `/analyst/knowledge/{doc_id}` | Grounding | Public | Path: `doc_id` (e.g. `T1110.001`) | Retrieves full STIX 2.1 knowledge item, description, CWE mapping, and mitigation steps. |
+| `GET` | `/knowledge/{doc_id}` | Grounding | Public | Path: `doc_id` (e.g. `CVE-2023-38606`) | Root alias for direct knowledge base lookup by MITRE technique or CVE identifier. |
+| `POST` | `/audit/approve` | HITL Gate | Opt-in (`X-API-Key`) | `action_id`, `target_resource`, `action_type` | Enforces defensive containment (adds attacker IP to rate-limiter blocklist) and logs audit entry. |
+| `GET` | `/audit/log` | Audit | Public | `limit`, `offset` | Retrieves append-only immutable audit trail recording every reasoning step and approved defense. |
+| `GET` | `/sovereignty/status` | Sovereignty | Public | None | Returns active data sovereignty mode (`BANGLADESH_ON_PREM_ONLY` / `CLOUD_HYBRID`) and active LLM provider. |
+| `POST` | `/sovereignty/toggle` | Sovereignty | Opt-in (`X-API-Key`) | `{"mode": "local" \| "cloud"}` | Toggles between local offline sovereignty (Ollama/offline RAG) and cloud acceleration. |
+| `WS` | `/stream` | Real-Time | Public | Native WebSocket handshake | Real-time event bus broadcasting `new_event`, `event_enriched`, and `incident_status_changed`. |
+| `GET` | `/docs` | Documentation | Public | None | Interactive OpenAPI Swagger UI documentation sandbox. |
+
+##### Environment Variables Required on Render:
+
+| Variable Name | Required? | Default / Recommended Value | Description & Security Policy |
+|---|---|---|---|
+| `PYTHONPATH` | **Required** | `api:.` | Ensures the Python interpreter resolves `app` and `sensors` modules cleanly. |
+| `PORT` | **Required** | `10000` (injected by Render) | Bind port for Uvicorn ASGI server. Render automatically maps this to external HTTPS port 443. |
+| `ENVIRONMENT` | Optional | `production` | Production mode; disables internal debug traces. |
+| `DEBUG` | Optional | `false` | Controls verbose logging and error backtraces. |
+| `DATABASE_URL` | Optional | `sqlite+aiosqlite:///prohori.db` | Async SQLAlchemy database connection string. Can be pointed to managed PostgreSQL. |
+| `CORS_ORIGINS` | **Required** | `["*"]` or `["https://prohori-ai.vercel.app"]` | Whitelisted frontend origins allowed to make cross-origin requests. |
+| `LLM_PROVIDER` | Optional | `auto` | Reasoning engine: `auto` (defaults to deterministic offline RAG if no keys), `offline`, `ollama`, `gemini`, `groq`. |
+| `GEMINI_API_KEY` | Optional | `[SECURE_USER_SECRET]` | Optional Google Gemini API key for cloud LLM acceleration. Set in Render Environment tab. |
+| `GROQ_API_KEY` | Optional | `[SECURE_USER_SECRET]` | Optional Groq API key for Llama 3.3 cloud acceleration. Set in Render Environment tab. |
+| `PROHORI_API_KEY` | Optional | `[SECURE_USER_SECRET]` | Optional API shared secret. When set, protects write endpoints with `X-API-Key` header. |
+
+##### How the Frontend Connects to the Backend:
+The React operator console ([`web/`](../web/)) establishes dual-channel communication with the backend:
+1. **REST API Ingestion & Queries**: All user actions (triage, asking questions, approving countermeasures) send HTTP requests to `${VITE_API_BASE}` (e.g. `POST ${VITE_API_BASE}/analyst/ask`).
+2. **Real-Time WebSocket Stream**: The console establishes a persistent duplex stream with `${VITE_WS_URL}` (`ws://.../stream` or `wss://.../stream`), immediately displaying incoming alerts without polling.
+3. **Resilient Client-Side Offline Fallback**: In the event that the Render backend is sleeping (cold start on free tier) or running offline, the frontend's built-in client-side engine ([`web/src/utils/analystFallback.ts`](../web/src/utils/analystFallback.ts)) provides instant grounded threat analysis, firewall rules, and MITRE citations, preventing any console breakage.
+
+##### How to Run, Test, and Redeploy the Backend:
+
+```bash
+# 1. Run Backend Locally (Windows PowerShell)
+$env:PYTHONPATH = "api;."
+.venv\Scripts\python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+
+# 2. Run Backend Locally (Linux / macOS)
+export PYTHONPATH="api:."
+source .venv/bin/activate
+uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+
+# 3. Execute Complete Backend Test Suite (All 43 Tests)
+python -m pytest
+
+# 4. Execute End-to-End Architectural Verification (15/15 Checks)
+python scripts/verify_e2e.py
+
+# 5. Redeploying on Render:
+# Option A (Continuous Deployment): Any push to the main branch of https://github.com/rahat4528/prohori-ai
+# triggers an automatic zero-downtime rebuild via Blueprint exs-dbrh0kec6qcc73dstli0.
+# Option B (Manual Redeploy): Open https://dashboard.render.com/blueprints/exs-dbrh0kec6qcc73dstli0,
+# click on 'prohori-api' -> 'Manual Deploy' -> 'Deploy latest commit'.
+```
 
 #### 2. React Operator Console on Vercel (`vercel.json` & `web/vercel.json`)
 The frontend is configured with native Single-Page Application (SPA) routing:

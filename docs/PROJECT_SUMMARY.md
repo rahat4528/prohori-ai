@@ -101,7 +101,10 @@ Following mentor evaluations and internal engineering audits, the following majo
 
 ### Cloud Hosting Blueprints:
 1. **Render Infrastructure Blueprint (`render.yaml`)**:
-   - Automatically provisions `prohori-api` (FastAPI backend) and `prohori-honeypot` (deception sensor) on the free tier.
+   - **Hosting Platform**: **Render** (Cloud Application Platform, Linux container, Python 3.13, Uvicorn ASGI).
+   - **Blueprint Instance ID**: `exs-dbrh0kec6qcc73dstli0`
+   - **Management Console**: [https://dashboard.render.com/blueprints/exs-dbrh0kec6qcc73dstli0](https://dashboard.render.com/blueprints/exs-dbrh0kec6qcc73dstli0)
+   - Automatically provisions `prohori-api` (FastAPI backend & AI Analyst) and `prohori-honeypot` (deception sensor) on the free tier.
    - Deployed via Render Dashboard &rarr; **New +** &rarr; **Blueprint** &rarr; Connect `https://github.com/rahat4528/prohori-ai`.
 2. **Vercel Frontend Hosting (`vercel.json` & `web/vercel.json`)**:
    - Single-Page Application (SPA) configuration routing `/(.*)` to `/index.html`.
@@ -213,16 +216,18 @@ cd web; npm audit; cd ..
 
 | Test Command / Check | Total Items | Passed | Failed | Skipped | Status |
 |---|:---:|:---:|:---:|:---:|:---:|
-| `pytest` | 38 | **38** | 0 | 0 | **PASS (100%)** |
+| `pytest` | 43 | **43** | 0 | 0 | **PASS (100%)** |
 | `scripts/verify_e2e.py` | 15 | **15** | 0 | 0 | **PASS (100%)** |
 | `scripts/test_all_endpoints.py` | 19 | **19** | 0 | 0 | **PASS (100%)** |
 | `ruff check .` | 102 files | **102** | 0 | 0 | **PASS (0 errors)** |
-| `npm run build` | 2,067 modules | **2,067** | 0 | 0 | **PASS (Built in 405ms)** |
+| `npm run build` | 2,068 modules | **2,068** | 0 | 0 | **PASS (Built in 396ms)** |
+| `scripts/check_palette.py` | 19 source files | **19** | 0 | 0 | **PASS (100% 90/10 compliance)** |
+| `scripts/check_runtime_palette.py` | 375 DOM elements | **375** | 0 | 0 | **PASS (100% runtime compliance)** |
 | `pip-audit` | 42 packages | **42** | 0 | 0 | **PASS (0 vulnerabilities)** |
 | `npm audit` | 134 packages | **134** | 0 | 0 | **PASS (0 vulnerabilities)** |
 | `scripts/demo_replay.py` | 5 stages | **5** | 0 | 0 | **PASS (100%)** |
 
-**Summary**: **Zero failing automated tests**. All 38 pytest items, 15 end-to-end checks, 19 endpoint tests, and security audits passed.
+**Summary**: **Zero failing automated tests**. All 43 pytest items (including dedicated AI chatbot intent and validation suites), 15 end-to-end checks, 19 endpoint tests, and security audits passed.
 
 ---
 

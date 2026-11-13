@@ -3,7 +3,10 @@
 **Built by Team Orionids · International AI Builders Congress 2026 · Domain: InfraSphere AI &rarr; SecureAI**
 
 [![Team](https://img.shields.io/badge/Team-Orionids-blueviolet.svg)](#team-orionids)
-[![Tests](https://img.shields.io/badge/pytest-38%20passed-brightgreen.svg)](#testing--verification)
+[![Live Console](https://img.shields.io/badge/Vercel-prohori--ai.vercel.app-14213D?logo=vercel&logoColor=F4EDE0)](https://prohori-ai.vercel.app)
+[![Render Backend](https://img.shields.io/badge/Render-Blueprint%20exs--dbrh0kec6qcc73dstli0-46E3B7?logo=render&logoColor=14213D)](https://dashboard.render.com/blueprints/exs-dbrh0kec6qcc73dstli0)
+[![Palette](https://img.shields.io/badge/Design%20System-Strict%2090%2F10%20Palette-FF6258)](#6-strict-9010-color-system--palette-enforcement)
+[![Tests](https://img.shields.io/badge/pytest-43%20passed-brightgreen.svg)](#testing--verification)
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
 [![React](https://img.shields.io/badge/React-19%20%2B%20Vite-61dafb.svg)](https://react.dev/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg)](https://fastapi.tiangolo.com/)
@@ -23,6 +26,7 @@ All congress submission documents, pitch materials, and defense guides are index
 | Document / Asset | Description | Direct Link |
 |---|---|---|
 | **Start Here (10-Min Checklist)** | 4-step actionable checklist to finalize team names, review, video & submission | [`docs/START_HERE.md`](docs/START_HERE.md) |
+| **Design System & 90/10 Palette** | Strict Navy/Cream/Coral color tokens, WCAG ratios & pixel share | [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md) |
 | **Project Summary & Master Report** | Complete summary of features, changes, hosting, test results & reproducibility | [`docs/PROJECT_SUMMARY.md`](docs/PROJECT_SUMMARY.md) |
 | **Deployment & Hosting Guide** | Complete cloud & on-prem deployment topology, live URLs, and database setup | [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) |
 | **Submission Updates** | Complete audit of review items, before/after fixes, benchmark data & roadmap | [`docs/SUBMISSION_UPDATES.md`](docs/SUBMISSION_UPDATES.md) |
@@ -208,10 +212,40 @@ docker compose -f infra/docker-compose.yml up --build -d
 #### Model C: Cloud Hosting & Distributed Architecture
 
 1. **Backend API & Honeypot on Render (`render.yaml`)**:
-   - The project provides an Infrastructure-as-Code Render Blueprint specification in [`render.yaml`](render.yaml).
-   - Automatically provisions `prohori-api` (FastAPI backend) and `prohori-honeypot` (deception sensor) on the free tier.
-   - To deploy: In [Render Dashboard](https://dashboard.render.com/), click **New +** &rarr; **Blueprint**, and select `https://github.com/rahat4528/prohori-ai`.
-   - Target Live URL: `https://prohori-api.onrender.com` (or your assigned Render subdomain).
+   - **Hosting Platform**: **Render** (Cloud Application Platform, Linux Container, Python 3.13, Uvicorn ASGI).
+   - **Infrastructure-as-Code Blueprint**: [`render.yaml`](render.yaml) automatically provisions `prohori-api` (Event API & AI Analyst) and `prohori-honeypot` (Deception Sensor) on Render Free Tier.
+   - **Render Blueprint Instance ID**: `exs-dbrh0kec6qcc73dstli0`
+   - **Render Blueprint Management Console**: [https://dashboard.render.com/blueprints/exs-dbrh0kec6qcc73dstli0](https://dashboard.render.com/blueprints/exs-dbrh0kec6qcc73dstli0)
+   - **Local Sovereign URL**: `http://127.0.0.1:8000` (Health: `http://127.0.0.1:8000/healthz` — 100% verified locally).
+   - **Backend API Endpoints (18 Verified Endpoints)**:
+     - `GET /healthz` · Health check and database connection status (`HTTP 200`).
+     - `POST /events` · Ingest raw sensor telemetry with automatic secret scrubbing and instant deterministic triage.
+     - `GET /events` & `GET /events/{id}` · Query historical events with pagination, source, and severity filters.
+     - `POST /analyst/triage/{id}` · On-demand autonomous AI triage and MITRE ATT&CK grounding.
+     - `POST /analyst/ask` · Natural-language security Q&A (firewall commands, primary vector, attacker IP, insider assessment in EN/BN).
+     - `POST /analyst/ask/stream` · SSE streaming delivering token-by-token reasoning in real time.
+     - `GET /analyst/incidents` & `PATCH /analyst/incidents/{id}/status` · Correlated incident lifecycle management (`ACTIVE` &rarr; `CONTAINED` &rarr; `RESOLVED`).
+     - `GET /knowledge/{doc_id}` & `GET /analyst/knowledge/{doc_id}` · STIX 2.1 MITRE & CVE knowledge grounding.
+     - `POST /audit/approve` & `GET /audit/log` · Human-in-the-Loop containment enforcement and immutable append-only audit trail.
+     - `GET /sovereignty/status` & `POST /sovereignty/toggle` · Data sovereignty mode toggle (`BANGLADESH_ON_PREM_ONLY` / `CLOUD_HYBRID`).
+     - `WS /stream` · Duplex WebSocket push stream for live console event broadcasting.
+     - `GET /docs` · Interactive Swagger UI documentation sandbox.
+   - **Environment Variables**:
+     - `PYTHONPATH`: `api:.`
+     - `PORT`: `$PORT` (Render auto-injects 10000; maps to HTTPS 443)
+     - `ENVIRONMENT`: `production` · `DEBUG`: `false`
+     - `DATABASE_URL`: `sqlite+aiosqlite:///prohori.db` (or managed PostgreSQL `postgresql+asyncpg://...`)
+     - `CORS_ORIGINS`: `["*"]` or `["https://prohori-ai.vercel.app"]`
+     - `LLM_PROVIDER`: `auto` (falls back to deterministic offline RAG if no cloud keys)
+     - `GEMINI_API_KEY` / `GROQ_API_KEY`: Optional secrets for cloud LLM acceleration.
+     - `PROHORI_API_KEY`: Optional shared secret protecting write endpoints with `X-API-Key`.
+   - **How Frontend Connects**:
+     - Remote Vercel console (`https://prohori-ai.vercel.app`) communicates via `VITE_API_BASE` and `VITE_WS_URL`.
+     - Built-in resilient client-side offline RAG engine (`web/src/utils/analystFallback.ts`) ensures the console provides instant cited answers even during cold starts or disconnected scenarios.
+   - **How to Run, Test, and Redeploy**:
+     - Run: `$env:PYTHONPATH="api;."; python -m uvicorn app.main:app --host 127.0.0.1 --port 8000`
+     - Test: `python -m pytest` (43 passed) · `python scripts/verify_e2e.py` (15/15 passed)
+     - Redeploy: Push to `main` branch of `https://github.com/rahat4528/prohori-ai` triggers automatic zero-downtime rebuild via Blueprint `exs-dbrh0kec6qcc73dstli0`. Manual redeploy available in Render Blueprint console.
 
 2. **React Operator Console on Vercel (`vercel.json` & `web/vercel.json`)**:
    - Configured with native Single-Page Application (SPA) rewrite rules routing `/(.*)` to `/index.html`.
@@ -308,7 +342,32 @@ pytest api/tests sensors/deception/tests sensors/ratelimiter/tests analyst/tests
 
 ---
 
-## 6. Commercial Model Hypothesis
+## 6. Strict 90/10 Color System & Palette Enforcement
+
+Prohori AI implements a mathematically disciplined 90/10 color system designed for high-stress security environments:
+- **Primary Dominant (~60%)**: Navy `#14213D` (RGB: `20, 33, 61`)
+- **Secondary Dominant (~30%)**: Cream `#F4EDE0` (RGB: `244, 237, 224`)
+- **Accent (~10%)**: Coral `#FF6258` (RGB: `255, 98, 88`)
+
+Empirical pixel share: **96.71% dominant (Navy + Cream)**, **3.29% accent (Coral)**. Contrast ratios: Navy on Cream **13.72:1** (WCAG AAA), Navy on Coral **5.43:1** (WCAG AA). For complete details, see [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md).
+
+### Automated Palette Enforcement Linters
+Run both linters locally to guarantee zero unauthorized colors in source code or rendered DOM:
+
+```bash
+# 1. Static source linter (scans all TSX, CSS, HTML for hex and RGB violations)
+.venv\Scripts\python scripts/check_palette.py
+
+# 2. Runtime computed-style inspector (Playwright DOM evaluation across all 215+ elements)
+.venv\Scripts\python scripts/check_runtime_palette.py
+
+# 3. Measure rendered pixel share across resolutions
+.venv\Scripts\python scripts/measure_pixel_share.py docs/screenshots/after_palette/dashboard_1920x1080_en.png
+```
+
+---
+
+## 7. Commercial Model Hypothesis
 
 > [!NOTE]
 > Commercial pricing represents an **unvalidated business hypothesis** formulated for hackathon judging criteria, pending direct discovery with enterprise customers.

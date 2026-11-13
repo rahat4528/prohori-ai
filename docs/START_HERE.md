@@ -5,7 +5,8 @@
 **Target Repository**: [https://github.com/rahat4528/prohori-ai](https://github.com/rahat4528/prohori-ai)
 
 > [!IMPORTANT]
-> All software engineering, multi-port defensive sensors, deterministic triage, local Ollama integration, decoupled event ingestion, UI simplification, test suites (38/38 passed), and empirical benchmark verifications are **100% complete and verified**.
+> All software engineering, multi-port defensive sensors, deterministic triage, local Ollama integration, decoupled event ingestion, UI simplification, test suites (43/43 passed), and empirical benchmark verifications are **100% complete and verified**.
+> For a clean step-by-step installation and local testing guide on another PC, see [`docs/HOW_TO_TEST_LOCALLY.md`](HOW_TO_TEST_LOCALLY.md).
 > Follow this sequential 10-minute checklist to complete the human-only items and finalize your submission.
 
 ---

@@ -25,6 +25,7 @@ All congress submission documents, pitch materials, and defense guides are index
 
 | Document / Asset | Description | Direct Link |
 |---|---|---|
+| **How to Test Locally (Clean PC)** | **Step-by-step beginner guide to clone, run, and test on any clean computer** | [`docs/HOW_TO_TEST_LOCALLY.md`](docs/HOW_TO_TEST_LOCALLY.md) |
 | **Start Here (10-Min Checklist)** | 4-step actionable checklist to finalize team names, review, video & submission | [`docs/START_HERE.md`](docs/START_HERE.md) |
 | **Design System & 90/10 Palette** | Strict Navy/Cream/Coral color tokens, WCAG ratios & pixel share | [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md) |
 | **Project Summary & Master Report** | Complete summary of features, changes, hosting, test results & reproducibility | [`docs/PROJECT_SUMMARY.md`](docs/PROJECT_SUMMARY.md) |
@@ -166,7 +167,7 @@ Prohori AI utilizes SQLAlchemy 2.0 with asynchronous drivers (`aiosqlite` and `a
 ### 3.3 Deployment Models & Step-by-Step Instructions
 
 #### Model A: Local On-Premises Sovereign Deployment (Recommended)
-This is the verified, zero-cloud baseline used for hackathon evaluation and air-gapped security operations.
+This is the verified, zero-cloud baseline used for hackathon evaluation and air-gapped security operations. For a complete beginner guide on a clean PC, see [`docs/HOW_TO_TEST_LOCALLY.md`](docs/HOW_TO_TEST_LOCALLY.md).
 
 - **Windows One-Click Launcher**:
   ```cmd

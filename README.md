@@ -261,43 +261,135 @@ prohori-ai/
 
 ---
 
-## 5. How to Run Locally on Any PC (3-Step Quickstart)
+## 5. How to Run Locally on Any PC (Step-by-Step)
 
 > 💡 **Testing on a fresh or unfamiliar computer?** Follow our comprehensive, beginner-friendly guide:  
 > 👉 [**Step-by-Step Clean PC Testing Guide (`docs/HOW_TO_TEST_LOCALLY.md`)**](docs/HOW_TO_TEST_LOCALLY.md)
 
-### Prerequisites
-- **Python 3.11+** installed (check with `python --version`)
-- **Node.js 18+** installed (check with `node --version`)
-- **Git** installed
+### 📋 Prerequisites Check (Do this first!)
+Make sure these free tools are installed on your computer:
+1. **Git**: Verify by running `git --version`
+2. **Python 3.11, 3.12, or 3.13**: Verify with `python --version` *(On Windows, make sure "Add Python to PATH" was checked)*
+3. **Node.js 18+ & npm**: Verify with `node --version` and `npm --version`
 
-### Quickstart Commands
+---
+
+### Step 1: Clone and Enter the Directory
+
+Open your terminal (PowerShell, Command Prompt, or bash) and run:
 
 ```bash
-# 1. Clone the repository
 git clone https://github.com/rahat4528/prohori-ai.git
 cd prohori-ai
-
-# 2. Windows One-Click Launch (starts all 4 services):
-run_dev.bat
-
-# OR PowerShell Launcher:
-powershell -ExecutionPolicy Bypass -File scripts/run_all.ps1
-
-# OR Manual Setup (Linux / macOS / Manual Windows):
-# Backend:
-python -m venv .venv
-source .venv/bin/activate  # (On Windows: .venv\Scripts\activate)
-pip install -r requirements.txt
-python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 &
-
-# Frontend:
-cd web
-npm install
-npm run dev
 ```
 
-### 3. Open the Console
+> ⚠️ **CRITICAL NOTE**: You **MUST** run all subsequent commands from inside the `prohori-ai` folder! If your terminal prompt shows `C:\Users\YourName>` instead of `C:\Users\YourName\prohori-ai>`, Python will throw `ModuleNotFoundError: No module named 'sensors'`.
+
+---
+
+### Step 2: Launch the Entire Platform
+
+Choose whichever launch method you prefer:
+
+#### ⚡ Method A: Automated One-Click Launcher (Windows — Easiest & Recommended)
+Simply double-click `start_all.bat` in File Explorer, or run in terminal:
+```cmd
+start_all.bat
+```
+*(Or run `run_dev.bat`)*
+
+**What this does automatically:**
+- Checks Python and Node.js installations
+- Creates `.venv` and installs all dependencies (`pip install -r requirements.txt`) if missing
+- Copies `.env.example` to `.env` if missing
+- Installs frontend packages (`npm install`) if missing
+- Spawns all 4 microservices in clearly labeled windows (Event API on `8000`, Honeypot on `8081`, Rate Limiter on `8082`, Web Console on `3000`)
+- Opens your browser to `http://localhost:3000` automatically!
+
+---
+
+#### ⚡ Method B: Automated PowerShell Launcher (Windows)
+In PowerShell inside the `prohori-ai` directory, run:
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/run_all.ps1
+```
+
+---
+
+#### 🛠️ Method C: Manual Setup & Launch (Terminal by Terminal)
+
+If you prefer running each service manually in its own terminal:
+
+##### 1. Initial One-Time Setup:
+```powershell
+# Create & activate Python virtual environment:
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1       # Windows PowerShell (or source .venv/bin/activate on Linux/Mac)
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+
+# Create .env config:
+copy .env.example .env             # On Linux/Mac: cp .env.example .env
+
+# Install frontend packages:
+cd web
+npm install
+cd ..
+```
+
+##### 2. Start the Microservices (Open 4 Terminals):
+
+> ⚠️ **Reminder**: In **EVERY** new terminal window you open, make sure you first `cd prohori-ai` and activate `.venv`!
+
+- **Terminal 1: Event API & AI SOC Core (Port 8000)**
+  ```powershell
+  cd prohori-ai
+  .\.venv\Scripts\Activate.ps1
+  $env:PYTHONPATH="api;."
+  python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+  ```
+
+- **Terminal 2: Deception Honeypot Sensor (Port 8081)**
+  ```powershell
+  cd prohori-ai
+  .\.venv\Scripts\Activate.ps1
+  $env:PYTHONPATH="api;."
+  python -m uvicorn sensors.deception.main:app --host 127.0.0.1 --port 8081 --reload
+  ```
+
+- **Terminal 3: API Abuse Guard Rate Limiter (Port 8082)**
+  ```powershell
+  cd prohori-ai
+  .\.venv\Scripts\Activate.ps1
+  $env:PYTHONPATH="api;."
+  $env:UPSTREAM_URL="http://127.0.0.1:8000"
+  $env:EVENT_API_URL="http://127.0.0.1:8000"
+  python -m uvicorn sensors.ratelimiter.main:app --host 127.0.0.1 --port 8082 --reload
+  ```
+
+- **Terminal 4: React Operator Console (Port 3000)**
+  ```powershell
+  cd prohori-ai\web
+  npm run dev
+  ```
+
+---
+
+### Step 3: Open and Test in Browser
+
+Open [**http://localhost:3000**](http://localhost:3000) in your web browser.  
+Click **"Run demo"** in the top header to send live test attacks through the sensors and watch the AI SOC Analyst triage, cite MITRE techniques, and recommend defenses!
+
+---
+
+### ❓ Troubleshooting FAQ
+
+| Problem | Root Cause | Solution |
+|---|---|---|
+| `ModuleNotFoundError: No module named 'sensors'` | Terminal is sitting in `C:\Users\YourName` instead of `prohori-ai` | Run `cd prohori-ai` and activate `.venv` before running the command, or use `start_all.bat`. |
+| `uvicorn: command not found` | Virtual environment is not activated | Run `.\.venv\Scripts\Activate.ps1` (or use `.venv\Scripts\python.exe -m uvicorn ...`). |
+| `Execution of scripts is disabled on this system` | Windows PowerShell execution policy restriction | Run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` or run `start_all.bat`. |
+| Port already in use (`8000` or `3000`) | Previous process is still running | Open Task Manager and end python/node processes, or run `netstat -ano \| findstr :8000` and kill the PID. |
 Navigate to [**http://localhost:3000**](http://localhost:3000) in your web browser. Click **"Run demo"** in the top navigation bar to populate live incoming attack telemetry!
 
 ---

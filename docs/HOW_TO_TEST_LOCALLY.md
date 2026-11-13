@@ -91,67 +91,76 @@ cd ..
 
 You can launch the entire platform either with the one-click launcher or manually terminal-by-terminal.
 
-### Option A: One-Click Launcher (Windows)
-In the project root folder `prohori-ai`, run:
+### Option A: Automated One-Click Launcher (Windows — Recommended)
+In the project root folder `prohori-ai`, double-click `start_all.bat` (or `run_dev.bat`):
 ```cmd
-run_dev.bat
+start_all.bat
 ```
-*(Or in PowerShell: `./run_dev.bat`)*
+*(Or in PowerShell: `powershell -ExecutionPolicy Bypass -File scripts/run_all.ps1`)*
 
-This automatically starts all 5 subsystems in separate windows:
-1. Event Ingestion API & AI Core (Port `8000`)
-2. Deception Honeypot Sensor (Port `8081`)
-3. API Abuse Guard Reverse Proxy (Port `8082`)
-4. Asset Discovery Scanner (Port `8083`)
-5. React Operator Console (Port `3000`)
+This automated script performs all pre-flight checks, creates the `.venv` and `.env` if missing, runs `npm install` if missing, launches all 4 services in dedicated windows, and opens your browser at `http://localhost:3000`!
+
+---
 
 ### Option B: Manual Startup (Windows / macOS / Linux)
-Open 4 separate terminal windows in the `prohori-ai` directory:
 
-- **Terminal 1: Event API & AI SOC Analyst Core**
-  ```bash
-  # Windows:
-  .venv\Scripts\activate
+> ⚠️ **CRITICAL REMINDER**: When you open new terminal tabs in Windows PowerShell, they default to `C:\Users\YourName>`. You **MUST** run `cd prohori-ai` in **EVERY SINGLE TERMINAL** before running commands, otherwise Python will throw `ModuleNotFoundError: No module named 'sensors'`!
+
+Open 4 separate terminal windows:
+
+- **Terminal 1: Event API & AI SOC Analyst Core (Port 8000)**
+  ```powershell
+  # Windows PowerShell:
+  cd prohori-ai
+  .\.venv\Scripts\Activate.ps1
   $env:PYTHONPATH="api;."
   python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 
   # macOS / Linux:
+  cd prohori-ai
   source .venv/bin/activate
   export PYTHONPATH="api:."
   python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
   ```
 
-- **Terminal 2: Deception Honeypot Sensor**
-  ```bash
-  # Windows:
-  .venv\Scripts\activate
-  python -m uvicorn sensors.deception.main:app --host 127.0.0.1 --port 8081
+- **Terminal 2: Deception Honeypot Sensor (Port 8081)**
+  ```powershell
+  # Windows PowerShell:
+  cd prohori-ai
+  .\.venv\Scripts\Activate.ps1
+  $env:PYTHONPATH="api;."
+  python -m uvicorn sensors.deception.main:app --host 127.0.0.1 --port 8081 --reload
 
   # macOS / Linux:
+  cd prohori-ai
   source .venv/bin/activate
-  python -m uvicorn sensors.deception.main:app --host 127.0.0.1 --port 8081
+  export PYTHONPATH="api:."
+  python -m uvicorn sensors.deception.main:app --host 127.0.0.1 --port 8081 --reload
   ```
 
-- **Terminal 3: API Abuse Guard & Rate Limiter**
-  ```bash
-  # Windows:
-  .venv\Scripts\activate
+- **Terminal 3: API Abuse Guard & Rate Limiter (Port 8082)**
+  ```powershell
+  # Windows PowerShell:
+  cd prohori-ai
+  .\.venv\Scripts\Activate.ps1
   $env:PYTHONPATH="api;."
   $env:UPSTREAM_URL="http://127.0.0.1:8000"
   $env:EVENT_API_URL="http://127.0.0.1:8000"
-  python -m uvicorn sensors.ratelimiter.main:app --host 127.0.0.1 --port 8082
+  python -m uvicorn sensors.ratelimiter.main:app --host 127.0.0.1 --port 8082 --reload
 
   # macOS / Linux:
+  cd prohori-ai
   source .venv/bin/activate
   export PYTHONPATH="api:."
   export UPSTREAM_URL="http://127.0.0.1:8000"
   export EVENT_API_URL="http://127.0.0.1:8000"
-  python -m uvicorn sensors.ratelimiter.main:app --host 127.0.0.1 --port 8082
+  python -m uvicorn sensors.ratelimiter.main:app --host 127.0.0.1 --port 8082 --reload
   ```
 
-- **Terminal 4: React Operator Console**
-  ```bash
-  cd web
+- **Terminal 4: React Operator Console (Port 3000)**
+  ```powershell
+  # Windows / macOS / Linux:
+  cd prohori-ai\web
   npm run dev
   ```
 
@@ -247,10 +256,15 @@ Run PowerShell as Administrator or bypass for current process:
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
 
-### 3. "ModuleNotFoundError: No module named 'app'"
-Make sure `PYTHONPATH` includes `api` and the project root:
-- Windows: `$env:PYTHONPATH = "api;."`
-- Linux/Mac: `export PYTHONPATH="api:."`
+### 3. "ModuleNotFoundError: No module named 'sensors'" or "'app'"
+This error occurs when you run `python -m uvicorn ...` from your default user folder (e.g. `C:\Users\Rahat>`) instead of inside the project repository!
+- **Fix**:
+  ```powershell
+  cd prohori-ai
+  .\.venv\Scripts\Activate.ps1
+  $env:PYTHONPATH="api;."
+  ```
+  Or simply use `start_all.bat` which handles directory paths and PYTHONPATH automatically.
 
 ### 4. Browser Cache or Stale Session
 If the browser shows an old layout, press `Ctrl + F5` (or `Cmd + Shift + R`) to force a hard refresh.

@@ -1,0 +1,59 @@
+[
+  {
+    "run": 1,
+    "resolution": "1920x1080",
+    "steps": {
+      "1_clean_state": 2.839,
+      "2_run_demo_alerts_appear": 0.322,
+      "3_open_alert": 0.547,
+      "4_read_explanation_en": 0.004,
+      "5_switch_bangla": 0.702,
+      "6_check_citations": 0.0,
+      "7_approve_defense": 0.142,
+      "8_audit_log_entry": 1.524
+    },
+    "total_time_s": 7.507,
+    "errors": [],
+    "external_requests": [],
+    "stale_data_found": false,
+    "engine_badge": "Deterministic Offline RAG"
+  },
+  {
+    "run": 2,
+    "resolution": "1366x768",
+    "steps": {
+      "1_clean_state": 3.023,
+      "2_run_demo_alerts_appear": 0.23,
+      "3_open_alert": 0.556,
+      "4_read_explanation_en": 0.005,
+      "5_switch_bangla": 0.676,
+      "6_check_citations": 0.0,
+      "7_approve_defense": 0.148,
+      "8_audit_log_entry": 1.511
+    },
+    "total_time_s": 7.155,
+    "errors": [],
+    "external_requests": [],
+    "stale_data_found": false,
+    "engine_badge": "Deterministic Offline RAG"
+  },
+  {
+    "run": 3,
+    "resolution": "1920x1080",
+    "steps": {
+      "1_clean_state": 2.576,
+      "2_run_demo_alerts_appear": 0.22,
+      "3_open_alert": 0.54,
+      "4_read_explanation_en": 0.003,
+      "5_switch_bangla": 0.666,
+      "6_check_citations": 0.0,
+      "7_approve_defense": 0.151,
+      "8_audit_log_entry": 1.608
+    },
+    "total_time_s": 6.929,
+    "errors": [],
+    "external_requests": [],
+    "stale_data_found": false,
+    "engine_badge": "Deterministic Offline RAG"
+  }
+]

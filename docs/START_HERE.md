@@ -17,7 +17,7 @@ Open [`docs/TEAM.md`](TEAM.md) and replace the `[FILL]` placeholders:
 1. **Member 1 (Lead)**: Name, role (e.g. Lead System Architect), credibility line (e.g. CSE Senior, built FastAPI event bus).
 2. **Member 2**: Name, role (e.g. Frontend & UI Engineer), credibility line (e.g. Built React 19 operator console).
 3. **Member 3**: Name, role (e.g. AI & Cyber Defense Specialist), credibility line (e.g. Curated MITRE ATT&CK & STIX datasets).
-4. **Pitch slot duration**: Enter your allocated presentation minutes (e.g. `3` or `4` minutes).
+4. **Pitch slot duration**: Enter your allocated presentation minutes (e.g. `3`, `4`, or `5` minutes). See the 4-part 90% segment budget table in [`docs/PITCH_DECK.md`](PITCH_DECK.md#a-4-part-segment-budget-target-finish-at-90-of-slot) (calibrated to measured ~7.2s demo execution).
 5. **Bonus signals**: Specify female team member or diaspora advisor if applicable; otherwise leave as `"none"`.
 
 *(Once filled, [`README.md`](../README.md) and [`docs/PITCH_DECK.md`](PITCH_DECK.md) automatically align).*

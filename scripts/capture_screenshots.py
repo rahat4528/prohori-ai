@@ -58,16 +58,15 @@ async def capture_suite(mode="after"):
                 await page.goto("http://localhost:3000", wait_until="networkidle")
                 await asyncio.sleep(1.2)
 
-                # Set language
-                if lang == "bn":
-                    bn_btn = page.locator("button:has-text('বাংলা')").first
-                    if await bn_btn.count() > 0:
-                        await bn_btn.click()
+                # Set language using Header toggle button
+                lang_btn = page.locator("header button:has-text('বাংলা'), header button:has-text('English')").first
+                if await lang_btn.count() > 0:
+                    btn_text = (await lang_btn.inner_text()).strip()
+                    if lang == "bn" and "বাংলা" in btn_text:
+                        await lang_btn.click()
                         await asyncio.sleep(0.6)
-                else:
-                    en_btn = page.locator("button:has-text('English')").first
-                    if await en_btn.count() > 0:
-                        await en_btn.click()
+                    elif lang == "en" and "English" in btn_text:
+                        await lang_btn.click()
                         await asyncio.sleep(0.6)
 
                 # If no alerts yet, click "Run demo" to populate

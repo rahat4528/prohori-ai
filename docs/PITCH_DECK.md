@@ -150,7 +150,20 @@
 > [!IMPORTANT]
 > The target presentation budget is designed to finish at **~90% of the allocated slot length** to guarantee you never run over time and always preserve buffer for judge interruptions.
 
-### A. Segment Budget Matrix
+### A. 4-Part Segment Budget (Target: Finish at ~90% of Slot)
+
+Empirically calibrated using the live dress rehearsal measurements (tool execution ~7.2s; live speech & explanation pace ~35–45s):
+
+| Segment | Target % | 3-Minute Slot (180s) | 4-Minute Slot (240s) | 5-Minute Slot (300s) | Custom [FILL: M mins] | Content & Script Focus |
+|---|:---:|:---:|:---:|:---:|:---:|---|
+| **1. Hook** | 15% | 0:00 – 0:25 (25s) | 0:00 – 0:35 (35s) | 0:00 – 0:45 (45s) | 0 to 0.15 × M | Arif persona, 3:00 AM alert fatigue, zero SOC staff in Bangladeshi institutions |
+| **2. Problem** | 20% | 0:25 – 1:00 (35s) | 0:35 – 1:20 (45s) | 0:45 – 1:45 (60s) | 0.15 × M to 0.35 × M | Legacy SIEMs cost $100k+, speak English only, leak sensitive logs to foreign cloud |
+| **3. Live Demo** | 35% | 1:00 – 2:05 (65s) | 1:20 – 2:45 (85s) | 1:45 – 3:30 (105s) | 0.35 × M to 0.70 × M | Run demo → Alert triage → Bangla switch → Grounded MITRE citation → Approve Defense → Audit trail |
+| **4. Close** | 20% | 2:05 – 2:40 (35s) | 2:45 – 3:35 (50s) | 3:30 – 4:30 (60s) | 0.70 × M to 0.90 × M | Responsible AI, Team Orionids credentials, commercial model hypothesis, QR code |
+| **Buffer (Safety)** | 10% | 2:40 – 3:00 (20s) | 3:35 – 4:00 (25s) | 4:30 – 5:00 (30s) | 0.90 × M to 1.00 × M | Preserved buffer for judge interruptions, network lag, and transition to Q&A |
+| **Total Speech** | **90%** | **2:40 (160s)** | **3:35 (215s)** | **4:30 (270s)** | **0.90 × M** | **Finishes cleanly under time limit** |
+
+### B. Slide-by-Slide Timing Breakdown
 
 | Slide # | Slide Focus | 3-Minute Slot (180s) | 5-Minute Slot (300s) | Ideal Buffer Remaining |
 |---|---|---|---|---|

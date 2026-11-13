@@ -32,7 +32,8 @@ Following a strict mentor review, Prohori AI underwent a comprehensive engineeri
 | **Statistics** | Stated unsourced "85% of institutions cannot afford a SOC" and "$40k–$100k salary". | Softened to "many small organizations and public offices cannot afford dedicated SOC teams". | Prevents credibility loss during judge scrutiny. |
 | **Commercial Model** | Quoted $1,200/node and $99/mo as established commercial pricing. | Explicitly labeled as an **unvalidated commercial hypothesis** formulated for hackathon judging criteria. | Honest acknowledgment of early-stage hackathon prototype maturity. |
 | **Pitch Materials** | Markdown pitch outline only; no real PowerPoint file; no QR code. | Real 8-slide PowerPoint deck (`.pptx`) + embedded QR code pointing to repository. | Provides a polished, ready-to-present visual artifact. |
-| **Deployment & Hosting** | Undocumented hosting platforms, missing live URLs and cloud blueprints in root documentation. | Complete Master Services Matrix, verified live endpoints table, Render blueprint (`render.yaml`), Vercel SPA config, and dedicated [`docs/DEPLOYMENT.md`](DEPLOYMENT.md) guide. | Gives teammates and judges complete visibility into every deployed service, port, and live URL. |
+| **Deployment & Hosting** | Undocumented hosting platforms, missing live URLs and cloud blueprints in root documentation. | Complete Master Services Matrix, verified live endpoints table, Render blueprint (`render.yaml`), Vercel live production deployment (`https://prohori-ai.vercel.app`), and dedicated [`docs/DEPLOYMENT.md`](DEPLOYMENT.md) guide. | Gives teammates and judges complete visibility into every deployed service, port, and live URL. |
+| **Color System & Aesthetics** | Unconstrained dark theme with 71 distinct hex colors and generic cyber blues/purples/reds. | **Strict 90/10 Color System**: Navy (`#14213D`), Cream (`#F4EDE0`), and Coral (`#FF6258`) exclusively. 96.71% dominant, 3.29% accent. Zero external colors; automated static & runtime linters (`check_palette.py`, `check_runtime_palette.py`). | Replaces generic dark theme with disciplined, paper-like high-contrast design optimized for cognitive clarity during high-stress SOC operations. |
 
 ---
 
@@ -97,6 +98,10 @@ Following a strict mentor review, Prohori AI underwent a comprehensive engineeri
 | [`docs/DEMO_VIDEO_SCRIPT.md`](file:///c:/diu/docs/DEMO_VIDEO_SCRIPT.md) | Modified | Restructured to 90% AI core focus (20s on sensors) + 75s backup recording protocol |
 | [`docs/JUDGE_QA.md`](file:///c:/diu/docs/JUDGE_QA.md) | Created | Comprehensive, grounded answers to 8 tough judge questions |
 | [`docs/LINKEDIN_POST.md`](file:///c:/diu/docs/LINKEDIN_POST.md) | Created | Draft LinkedIn submission post, asset checklist, retrospective story & Discord messages |
+| [`docs/DESIGN_SYSTEM.md`](file:///c:/diu/docs/DESIGN_SYSTEM.md) | Created | Strict 90/10 design system specification, WCAG contrast audits, token mapping & semantic shapes |
+| [`scripts/check_palette.py`](file:///c:/diu/scripts/check_palette.py) | Created | Static source code palette linter enforcing zero unauthorized colors |
+| [`scripts/check_runtime_palette.py`](file:///c:/diu/scripts/check_runtime_palette.py) | Created | Playwright runtime computed-style DOM inspector across all rendered elements |
+| [`scripts/measure_pixel_share.py`](file:///c:/diu/scripts/measure_pixel_share.py) | Created | Exact pixel-share measurement script evaluating Navy, Cream, and Coral screen distribution |
 | [`docs/SUBMISSION_UPDATES.md`](file:///c:/diu/docs/SUBMISSION_UPDATES.md) | Created | This complete audit and verification report |
 
 ---

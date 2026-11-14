@@ -10,7 +10,10 @@ import {
   Cpu,
   RotateCw,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Shield,
+  Sparkles,
+  User
 } from "lucide-react";
 
 export interface AuditConfirmation {
@@ -291,22 +294,35 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
         </button>
       </div>
 
-      {/* 2. Grounded Threat Intelligence Chips */}
-      <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", margin: "16px 0" }}>
-        <span style={{ fontSize: "14px", fontWeight: 800, color: "var(--navy-alpha-75)" }}>
-          {isBn ? "ভেরিফায়েড থ্রেট সাইটেশন:" : "Grounded Citations:"}
+      {/* 2. Grounded Threat Intelligence Ribbon */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          flexWrap: "wrap",
+          padding: "12px 16px",
+          background: "var(--navy-alpha-04)",
+          border: "1px solid var(--navy-alpha-15)",
+          borderRadius: "8px",
+          margin: "16px 0"
+        }}
+      >
+        <span style={{ fontSize: "12px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--navy-alpha-75)" }}>
+          {isBn ? "প্রমাণিত উদ্ধৃতি:" : "GROUNDED INTEL:"}
         </span>
         {mitre && (
           <span
-            className="font-mono"
+            className="font-mono font-tabular"
             style={{
-              padding: "4px 10px",
-              borderRadius: "6px",
-              fontSize: "13px",
+              padding: "3px 8px",
+              borderRadius: "4px",
+              fontSize: "12px",
               fontWeight: 800,
               background: "var(--navy)",
               color: "var(--cream)",
-              border: "1px solid var(--navy)"
+              border: "1px solid var(--navy)",
+              letterSpacing: "0.02em"
             }}
           >
             MITRE [{mitre}]
@@ -315,11 +331,11 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
         {citations.map((c) => (
           <span
             key={c}
-            className="font-mono"
+            className="font-mono font-tabular"
             style={{
-              padding: "4px 10px",
-              borderRadius: "6px",
-              fontSize: "13px",
+              padding: "3px 8px",
+              borderRadius: "4px",
+              fontSize: "12px",
               fontWeight: 800,
               background: "var(--navy-alpha-12)",
               color: "var(--navy)",
@@ -329,57 +345,50 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
             {c}
           </span>
         ))}
+        {analyst?.confidence && (
+          <span
+            className="font-mono font-tabular"
+            style={{
+              marginLeft: "auto",
+              fontSize: "12px",
+              fontWeight: 800,
+              color: "var(--navy-alpha-85)"
+            }}
+          >
+            {Math.round(analyst.confidence * 100)}% CONFIDENCE
+          </span>
+        )}
       </div>
 
-      {/* 3. Section: WHAT HAPPENED */}
+      {/* 3. Section: WHAT HAPPENED (Incident Narrative) */}
       <div
         style={{
-          background: "var(--navy-alpha-04)",
-          border: "1.5px solid var(--navy-alpha-15)",
-          borderRadius: "10px",
-          padding: "18px 20px",
+          padding: "16px 0",
+          borderBottom: "1px solid var(--navy-alpha-15)",
           marginBottom: "16px"
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "10px" }}>
-          <h3 style={{ fontSize: "17px", fontWeight: 800, color: "var(--navy)", margin: 0 }}>
-            {isBn ? "কী ঘটেছে (What Happened)" : "What Happened"}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px", flexWrap: "wrap", gap: "8px" }}>
+          <h3 style={{ fontSize: "16px", fontWeight: 800, color: "var(--navy)", margin: 0, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+            {isBn ? "ঘটনার সারসংক্ষেপ (Incident Narrative)" : "Incident Narrative"}
           </h3>
-          <div style={{ display: "flex", gap: "4px" }}>
+          <div className="segmented-control">
             <button
               onClick={() => setNarrativeLang("en")}
-              style={{
-                padding: "4px 10px",
-                fontSize: "12px",
-                fontWeight: 700,
-                borderRadius: "4px",
-                background: narrativeLang === "en" ? "var(--navy)" : "transparent",
-                color: narrativeLang === "en" ? "var(--cream)" : "var(--navy-alpha-75)",
-                border: "1px solid var(--navy-alpha-30)",
-                cursor: "pointer"
-              }}
+              className={`segmented-btn ${narrativeLang === "en" ? "active" : ""}`}
             >
               English
             </button>
             <button
               onClick={() => setNarrativeLang("bn")}
-              style={{
-                padding: "4px 10px",
-                fontSize: "12px",
-                fontWeight: 700,
-                borderRadius: "4px",
-                background: narrativeLang === "bn" ? "var(--navy)" : "transparent",
-                color: narrativeLang === "bn" ? "var(--cream)" : "var(--navy-alpha-75)",
-                border: "1px solid var(--navy-alpha-30)",
-                cursor: "pointer"
-              }}
+              className={`segmented-btn ${narrativeLang === "bn" ? "active" : ""}`}
             >
               বাংলা
             </button>
           </div>
         </div>
 
-        <p style={{ fontSize: "16px", lineHeight: 1.65, color: "var(--navy)", margin: 0 }}>
+        <p style={{ fontSize: "15.5px", lineHeight: 1.65, color: "var(--navy)", margin: 0 }}>
           {narrativeText || (isBn ? "বিশ্লেষণ লোড হচ্ছে..." : "Loading autonomous threat triage...")}
         </p>
       </div>
@@ -387,17 +396,15 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
       {/* 4. Section: RECOMMENDED DEFENSE */}
       <div
         style={{
-          background: "var(--navy-alpha-04)",
-          border: "1.5px solid var(--navy-alpha-15)",
-          borderRadius: "10px",
-          padding: "18px 20px",
-          marginBottom: "18px"
+          padding: "16px 0",
+          borderBottom: "1px solid var(--navy-alpha-15)",
+          marginBottom: "20px"
         }}
       >
-        <h3 style={{ fontSize: "17px", fontWeight: 800, color: "var(--navy)", margin: "0 0 8px 0" }}>
-          {isBn ? "প্রস্তাবিত পদক্ষেপ (Recommended Action)" : "Recommended Defense"}
+        <h3 style={{ fontSize: "16px", fontWeight: 800, color: "var(--navy)", margin: "0 0 8px 0", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+          {isBn ? "প্রস্তাবিত প্রতিরক্ষা পদক্ষেপ (Recommended Defense)" : "Recommended Defense"}
         </h3>
-        <p style={{ fontSize: "16px", lineHeight: 1.6, color: "var(--navy)", margin: 0 }}>
+        <p style={{ fontSize: "15.5px", lineHeight: 1.6, color: "var(--navy)", margin: 0 }}>
           {defaultAction}
         </p>
       </div>
@@ -481,7 +488,7 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
               <span>
                 {isApproving
                   ? (isBn ? "অনুমোদন করা হচ্ছে..." : "Applying Perimeter Defense...")
-                  : (isBn ? "🛡️ প্রতিরক্ষা অনুমোদন করুন (Approve Defense)" : "🛡️ Approve Defense Countermeasure")}
+                  : (isBn ? "প্রতিরক্ষা অনুমোদন করুন (Approve Defense)" : "Approve Defense Countermeasure")}
               </span>
             </button>
             <p style={{ fontSize: "13px", color: "var(--navy-alpha-75)", margin: 0, textAlign: "center" }}>
@@ -555,7 +562,7 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                   gap: "6px"
                 }}
               >
-                <span>💡</span>
+                <Sparkles size={14} color="var(--navy)" />
                 <span>{isBn ? "প্রাথমিক ভেক্টর?" : "Primary vector?"}</span>
               </button>
 
@@ -583,7 +590,7 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                   gap: "6px"
                 }}
               >
-                <span>🛡️</span>
+                <Shield size={14} color="var(--navy)" />
                 <span>{isBn ? "ফায়ারওয়াল কমান্ড" : "Firewall commands"}</span>
               </button>
 
@@ -611,7 +618,7 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                   gap: "6px"
                 }}
               >
-                <span>👤</span>
+                <User size={14} color="var(--navy)" />
                 <span>{isBn ? "ইনসাইডার নাকি বহিঃস্থ?" : "Insider or external?"}</span>
               </button>
             </div>

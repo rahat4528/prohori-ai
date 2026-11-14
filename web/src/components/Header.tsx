@@ -117,31 +117,34 @@ export const Header: React.FC<HeaderProps> = ({
             <span style={{ fontSize: "16px", color: "var(--cream-alpha-85)", fontWeight: 700 }}>
               (প্রহরী)
             </span>
-            {/* Live Status Badge */}
+            {/* Live Status Tactical Beacon */}
             <span
+              className="font-mono font-tabular"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "6px",
                 fontSize: "12px",
-                fontWeight: 700,
+                fontWeight: 800,
                 color: wsConnected ? "var(--cream)" : "var(--navy)",
-                padding: "3px 10px",
-                borderRadius: "999px",
+                padding: "3px 8px",
+                borderRadius: "4px",
                 background: wsConnected ? "var(--cream-alpha-15)" : "var(--coral)",
-                border: `1px solid ${wsConnected ? "var(--cream-alpha-30)" : "var(--coral)"}`
+                border: `1px solid ${wsConnected ? "var(--cream-alpha-30)" : "var(--coral)"}`,
+                letterSpacing: "0.04em"
               }}
-              title={wsConnected ? "Real-time WebSocket connected" : "WebSocket disconnected"}
+              title={wsConnected ? "Real-time WebSocket telemetry connected" : "WebSocket disconnected"}
             >
               <span
                 style={{
-                  width: "8px",
-                  height: "8px",
+                  width: "7px",
+                  height: "7px",
                   borderRadius: "50%",
-                  backgroundColor: wsConnected ? "var(--cream)" : "var(--navy)"
+                  backgroundColor: wsConnected ? "var(--cream)" : "var(--navy)",
+                  display: "inline-block"
                 }}
               />
-              {wsConnected ? (isBn ? "সক্রিয়" : "Live") : (isBn ? "সংযোগ বিচ্ছিন্ন" : "Offline")}
+              {wsConnected ? (isBn ? "লাইভ স্ট্রিম" : "STREAM LIVE") : (isBn ? "সংযোগ বিচ্ছিন্ন" : "OFFLINE")}
             </span>
           </div>
           <p style={{ fontSize: "13px", color: "var(--cream-alpha-75)", margin: "2px 0 0 0" }}>
@@ -203,6 +206,20 @@ export const Header: React.FC<HeaderProps> = ({
         >
           <Play size={16} fill="var(--navy)" color="var(--navy)" />
           <span>{isRunningDemo ? (isBn ? "ডেমো চলছে..." : "Running Demo...") : (isBn ? "ডেমো চালান" : "Run demo")}</span>
+          <span
+            className="font-mono font-tabular"
+            style={{
+              fontSize: "11px",
+              padding: "2px 6px",
+              borderRadius: "4px",
+              background: "var(--navy-alpha-15)",
+              color: "var(--navy)",
+              fontWeight: 800,
+              marginLeft: "4px"
+            }}
+          >
+            Shift+D
+          </span>
         </button>
 
         {/* Language Switch */}

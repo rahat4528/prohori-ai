@@ -192,10 +192,14 @@ export const AlertList: React.FC<AlertListProps> = ({
                 color: "var(--navy)",
                 border: "1.5px solid var(--coral)",
                 borderRadius: "8px",
-                minHeight: "44px"
+                minHeight: "44px",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px"
               }}
             >
-              {isBn ? "⚡ ডেমো চালান" : "⚡ Run Demo Now"}
+              <ShieldAlert size={16} color="var(--navy)" />
+              <span>{isBn ? "ডেমো চালান" : "Run Demo Now"}</span>
             </button>
           </div>
         ) : (
@@ -221,76 +225,82 @@ export const AlertList: React.FC<AlertListProps> = ({
                   }
                 }}
                 tabIndex={0}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "10px",
-                  padding: "16px 18px",
-                  borderRadius: "10px",
-                  background: isSelected ? "var(--navy-alpha-04)" : "var(--cream)",
-                  border: isSelected ? "1.5px solid var(--navy-alpha-30)" : "1.5px solid var(--navy-alpha-15)",
-                  borderLeft: isSelected ? "5px solid var(--coral)" : "1.5px solid var(--navy-alpha-15)",
-                  boxShadow: isSelected ? "var(--shadow-md)" : "var(--shadow-sm)",
-                  cursor: "pointer",
-                  transition: "all 0.15s ease",
-                  position: "relative"
-                }}
+                className={`alert-feed-item severity-${ev.severity} ${isSelected ? "selected" : ""}`}
                 role="article"
                 aria-selected={isSelected}
               >
-                {/* Top Row: Severity Badge + Time */}
+                {/* Top Row: Severity Tag + Tabular Time */}
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}>
                   <span
+                    className="font-mono font-tabular"
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
                       gap: "6px",
-                      padding: "4px 10px",
-                      borderRadius: "6px",
-                      fontSize: "13px",
+                      padding: "3px 8px",
+                      borderRadius: "4px",
+                      fontSize: "12px",
                       fontWeight: 800,
                       background: sev.bg,
                       color: sev.color,
-                      border: `1.5px solid ${sev.border}`
+                      border: `1.5px solid ${sev.border}`,
+                      letterSpacing: "0.03em"
                     }}
                   >
-                    <SevIcon size={14} color={sev.color} />
+                    <SevIcon size={13} color={sev.color} />
                     <span>{sev.label}</span>
                   </span>
 
-                  <span className="font-mono" style={{ fontSize: "13px", color: "var(--navy-alpha-75)", fontWeight: 600 }}>
+                  <span className="font-mono font-tabular" style={{ fontSize: "12px", color: "var(--navy-alpha-75)", fontWeight: 700 }}>
                     {formattedTime}
                   </span>
                 </div>
 
                 {/* Main Title */}
-                <h3 style={{ fontSize: "17px", fontWeight: 800, color: "var(--navy)", margin: 0, lineHeight: 1.4 }}>
+                <h3 style={{ fontSize: "16px", fontWeight: 800, color: "var(--navy)", margin: 0, lineHeight: 1.35 }}>
                   {friendlyTitle}
                 </h3>
 
-                {/* Attacker & Grounding Chips */}
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px", fontSize: "14px" }}>
-                  <span className="font-mono" style={{ color: "var(--navy-alpha-85)", fontWeight: 700 }}>
+                {/* Attacker IP & Sensor Telemetry */}
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "6px", fontSize: "13px" }}>
+                  <span className="font-mono font-tabular" style={{ color: "var(--navy-alpha-85)", fontWeight: 700 }}>
                     {sourceIp} {targetInfo ? `· ${targetInfo}` : ""}
                   </span>
 
-                  {mitre && (
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                     <span
                       className="font-mono"
                       style={{
-                        padding: "3px 8px",
-                        borderRadius: "6px",
-                        fontSize: "12px",
-                        fontWeight: 800,
-                        background: "var(--navy)",
-                        color: "var(--cream)",
-                        border: "1px solid var(--navy)"
+                        padding: "2px 6px",
+                        borderRadius: "4px",
+                        fontSize: "11px",
+                        fontWeight: 700,
+                        background: "var(--navy-alpha-08)",
+                        color: "var(--navy-alpha-75)",
+                        border: "1px solid var(--navy-alpha-20)"
                       }}
-                      title={`MITRE ATT&CK Technique: ${mitre}`}
                     >
-                      [{mitre}]
+                      {ev.source.toUpperCase()}
                     </span>
-                  )}
+
+                    {mitre && (
+                      <span
+                        className="font-mono font-tabular"
+                        style={{
+                          padding: "2px 6px",
+                          borderRadius: "4px",
+                          fontSize: "11px",
+                          fontWeight: 800,
+                          background: "var(--navy)",
+                          color: "var(--cream)",
+                          border: "1px solid var(--navy)"
+                        }}
+                        title={`MITRE ATT&CK Technique: ${mitre}`}
+                      >
+                        [{mitre}]
+                      </span>
+                    )}
+                  </div>
                 </div>
               </article>
             );

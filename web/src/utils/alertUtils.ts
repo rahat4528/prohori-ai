@@ -51,7 +51,7 @@ export function getSeverityConfig(severity: EventSeverity, lang: "en" | "bn") {
         bg: "var(--coral)",
         border: "var(--coral)",
         className: "severity-badge-critical",
-        shape: "🛑"
+        shape: "■"
       };
     case "high":
       return {

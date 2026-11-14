@@ -414,3 +414,238 @@ button {
   background: var(--cream-alpha-15);
   color: var(--cream);
 }
+
+/* ==========================================================================
+   HUMAN-CRAFTED SOC EXTENSIONS & TACTICAL DESIGN SYSTEM (90/10 PALETTE)
+   ========================================================================== */
+
+/* 1. Tabular Numerals & High-Density Telemetry */
+.font-tabular {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* 2. Tactical Telemetry Feed Item */
+.alert-feed-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  background: var(--cream);
+  border: 1px solid var(--navy-alpha-15);
+  border-left: 4px solid var(--navy-alpha-30);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: left;
+  width: 100%;
+  position: relative;
+}
+
+.alert-feed-item:hover {
+  background: var(--navy-alpha-04);
+  border-color: var(--navy-alpha-30);
+  transform: translateY(-1px);
+}
+
+.alert-feed-item.selected {
+  background: var(--navy-alpha-08);
+  border-color: var(--navy);
+  border-left: 4px solid var(--coral);
+  box-shadow: 0 2px 8px var(--navy-alpha-15);
+}
+
+.alert-feed-item:focus-visible {
+  outline: 2px solid var(--coral);
+  outline-offset: 2px;
+}
+
+/* Severity Indicator Strips */
+.alert-feed-item.severity-critical {
+  border-left-color: var(--coral);
+}
+
+.alert-feed-item.severity-high {
+  border-left-color: var(--coral-alpha-80);
+}
+
+.alert-feed-item.severity-medium {
+  border-left-color: var(--navy-alpha-65);
+}
+
+.alert-feed-item.severity-low {
+  border-left-color: var(--navy-alpha-30);
+}
+
+/* 3. Segmented Control Switcher */
+.segmented-control {
+  display: inline-flex;
+  align-items: center;
+  background: var(--navy-alpha-08);
+  padding: 3px;
+  border-radius: 6px;
+  border: 1px solid var(--navy-alpha-15);
+  gap: 2px;
+}
+
+.segmented-btn {
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: var(--navy-alpha-75);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.segmented-btn:hover {
+  color: var(--navy);
+}
+
+.segmented-btn.active {
+  background: var(--navy);
+  color: var(--cream);
+  box-shadow: 0 1px 3px var(--navy-alpha-20);
+}
+
+/* 4. Filter Count Pills */
+.filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid var(--navy-alpha-20);
+  background: var(--cream);
+  color: var(--navy);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-height: 36px;
+}
+
+.filter-pill:hover {
+  background: var(--navy-alpha-08);
+  border-color: var(--navy-alpha-40);
+}
+
+.filter-pill.active {
+  background: var(--navy);
+  color: var(--cream);
+  border-color: var(--navy);
+}
+
+.filter-pill .count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--navy-alpha-15);
+  color: inherit;
+}
+
+.filter-pill.active .count {
+  background: var(--cream-alpha-20);
+  color: var(--cream);
+}
+
+/* 5. Executive Incident Dossier & Action Deck */
+.dossier-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--cream);
+  border: 1.5px solid var(--navy-alpha-20);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  height: 100%;
+}
+
+.dossier-header {
+  padding: 20px 24px;
+  border-bottom: 1.5px solid var(--navy-alpha-15);
+  background: var(--cream);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.dossier-section {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--navy-alpha-12);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dossier-section:last-child {
+  border-bottom: none;
+}
+
+.dossier-label {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--navy-alpha-75);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dossier-content {
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--navy);
+}
+
+/* 6. Human-in-the-Loop Approval Action Gate */
+.action-gate-card {
+  padding: 20px 24px;
+  background: var(--navy);
+  border: 2px solid var(--coral);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  color: var(--cream);
+  box-shadow: var(--shadow-sm);
+}
+
+/* 7. Keycap Hint Badge */
+.keycap-hint {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--cream-alpha-15);
+  border: 1px solid var(--cream-alpha-30);
+  color: var(--cream);
+  line-height: 1.2;
+}
+
+/* Responsive Fluidity */
+@media (max-width: 430px) {
+  .dossier-header {
+    padding: 16px;
+  }
+  .dossier-section {
+    padding: 16px;
+  }
+  .alert-feed-item {
+    padding: 12px;
+  }
+}

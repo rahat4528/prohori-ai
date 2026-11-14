@@ -26,6 +26,7 @@ interface HeaderProps {
   onToggleSovereignty: () => void;
   onOpenShortcuts: () => void;
   activeProvider?: string;
+  apiBase?: string;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -39,7 +40,8 @@ export const Header: React.FC<HeaderProps> = ({
   isLocalSovereignty,
   onToggleSovereignty,
   onOpenShortcuts,
-  activeProvider = "deterministic-offline-rag"
+  activeProvider = "deterministic-offline-rag",
+  apiBase = "http://localhost:8000"
 }) => {
   const [isRunningDemo, setIsRunningDemo] = useState<boolean>(false);
   const [isMoreOpen, setIsMoreOpen] = useState<boolean>(false);
@@ -335,7 +337,7 @@ export const Header: React.FC<HeaderProps> = ({
 
               {/* API Docs Link */}
               <a
-                href="http://localhost:8000/docs"
+                href={`${apiBase}/docs`}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setIsMoreOpen(false)}

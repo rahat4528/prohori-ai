@@ -23,6 +23,9 @@ from fastapi import (
     status,
 )
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
+from starlette.responses import JSONResponse, Response
 from sqlalchemy import delete, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -34,6 +37,7 @@ if str(root_dir) not in sys.path:
 from analyst.agents.advisor import response_advisor
 from analyst.agents.triage import TriageAgent, triage_agent
 from analyst.providers.offline import DeterministicOfflineProvider
+from analyst.redaction import redact_data
 from knowledge.retriever import kb_retriever
 
 from .audit import record_audit_entry
@@ -94,6 +98,40 @@ app = FastAPI(
     description="Defensive AI-native Security Operations Center Event Bus",
     lifespan=lifespan
 )
+
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    """Enforce standard defensive HTTP security headers on all responses."""
+    async def dispatch(self, request: Request, call_next):
+        response: Response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=()"
+        if request.url.scheme == "https" or request.headers.get("x-forwarded-proto") == "https":
+            response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+        return response
+
+app.add_middleware(SecurityHeadersMiddleware)
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    """Safe global exception handler preventing information leakage (stack traces/internal paths)."""
+    if isinstance(exc, HTTPException):
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"detail": exc.detail},
+            headers=exc.headers
+        )
+    logger.error(f"Unhandled server error on {request.method} {request.url.path}: {exc}", exc_info=True)
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={
+            "status": "error",
+            "message": "An internal server error occurred. Security operations has been alerted.",
+            "code": "INTERNAL_SERVER_ERROR"
+        }
+    )
 
 # CORS configuration
 app.add_middleware(
@@ -282,13 +320,17 @@ async def ingest_event(
     should_async_upgrade = False
     raw_event_dict = None
 
+    # Mandatory PII & credential scrubbing before storage or AI model ingestion
+    scrubbed_details = redact_data(event_in.details or {})
+    event_in.details = scrubbed_details
+
     # Auto-run AI SOC Analyst triage on ingest if not already enriched
     if analyst_payload is None and event_in.source != EventSource.ANALYST:
         raw_event_dict = {
             "source": event_in.source.value,
             "severity": event_in.severity.value,
             "type": event_in.type,
-            "details": event_in.details
+            "details": scrubbed_details
         }
         is_neural_llm = not isinstance(triage_agent.provider, DeterministicOfflineProvider)
 

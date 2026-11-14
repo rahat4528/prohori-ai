@@ -6,6 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#14213D" />
     <title>Prohori AI (প্রহরী) — Autonomous AI-Native SOC Console</title>
+    <script>
+      // Prevent localhost collision: unregister any legacy service workers from past projects
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for (let registration of registrations) {
+            registration.unregister();
+          }
+        }).catch(function() {});
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

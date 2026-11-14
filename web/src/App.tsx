@@ -407,6 +407,7 @@ export const App: React.FC = () => {
         onToggleSovereignty={handleToggleSovereignty}
         onOpenShortcuts={() => setIsShortcutsOpen(true)}
         activeProvider={activeProvider}
+        apiBase={API_BASE}
       />
 
       {/* 2. Mobile Tab Switcher (< 900px) */}

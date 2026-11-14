@@ -31,14 +31,14 @@ SOVEREIGNTY_STATE = {
 
 
 class ApproveActionRequest(BaseModel):
-    action_id: str = Field(..., description="Action ID to approve")
-    target: str = Field(..., description="Target IP or resource")
-    action_type: str = Field(..., description="Action classification (e.g. FIREWALL_BLOCK_IP)")
-    operator_id: str = Field(default="admin-operator-01", description="Authorizing human analyst ID")
+    action_id: str = Field(..., min_length=1, max_length=100, description="Action ID to approve")
+    target: str = Field(..., min_length=1, max_length=200, description="Target IP or resource")
+    action_type: str = Field(..., min_length=1, max_length=100, description="Action classification (e.g. FIREWALL_BLOCK_IP)")
+    operator_id: str = Field(default="admin-operator-01", min_length=1, max_length=100, description="Authorizing human analyst ID")
 
 
 class ToggleSovereigntyRequest(BaseModel):
-    mode: str = Field(..., description="'local' for zero-cloud sovereignty or 'cloud' for external API")
+    mode: str = Field(..., pattern="^(local|cloud)$", description="'local' for zero-cloud sovereignty or 'cloud' for external API")
 
 
 @router.get("/audit", response_model=list[AuditEntryResponse], summary="Retrieve immutable audit log")

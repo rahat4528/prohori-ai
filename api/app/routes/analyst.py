@@ -32,7 +32,7 @@ router = APIRouter(prefix="/analyst", tags=["AI SOC Analyst"])
 class AskRequest(BaseModel):
     query: str | None = Field(None, max_length=500, description="Free-text operator question")
     question: str | None = Field(None, max_length=500, description="Alternative field for operator question")
-    language: str | None = Field(None, description="'en' for English, 'bn' for Bangla")
+    language: str | None = Field(None, pattern="^(en|bn)$", description="'en' for English, 'bn' for Bangla")
     event_context: dict[str, Any] | None = Field(None, description="Context of the currently selected security event")
 
     @model_validator(mode="after")
@@ -57,7 +57,7 @@ class AskResponse(BaseModel):
 
 class IncidentStatusUpdate(BaseModel):
     status: str = Field(..., pattern="^(ACTIVE|CONTAINED|RESOLVED)$", description="New incident status")
-    operator_id: str = Field(default="SECURITY_OPERATOR", description="Identity of operator making update")
+    operator_id: str = Field(default="SECURITY_OPERATOR", min_length=1, max_length=100, description="Identity of operator making update")
     notes: str | None = Field(None, description="Operational notes regarding status change")
 
 

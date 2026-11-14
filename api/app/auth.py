@@ -1,8 +1,10 @@
 """
 Prohori AI - Opt-in API Key Authentication
+Uses constant-time comparison to prevent timing side-channel attacks.
 """
 import logging
 import os
+import secrets
 
 from fastapi import Header, HTTPException, status
 
@@ -22,12 +24,13 @@ async def verify_api_key(
     Opt-in API-key authentication for sensitive write endpoints.
     - If PROHORI_API_KEY is NOT set: auth is disabled (local demo mode).
     - If PROHORI_API_KEY IS set: incoming request MUST supply matching X-API-Key.
+    Uses secrets.compare_digest to eliminate timing attack vectors.
     """
     configured_key = get_configured_api_key()
     if not configured_key:
         return
 
-    if not x_api_key or x_api_key != configured_key:
+    if not x_api_key or not secrets.compare_digest(x_api_key, configured_key):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or missing X-API-Key header. Access denied.",

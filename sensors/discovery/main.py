@@ -11,7 +11,7 @@ from datetime import UTC, datetime
 
 import httpx
 from fastapi import FastAPI, HTTPException, status
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from .guard import TargetNotAllowlistedError, allowlist_guard
 from .scanner import scan_target
@@ -29,8 +29,17 @@ EVENT_API_URL = os.getenv("EVENT_API_URL", "http://localhost:8000")
 
 
 class ScanRequest(BaseModel):
-    target: str = Field(..., description="Target hostname or IP (MUST be on defensive allowlist)")
-    ports: list[int] | None = Field(None, description="Optional custom port list to probe")
+    target: str = Field(..., max_length=255, description="Target hostname or IP (MUST be on defensive allowlist)")
+    ports: list[int] | None = Field(None, max_length=100, description="Optional custom port list to probe (1-65535)")
+
+    @field_validator("ports")
+    @classmethod
+    def validate_ports(cls, v: list[int] | None):
+        if v is not None:
+            for p in v:
+                if not (1 <= p <= 65535):
+                    raise ValueError(f"Port {p} is out of valid range (1-65535).")
+        return v
 
 
 async def emit_discovery_events(scan_results: dict):

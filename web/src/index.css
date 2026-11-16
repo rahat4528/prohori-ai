@@ -57,6 +57,7 @@
   --navy-alpha-15: rgba(20, 33, 61, 0.15);
   --navy-alpha-20: rgba(20, 33, 61, 0.20);
   --navy-alpha-25: rgba(20, 33, 61, 0.25);
+  --navy-alpha-30: rgba(20, 33, 61, 0.30);
   --navy-alpha-40: rgba(20, 33, 61, 0.40);
   --navy-alpha-65: rgba(20, 33, 61, 0.65);
   --navy-alpha-75: rgba(20, 33, 61, 0.75);
@@ -166,7 +167,7 @@ button {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--navy);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: var(--cream-alpha-20);
@@ -174,6 +175,26 @@ button {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--cream-alpha-40);
+}
+
+/* Scrollbars on Light / Cream Surfaces */
+.alert-feed-scroll::-webkit-scrollbar,
+.cream-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.alert-feed-scroll::-webkit-scrollbar-track,
+.cream-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.alert-feed-scroll::-webkit-scrollbar-thumb,
+.cream-scroll::-webkit-scrollbar-thumb {
+  background: var(--navy-alpha-20);
+  border-radius: 3px;
+}
+.alert-feed-scroll::-webkit-scrollbar-thumb:hover,
+.cream-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--navy-alpha-40);
 }
 
 /* Typography Helpers */
@@ -432,26 +453,32 @@ button {
   gap: 8px;
   padding: 14px 16px;
   background: var(--cream);
-  border: 1px solid var(--navy-alpha-15);
-  border-left: 4px solid var(--navy-alpha-30);
+  border: 1.5px solid var(--navy-alpha-20);
+  border-left-width: 4px;
+  border-left-style: solid;
+  border-left-color: var(--navy-alpha-30);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
   text-align: left;
   width: 100%;
   position: relative;
+  box-shadow: 0 1px 3px var(--navy-alpha-08);
 }
 
 .alert-feed-item:hover {
   background: var(--navy-alpha-04);
-  border-color: var(--navy-alpha-30);
+  border-color: var(--navy-alpha-40);
   transform: translateY(-1px);
+  box-shadow: 0 4px 10px var(--navy-alpha-15);
 }
 
 .alert-feed-item.selected {
   background: var(--navy-alpha-08);
   border-color: var(--navy);
-  border-left: 4px solid var(--coral);
+  border-left-width: 4px;
+  border-left-style: solid;
+  border-left-color: var(--coral) !important;
   box-shadow: 0 2px 8px var(--navy-alpha-15);
 }
 
@@ -462,19 +489,19 @@ button {
 
 /* Severity Indicator Strips */
 .alert-feed-item.severity-critical {
-  border-left-color: var(--coral);
+  border-left-color: var(--coral) !important;
 }
 
 .alert-feed-item.severity-high {
-  border-left-color: var(--coral-alpha-80);
+  border-left-color: var(--coral) !important;
 }
 
 .alert-feed-item.severity-medium {
-  border-left-color: var(--navy-alpha-65);
+  border-left-color: var(--navy-alpha-65) !important;
 }
 
 .alert-feed-item.severity-low {
-  border-left-color: var(--navy-alpha-30);
+  border-left-color: var(--navy-alpha-30) !important;
 }
 
 /* 3. Segmented Control Switcher */

@@ -145,6 +145,7 @@ export const AlertList: React.FC<AlertListProps> = ({
 
       {/* Alert Cards Container */}
       <div
+        className="alert-feed-scroll"
         style={{
           flex: 1,
           overflowY: "auto",
@@ -271,23 +272,24 @@ export const AlertList: React.FC<AlertListProps> = ({
                     <span
                       className="font-mono"
                       style={{
-                        padding: "2px 6px",
+                        padding: "2px 7px",
                         borderRadius: "4px",
                         fontSize: "11px",
                         fontWeight: 700,
                         background: "var(--navy-alpha-08)",
-                        color: "var(--navy-alpha-75)",
-                        border: "1px solid var(--navy-alpha-20)"
+                        color: "var(--navy)",
+                        border: "1px solid var(--navy-alpha-20)",
+                        textTransform: "capitalize"
                       }}
                     >
-                      {ev.source.toUpperCase()}
+                      {ev.source === "honeypot" ? "Honeypot" : ev.source === "ratelimiter" ? "Rate Limiter" : ev.source === "scanner" ? "Discovery" : ev.source}
                     </span>
 
                     {mitre && (
                       <span
                         className="font-mono font-tabular"
                         style={{
-                          padding: "2px 6px",
+                          padding: "2px 7px",
                           borderRadius: "4px",
                           fontSize: "11px",
                           fontWeight: 800,

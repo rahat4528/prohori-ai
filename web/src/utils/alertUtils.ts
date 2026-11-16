@@ -12,6 +12,8 @@ export function getFriendlyEventTitle(type: string, lang: "en" | "bn"): string {
   switch (type) {
     case "login_attempt_burst":
       return isBn ? "ক্রেডেনশিয়াল স্টাফিং আক্রমণ" : "Credential Stuffing Attack";
+    case "brute_force_suspected":
+      return isBn ? "ব্রুট ফোর্স আক্রমণ শনাক্ত" : "Brute Force Attack Detected";
     case "recon_probe":
       return isBn ? "রিকনেসান্স স্ক্যান" : "Reconnaissance Scan";
     case "rate_limit_violation":
@@ -58,7 +60,7 @@ export function getSeverityConfig(severity: EventSeverity, lang: "en" | "bn") {
         label: isBn ? "উচ্চ (High)" : "High",
         icon: Flame,
         color: "var(--navy)",
-        bg: "transparent",
+        bg: "var(--coral-alpha-15)",
         border: "var(--coral)",
         className: "severity-badge-high",
         shape: "▲"

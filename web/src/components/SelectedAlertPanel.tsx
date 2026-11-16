@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import type { SecurityEvent } from "../types";
 import { getFriendlyEventTitle, getSeverityConfig } from "../utils/alertUtils";
 import { generateClientSideAnalystAnswer } from "../utils/analystFallback";
+import { AnalystResponseView } from "./AnalystResponseView";
 import {
   ShieldAlert,
   ShieldCheck,
   Send,
   MessageSquare,
-  Cpu,
   RotateCw,
   ChevronDown,
   ChevronUp,
@@ -685,59 +685,17 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
             )}
 
             {askAnswer && (
-              <div
-                style={{
-                  padding: "16px 18px",
-                  background: "var(--navy-alpha-04)",
-                  border: "1.5px solid var(--navy-alpha-20)",
-                  borderRadius: "8px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "10px"
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <Cpu size={16} color="var(--navy)" />
-                    <span style={{ fontSize: "14px", fontWeight: 800, color: "var(--navy)" }}>
-                      {isBn ? "বিশ্লেষকের উত্তর:" : "Analyst Response:"}
-                    </span>
-                  </div>
-                  {askProvider && (
-                    <span className="font-mono" style={{ fontSize: "12px", color: "var(--navy-alpha-75)", fontWeight: 700 }}>
-                      Backend: {askProvider}
-                    </span>
-                  )}
-                </div>
-
-                <p style={{ fontSize: "15px", lineHeight: 1.6, color: "var(--navy)", margin: 0, whiteSpace: "pre-wrap" }}>
-                  {askAnswer}
-                </p>
-
-                {askCitations.length > 0 && (
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap", marginTop: "4px" }}>
-                    <span style={{ fontSize: "12px", fontWeight: 800, color: "var(--navy-alpha-75)" }}>
-                      Citations:
-                    </span>
-                    {askCitations.map((c) => (
-                      <span
-                        key={c}
-                        className="font-mono"
-                        style={{
-                          padding: "2px 8px",
-                          borderRadius: "4px",
-                          fontSize: "11px",
-                          fontWeight: 800,
-                          background: "var(--navy)",
-                          color: "var(--cream)"
-                        }}
-                      >
-                        {c}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <AnalystResponseView
+                rawAnswer={askAnswer}
+                provider={askProvider}
+                citations={askCitations}
+                event={event}
+                globalLanguage={globalLanguage}
+                apiBase={apiBase}
+                onApproveDefense={onApproveDefense}
+                isApproved={!!approvalAudit}
+                approvalAudit={approvalAudit}
+              />
             )}
           </div>
         )}

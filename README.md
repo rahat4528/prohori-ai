@@ -527,9 +527,10 @@ Prohori AI is built exclusively for defensive security operations within authori
 
 ## 11. Team Orionids
 
-Prohori AI was engineered by **Team Orionids** (Undergraduate Engineers from the **Department of Computer Science & Engineering, Daffodil International University**) for the **International AI Builders Congress 2026** (InfraSphere AI &rarr; SecureAI).
+Prohori AI was engineered by **Team Orionids** (Undergraduate Engineers from the **Department of Computer Science & Engineering, East West University**) for the **International AI Builders Congress 2026** (InfraSphere AI &rarr; SecureAI), hosted at **Daffodil International University (DIU)**.
 
-- **Institution**: Daffodil International University (DIU), Department of CSE
+- **Institution**: East West University (EWU), Department of CSE
+- **Competition Host / Venue**: Daffodil International University (DIU)
 - **Team**: Team Orionids
 - **Repository**: [https://github.com/rahat4528/prohori-ai](https://github.com/rahat4528/prohori-ai)
 - **Live Console**: [https://prohori-ai.vercel.app](https://prohori-ai.vercel.app)

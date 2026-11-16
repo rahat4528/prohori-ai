@@ -26,9 +26,9 @@ Here is how Prohori AI changes the game:
 🤝 5. Human-in-the-Loop Safety: The AI recommends containment actions, but cannot execute them unilaterally. Operators approve actions with one click, permanently recorded in an append-only audit log.
 📡 6. 3 Defensive Sensor Feeds: Fed by an isolated deception honeypot, a token-bucket API abuse guard, and an allowlisted asset scanner.
 
-Proud of our team — Team Orionids from Daffodil International University (Department of CSE) — for conceptualizing, building, and verifying this prototype with 34 passing automated tests, a modern React 19 console, and a high-performance FastAPI backend!
+Proud of our team — Team Orionids from East West University (Department of CSE) — for conceptualizing, building, and verifying this prototype for the competition held at Daffodil International University, backed by 34 passing automated tests, a modern React 19 console, and a high-performance FastAPI backend!
 
-Huge shoutout to my fellow Team Orionids builders at Daffodil International University (DIU):
+Huge shoutout to my fellow Team Orionids builders at East West University (EWU):
 👥 Member 1: [FILL: name] ([FILL: role])
 👥 Member 2: [FILL: name] ([FILL: role])
 👥 Member 3: [FILL: name] ([FILL: role])

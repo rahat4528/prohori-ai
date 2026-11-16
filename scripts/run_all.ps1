@@ -1,5 +1,5 @@
 # Prohori AI - All-in-One Local Development Stack Launcher (PowerShell)
-# Author: Team Orionids - Daffodil International University (CSE)
+# Author: Team Orionids - East West University (CSE)
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $rootDir = Split-Path -Parent $scriptDir

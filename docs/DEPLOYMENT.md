@@ -1,7 +1,7 @@
 # Prohori AI ("প্রহরী") — Deployment & Hosting Guide
 
-**Team Orionids · Department of Computer Science & Engineering, Daffodil International University**  
-**International AI Builders Congress 2026 · Domain: InfraSphere AI &rarr; SecureAI**  
+**Team Orionids · Department of Computer Science & Engineering, East West University**  
+**International AI Builders Congress 2026 (Venue: Daffodil International University) · Domain: InfraSphere AI &rarr; SecureAI**  
 **Official Repository**: [https://github.com/rahat4528/prohori-ai](https://github.com/rahat4528/prohori-ai)
 
 ---

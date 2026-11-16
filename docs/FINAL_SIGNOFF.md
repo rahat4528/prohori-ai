@@ -1,6 +1,7 @@
 # Prohori AI — Official Hackathon Final Sign-Off Document
 
-**Team**: Team Orionids (Daffodil International University, Dept. of CSE)  
+**Team**: Team Orionids (East West University, Dept. of CSE)  
+**Host Venue**: Daffodil International University (DIU)  
 **Event**: International AI Builders Congress 2026 (InfraSphere AI &rarr; SecureAI)  
 **Project**: Prohori AI ("প্রহরী") — Self-Hostable, Bilingual AI SOC Analyst  
 

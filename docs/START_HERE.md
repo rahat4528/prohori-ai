@@ -1,7 +1,7 @@
 # Prohori AI — 10-Minute Final Submission Checklist
 
-**Team Orionids · Department of Computer Science & Engineering, Daffodil International University**  
-**International AI Builders Congress 2026 · Domain: InfraSphere AI &rarr; SecureAI**  
+**Team Orionids · Department of Computer Science & Engineering, East West University**  
+**International AI Builders Congress 2026 (Venue: Daffodil International University) · Domain: InfraSphere AI &rarr; SecureAI**  
 **Target Repository**: [https://github.com/rahat4528/prohori-ai](https://github.com/rahat4528/prohori-ai)
 
 > [!IMPORTANT]

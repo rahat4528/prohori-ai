@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
+import { ProhoriLogo } from "./ProhoriLogo";
 import {
-  ShieldAlert,
   Play,
   Languages,
   MoreVertical,
@@ -91,66 +91,39 @@ export const Header: React.FC<HeaderProps> = ({
       }}
       role="banner"
     >
-      {/* 1. Brand Identity */}
-      <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-        <div
+      {/* 1. Official Prohori AI Brand Identity & Logo */}
+      <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap" }}>
+        <ProhoriLogo markSize={36} showSubtitle={true} isBn={isBn} variant="reverse" />
+
+        {/* Live Status Tactical Beacon */}
+        <span
+          className="font-mono font-tabular"
           style={{
-            background: "var(--navy)",
-            border: "1.5px solid var(--cream-alpha-30)",
-            boxShadow: "var(--shadow-sm)",
-            padding: "8px",
-            borderRadius: "8px",
-            display: "flex",
+            display: "inline-flex",
             alignItems: "center",
-            justifyContent: "center",
-            color: "var(--cream)"
+            gap: "6px",
+            fontSize: "12px",
+            fontWeight: 800,
+            color: wsConnected ? "var(--cream)" : "var(--navy)",
+            padding: "3px 8px",
+            borderRadius: "4px",
+            background: wsConnected ? "var(--cream-alpha-15)" : "var(--coral)",
+            border: `1px solid ${wsConnected ? "var(--cream-alpha-30)" : "var(--coral)"}`,
+            letterSpacing: "0.04em"
           }}
-          aria-hidden="true"
+          title={wsConnected ? "Real-time WebSocket telemetry connected" : "WebSocket disconnected"}
         >
-          <ShieldAlert size={26} color="var(--cream)" />
-        </div>
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-            <span style={{ fontSize: "19px", fontWeight: 800, letterSpacing: "0.04em", color: "var(--cream)" }}>
-              PROHORI AI
-            </span>
-            <span style={{ fontSize: "16px", color: "var(--cream-alpha-85)", fontWeight: 700 }}>
-              (প্রহরী)
-            </span>
-            {/* Live Status Tactical Beacon */}
-            <span
-              className="font-mono font-tabular"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
-                fontSize: "12px",
-                fontWeight: 800,
-                color: wsConnected ? "var(--cream)" : "var(--navy)",
-                padding: "3px 8px",
-                borderRadius: "4px",
-                background: wsConnected ? "var(--cream-alpha-15)" : "var(--coral)",
-                border: `1px solid ${wsConnected ? "var(--cream-alpha-30)" : "var(--coral)"}`,
-                letterSpacing: "0.04em"
-              }}
-              title={wsConnected ? "Real-time WebSocket telemetry connected" : "WebSocket disconnected"}
-            >
-              <span
-                style={{
-                  width: "7px",
-                  height: "7px",
-                  borderRadius: "50%",
-                  backgroundColor: wsConnected ? "var(--cream)" : "var(--navy)",
-                  display: "inline-block"
-                }}
-              />
-              {wsConnected ? (isBn ? "লাইভ স্ট্রিম" : "STREAM LIVE") : (isBn ? "সংযোগ বিচ্ছিন্ন" : "OFFLINE")}
-            </span>
-          </div>
-          <p style={{ fontSize: "13px", color: "var(--cream-alpha-75)", margin: "2px 0 0 0" }}>
-            {isBn ? "স্বায়ত্তশাসিত এআই ডিফেন্সিভ এসওসি" : "Autonomous AI Defensive SOC"}
-          </p>
-        </div>
+          <span
+            style={{
+              width: "7px",
+              height: "7px",
+              borderRadius: "50%",
+              backgroundColor: wsConnected ? "var(--cream)" : "var(--navy)",
+              display: "inline-block"
+            }}
+          />
+          {wsConnected ? (isBn ? "লাইভ স্ট্রিম" : "STREAM LIVE") : (isBn ? "সংযোগ বিচ্ছিন্ন" : "OFFLINE")}
+        </span>
       </div>
 
       {/* 2. Center: Honest AI Engine Badge (Cream on Navy) */}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { ProhoriMark } from "./ProhoriLogo";
 import { X, ChevronLeft, ChevronRight, Award, ShieldAlert, Cpu, Database, DollarSign, TrendingUp, Users } from "lucide-react";
 
 interface PitchDeckModalProps {
@@ -233,6 +234,7 @@ export const PitchDeckModal: React.FC<PitchDeckModalProps> = ({
           gap: "10px"
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <ProhoriMark size={22} variant="primary" />
             <span className="badge" style={{ background: "var(--navy)", color: "var(--cream)", border: "1px solid var(--navy)" }}>
               CONGRESS 2026 PITCH DECK
             </span>

@@ -123,9 +123,9 @@ export const AnalystResponseView: React.FC<AnalystResponseViewProps> = ({
     const p = provStr.toLowerCase();
     if (p.includes("client-side") || p.includes("sovereign")) {
       return {
-        name: isBn ? "ক্লায়েন্ট সাইড অফলাইন র‍্যাগ" : "Deterministic Client RAG",
+        name: isBn ? "ক্লায়েন্ট সাইড সার্বভৌম র‍্যাগ" : "Deterministic Client RAG",
         mode: isBn ? "সার্বভৌম (Air-Gapped)" : "Sovereign Air-Gapped",
-        status: isBn ? "১০০% লোকাল" : "100% On-Premises",
+        status: isBn ? "অনলাইন (১০০% লোকাল)" : "Online (100% On-Prem)",
         isLocal: true
       };
     }
@@ -133,7 +133,7 @@ export const AnalystResponseView: React.FC<AnalystResponseViewProps> = ({
       return {
         name: "Ollama (Llama 3.2)",
         mode: isBn ? "লোকাল নিউরাল মডেল" : "Local Neural Inference",
-        status: isBn ? "অন-প্রিমিসেস" : "On-Premises CPU",
+        status: isBn ? "অনলাইন (অন-প্রিম)" : "Online (On-Premises)",
         isLocal: true
       };
     }
@@ -146,9 +146,9 @@ export const AnalystResponseView: React.FC<AnalystResponseViewProps> = ({
       };
     }
     return {
-      name: isBn ? "অফলাইন র‍্যাগ ইঞ্জিন" : "Deterministic Offline RAG",
+      name: isBn ? "সার্বভৌম আরএজি ইঞ্জিন" : "Deterministic Sovereign RAG",
       mode: isBn ? "সার্বভৌম এসওসি কোর" : "Sovereign SOC Core",
-      status: isBn ? "লোকাল হোস্ট" : "100% On-Premises",
+      status: isBn ? "অনলাইন (১০০% লোকাল)" : "Online (100% On-Prem)",
       isLocal: true
     };
   };

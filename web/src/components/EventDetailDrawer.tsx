@@ -235,7 +235,7 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
                     }}
                   >
                     {analyst.provider.includes("deterministic")
-                      ? `Engine: Offline RAG`
+                      ? `Engine: Sovereign RAG (On-Prem)`
                       : `LLM: ${analyst.provider}`}
                   </span>
                 )}

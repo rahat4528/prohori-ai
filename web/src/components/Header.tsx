@@ -111,7 +111,7 @@ export const Header: React.FC<HeaderProps> = ({
             border: `1px solid ${wsConnected ? "var(--cream-alpha-30)" : "var(--coral)"}`,
             letterSpacing: "0.04em"
           }}
-          title={wsConnected ? "Real-time WebSocket telemetry connected" : "WebSocket disconnected"}
+          title={wsConnected ? "Real-time WebSocket telemetry stream active" : "WebSocket stream reconnecting (offline resilient fallback active)"}
         >
           <span
             style={{
@@ -122,7 +122,7 @@ export const Header: React.FC<HeaderProps> = ({
               display: "inline-block"
             }}
           />
-          {wsConnected ? (isBn ? "লাইভ স্ট্রিম" : "STREAM LIVE") : (isBn ? "সংযোগ বিচ্ছিন্ন" : "OFFLINE")}
+          {wsConnected ? (isBn ? "টেলিমেট্রি লাইভ" : "STREAM LIVE") : (isBn ? "পুনঃসংযোগ..." : "STREAM STANDBY")}
         </span>
       </div>
 
@@ -142,12 +142,25 @@ export const Header: React.FC<HeaderProps> = ({
             color: "var(--cream)",
             border: "1px solid var(--cream-alpha-25)"
           }}
-          title={isOffline ? "Grounded in local STIX 2.1 threat database with zero external network egress" : "Powered by generative neural LLM"}
+          title={
+            isOffline
+              ? "Sovereign Air-Gapped Intelligence: Grounded in local STIX 2.1 threat database with 100% on-premises execution and zero cloud egress"
+              : `Active Neural LLM: ${activeProvider}`
+          }
         >
           <Cpu size={15} color="var(--cream)" />
+          <span
+            style={{
+              width: "6px",
+              height: "6px",
+              borderRadius: "50%",
+              backgroundColor: "var(--cream)",
+              display: "inline-block"
+            }}
+          />
           <span>
             {isOffline
-              ? (isBn ? "ইঞ্জিন: অফলাইন আরএজি (Deterministic RAG)" : "Engine: Offline RAG")
+              ? (isBn ? "সার্বভৌম আরএজি: সক্রিয় (অন-প্রিম)" : "Sovereign RAG: Active (On-Prem)")
               : `LLM: ${activeProvider}`}
           </span>
         </span>

@@ -117,7 +117,7 @@ export const App: React.FC = () => {
     }
   }, []);
 
-  // 2. Establish live WebSocket stream with automatic reconnection
+  // 2. Establish live WebSocket stream with automatic keepalive heartbeat & reconnection
   useEffect(() => {
     let isMounted = true;
     Promise.resolve().then(() => {
@@ -125,17 +125,38 @@ export const App: React.FC = () => {
     });
 
     let retryTimeout: any;
+    let pingInterval: any;
 
     const connectWs = () => {
       try {
+        if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+          try {
+            wsRef.current.close();
+          } catch {}
+        }
+
         const ws = new WebSocket(WS_URL);
         wsRef.current = ws;
 
         ws.onopen = () => {
+          if (!isMounted) return;
           setWsConnected(true);
+          // Establish periodic heartbeat every 15s to prevent NAT / proxy / browser idle socket timeouts
+          clearInterval(pingInterval);
+          pingInterval = setInterval(() => {
+            if (ws.readyState === WebSocket.OPEN) {
+              try {
+                ws.send("ping");
+              } catch {}
+            }
+          }, 15000);
         };
 
         ws.onmessage = (event) => {
+          // Ignore keepalive heartbeat responses from server
+          if (event.data === "pong" || event.data === "ping") {
+            return;
+          }
           try {
             const data = JSON.parse(event.data);
             if (data.type === "new_event" && data.event) {
@@ -168,16 +189,26 @@ export const App: React.FC = () => {
         };
 
         ws.onclose = () => {
-          setWsConnected(false);
-          retryTimeout = setTimeout(connectWs, 3000);
+          clearInterval(pingInterval);
+          if (isMounted) {
+            setWsConnected(false);
+            clearTimeout(retryTimeout);
+            retryTimeout = setTimeout(connectWs, 3000);
+          }
         };
 
         ws.onerror = () => {
-          ws.close();
+          try {
+            ws.close();
+          } catch {}
         };
       } catch {
-        setWsConnected(false);
-        retryTimeout = setTimeout(connectWs, 3000);
+        clearInterval(pingInterval);
+        if (isMounted) {
+          setWsConnected(false);
+          clearTimeout(retryTimeout);
+          retryTimeout = setTimeout(connectWs, 3000);
+        }
       }
     };
 
@@ -187,9 +218,14 @@ export const App: React.FC = () => {
 
     return () => {
       isMounted = false;
+      clearInterval(pingInterval);
       clearTimeout(retryTimeout);
       clearInterval(interval);
-      if (wsRef.current) wsRef.current.close();
+      if (wsRef.current) {
+        try {
+          wsRef.current.close();
+        } catch {}
+      }
     };
   }, [fetchTelemetry]);
 
@@ -520,7 +556,7 @@ export const App: React.FC = () => {
             }}
           >
             <Cpu size={12} />
-            <span>Local Model: Llama 3.2 / Offline RAG</span>
+            <span>Sovereign Engine: Llama 3.2 / Air-Gapped RAG (Online)</span>
           </span>
         </div>
 

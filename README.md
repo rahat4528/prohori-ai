@@ -277,14 +277,19 @@ Make sure these free tools are installed on your computer:
 
 ### Step 1: Clone and Enter the Directory
 
-Open your terminal (PowerShell, Command Prompt, or bash) and run:
+Open your terminal (PowerShell, Command Prompt, or bash).
 
-```bash
+1. Clone the repository (skip if already cloned):
+```powershell
 git clone https://github.com/rahat4528/prohori-ai.git
+```
+
+2. Enter the project root directory:
+```powershell
 cd prohori-ai
 ```
 
-> ⚠️ **CRITICAL NOTE**: You **MUST** run all subsequent commands from inside the `prohori-ai` folder! If your terminal prompt shows `C:\Users\YourName>` instead of `C:\Users\YourName\prohori-ai>`, Python will throw `ModuleNotFoundError: No module named 'sensors'`.
+> ⚠️ **CRITICAL NOTE**: You **MUST** run all subsequent commands from inside the `prohori-ai` folder! If your terminal prompt shows `C:\Users\YourName>` instead of `C:\Users\YourName\prohori-ai>`, the launchers and Python modules cannot locate project files.
 
 ---
 
@@ -293,91 +298,87 @@ cd prohori-ai
 Choose whichever launch method you prefer:
 
 #### ⚡ Method A: Automated One-Click Launcher (Windows — Easiest & Recommended)
-Simply double-click `start_all.bat` in File Explorer, or run in terminal:
-```cmd
-start_all.bat
-```
-*(Or run `run_dev.bat`)*
 
-**What this does automatically:**
-- Checks Python and Node.js installations
-- Creates `.venv` and installs all dependencies (`pip install -r requirements.txt`) if missing
-- Copies `.env.example` to `.env` if missing
-- Installs frontend packages (`npm install`) if missing
-- Spawns all 4 microservices in clearly labeled windows (Event API on `8000`, Honeypot on `8081`, Rate Limiter on `8082`, Web Console on `3000`)
-- Opens your browser to `http://localhost:3000` automatically!
+Simply run in your terminal:
+```cmd
+.\start_all.bat
+```
+*(Or double-click `start_all.bat` in Windows File Explorer)*
+
+**Why this is 100% foolproof:**
+- **Zero Script Policy Errors**: Runs in native Windows Command Prompt, completely avoiding PowerShell `PSSecurityException` and script restrictions.
+- **Zero Directory Traps**: Never navigates your current terminal out of the project folder.
+- **Complete Automation**: Checks Python and Node.js, provisions `.venv`, installs all backend requirements via pip, generates `.env` if missing, installs npm dependencies, and spawns all 4 microservices in dedicated, labeled terminal windows.
+- **Auto-Browser Launch**: Opens `http://localhost:3000` automatically once the services are initialized.
 
 ---
 
 #### ⚡ Method B: Automated PowerShell Launcher (Windows)
-In PowerShell inside the `prohori-ai` directory, run:
+
+If you prefer running inside a PowerShell terminal:
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts/run_all.ps1
+powershell -ExecutionPolicy Bypass -File .\run.ps1
 ```
+*(Or `powershell -ExecutionPolicy Bypass -File .\scripts\run_all.ps1`)*
 
 > [!TIP]
-> **Home Wi-Fi / LAN Multi-Device Access**:  
-> The stack binds to `0.0.0.0` and dynamically detects hostnames. Once launched, any phone, tablet, or PC connected to the same Wi-Fi can open the console via `http://<YOUR-SERVER-IP>:3000` (e.g. `http://192.168.0.198:3000`).  
-> *Note: If accessing from another device, ensure inbound firewall ports `3000, 8000, 8081, 8082` are allowed in Windows Firewall.*
+> **Home Wi-Fi / Local Network (LAN) Multi-Device Access**:  
+> All services bind to `0.0.0.0` by default and the web console dynamically detects hostnames. Once launched, any phone, tablet, or laptop on the same local Wi-Fi can open the console via `http://<YOUR-SERVER-IP>:3000` (e.g. `http://192.168.0.198:3000`).  
+> *Note: If accessing from another device, ensure inbound firewall ports `3000, 8000, 8081, 8082` are allowed in Windows Firewall (run as Admin: `New-NetFirewallRule -DisplayName "Prohori AI SOC" -Direction Inbound -LocalPort 3000,8000,8081,8082 -Protocol TCP -Action Allow`).*
 
 ---
 
 #### 🛠️ Method C: Manual Setup & Launch (Terminal by Terminal)
 
-If you prefer running each service manually in its own terminal:
+If you prefer running each service manually in its own terminal, follow these exact commands. All commands are run directly from the `prohori-ai` root folder:
 
-##### 1. Initial One-Time Setup:
+##### 1. Initial One-Time Setup (Run from `prohori-ai`):
 ```powershell
-# Create & activate Python virtual environment:
+# Create Python virtual environment:
 python -m venv .venv
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass   # Unblocks script execution in current PowerShell
-.\.venv\Scripts\Activate.ps1                                # (On Linux/Mac: source .venv/bin/activate)
-python -m pip install --upgrade pip
-pip install -r requirements.txt
+
+# Install Python dependencies directly inside .venv (bypasses script activation policies):
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\pip.exe install -r requirements.txt
 
 # Create .env config:
-copy .env.example .env             # On Linux/Mac: cp .env.example .env
+copy .env.example .env
 
-# Install frontend packages:
-cd web
-npm install
-cd ..
+# Install frontend packages (without leaving the root folder):
+npm --prefix web install
 ```
 
 ##### 2. Start the Microservices (Open 4 Terminals):
 
-> ⚠️ **Reminder**: In **EVERY** new terminal window you open, make sure you first `cd prohori-ai` and activate `.venv`!
+> 💡 **Notice**: Each terminal stays in the `prohori-ai` root directory. We invoke `.\.venv\Scripts\python.exe` directly so PowerShell script execution policy restrictions never block you!
 
 - **Terminal 1: Event API & AI SOC Core (Port 8000)**
   ```powershell
   cd prohori-ai
-  .\.venv\Scripts\Activate.ps1
   $env:PYTHONPATH="api;."
-  python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+  .\.venv\Scripts\python.exe -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
   ```
 
 - **Terminal 2: Deception Honeypot Sensor (Port 8081)**
   ```powershell
   cd prohori-ai
-  .\.venv\Scripts\Activate.ps1
   $env:PYTHONPATH="api;."
-  python -m uvicorn sensors.deception.main:app --host 127.0.0.1 --port 8081 --reload
+  .\.venv\Scripts\python.exe -m uvicorn sensors.deception.main:app --host 0.0.0.0 --port 8081 --reload
   ```
 
 - **Terminal 3: API Abuse Guard Rate Limiter (Port 8082)**
   ```powershell
   cd prohori-ai
-  .\.venv\Scripts\Activate.ps1
   $env:PYTHONPATH="api;."
   $env:UPSTREAM_URL="http://127.0.0.1:8000"
   $env:EVENT_API_URL="http://127.0.0.1:8000"
-  python -m uvicorn sensors.ratelimiter.main:app --host 127.0.0.1 --port 8082 --reload
+  .\.venv\Scripts\python.exe -m uvicorn sensors.ratelimiter.main:app --host 0.0.0.0 --port 8082 --reload
   ```
 
 - **Terminal 4: React Operator Console (Port 3000)**
   ```powershell
-  cd prohori-ai\web
-  npm run dev
+  cd prohori-ai
+  npm --prefix web run dev
   ```
 
 ---
@@ -393,10 +394,12 @@ Click **"Run demo"** in the top header to send live test attacks through the sen
 
 | Problem | Root Cause | Solution |
 |---|---|---|
-| `ModuleNotFoundError: No module named 'sensors'` | Terminal is sitting in `C:\Users\YourName` instead of `prohori-ai` | Run `cd prohori-ai` and activate `.venv` before running the command, or use `start_all.bat`. |
-| `uvicorn: command not found` | Virtual environment is not activated | Run `.\.venv\Scripts\Activate.ps1` (or use `.venv\Scripts\python.exe -m uvicorn ...`). |
-| `Execution of scripts is disabled on this system` | Windows PowerShell execution policy restriction | Run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` or run `start_all.bat`. |
-| Port already in use (`8000` or `3000`) | Previous process is still running | Open Task Manager and end python/node processes, or run `netstat -ano \| findstr :8000` and kill the PID. |
+| `fatal: destination path 'prohori-ai' already exists` | The repository was already cloned previously. | Do not re-run `git clone`. Simply run `cd prohori-ai` to enter the folder. |
+| `File ... Activate.ps1 cannot be loaded because running scripts is disabled` | Windows PowerShell default `Restricted` execution policy. | Run `.\start_all.bat` (which has no script restrictions), or call `.\.venv\Scripts\python.exe` directly, or run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`. |
+| `Set-Location : A positional parameter cannot be found that accepts argument 'start_all.bat'` | Multiple commands were accidentally pasted together onto a single line. | Run commands one by one: first `cd prohori-ai`, then `.\start_all.bat`. |
+| `ModuleNotFoundError: No module named 'sensors'` | Terminal is sitting in `C:\Users\YourName` instead of `prohori-ai`, or `PYTHONPATH` is missing. | Run `cd prohori-ai` and set `$env:PYTHONPATH="api;."`, or simply run `.\start_all.bat`. |
+| `File ... npm.ps1 cannot be loaded` | Node's npm.ps1 blocked by execution policy. | Run `npm.cmd --prefix web install` or run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`. |
+| Port already in use (`8000` or `3000`) | Previous process is still running. | Open Task Manager and end python/node processes, or run `netstat -ano \| findstr :8000` and kill the PID. |
 Navigate to [**http://localhost:3000**](http://localhost:3000) in your web browser. Click **"Run demo"** in the top navigation bar to populate live incoming attack telemetry!
 
 ---

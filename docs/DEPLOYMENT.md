@@ -112,13 +112,13 @@ Teammates wishing to connect a managed cloud PostgreSQL instance can set `DATABA
 This is the verified, zero-cloud baseline used for hackathon evaluation and air-gapped security operations.
 
 #### Windows (One-Click Launchers)
-1. Launch the complete dev stack:
+1. Launch the complete dev stack (Recommended):
    ```cmd
-   run_dev.bat
+   .\start_all.bat
    ```
 2. Or via PowerShell launcher:
    ```powershell
-   powershell -ExecutionPolicy Bypass -File scripts/run_all.ps1
+   powershell -ExecutionPolicy Bypass -File .\run.ps1
    ```
 
 3. **Home Wi-Fi / Local Network (LAN) Multi-Device Access**:

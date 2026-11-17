@@ -48,24 +48,22 @@ if (-not (Test-Path $venvPython)) {
 # 5. Setup Frontend dependencies
 if (-not (Test-Path "$rootDir\web\node_modules")) {
     Write-Host "[*] Installing frontend npm dependencies ..." -ForegroundColor Yellow
-    Push-Location "$rootDir\web"
-    npm install
-    Pop-Location
+    npm --prefix "$rootDir\web" install
 }
 
 Write-Host "`n[+] Spawning Prohori AI microservices in dedicated windows..." -ForegroundColor Cyan
 
 # Service 1: Event API & AI Core
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "Set-Location '$rootDir'; `$env:PYTHONPATH='$rootDir\api;$rootDir'; & '$rootDir\.venv\Scripts\python.exe' -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass", "-NoExit", "-Command", "Set-Location '$rootDir'; `$env:PYTHONPATH='$rootDir\api;$rootDir'; & '$rootDir\.venv\Scripts\python.exe' -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
 
 # Service 2: Deception Honeypot Sensor
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "Set-Location '$rootDir'; `$env:PYTHONPATH='$rootDir\api;$rootDir'; & '$rootDir\.venv\Scripts\python.exe' -m uvicorn sensors.deception.main:app --host 0.0.0.0 --port 8081 --reload"
+Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass", "-NoExit", "-Command", "Set-Location '$rootDir'; `$env:PYTHONPATH='$rootDir\api;$rootDir'; & '$rootDir\.venv\Scripts\python.exe' -m uvicorn sensors.deception.main:app --host 0.0.0.0 --port 8081 --reload"
 
 # Service 3: API Abuse Guard Rate Limiter
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "Set-Location '$rootDir'; `$env:PYTHONPATH='$rootDir\api;$rootDir'; `$env:UPSTREAM_URL='http://127.0.0.1:8000'; `$env:EVENT_API_URL='http://127.0.0.1:8000'; & '$rootDir\.venv\Scripts\python.exe' -m uvicorn sensors.ratelimiter.main:app --host 0.0.0.0 --port 8082 --reload"
+Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass", "-NoExit", "-Command", "Set-Location '$rootDir'; `$env:PYTHONPATH='$rootDir\api;$rootDir'; `$env:UPSTREAM_URL='http://127.0.0.1:8000'; `$env:EVENT_API_URL='http://127.0.0.1:8000'; & '$rootDir\.venv\Scripts\python.exe' -m uvicorn sensors.ratelimiter.main:app --host 0.0.0.0 --port 8082 --reload"
 
 # Service 4: React Operator Console
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "Set-Location '$rootDir\web'; npm run dev"
+Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass", "-NoExit", "-Command", "Set-Location '$rootDir'; npm --prefix web run dev"
 
 Write-Host "======================================================================" -ForegroundColor Cyan
 Write-Host "[SUCCESS] All 4 Prohori AI microservices launched!" -ForegroundColor Green

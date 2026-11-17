@@ -1,6 +1,7 @@
 @echo off
 title Prohori AI - All-in-One Local Setup & Launcher
 cd /d "%~dp0"
+set "PROHORI_ROOT=%~dp0"
 
 echo ======================================================================
 echo          PROHORI AI - Automated Local Stack Launcher
@@ -30,29 +31,24 @@ if %errorlevel% neq 0 (
 )
 
 :: 3. Setup .env if missing
-if not exist ".env" (
+if not exist "%PROHORI_ROOT%.env" (
     echo [*] Creating .env configuration from .env.example ...
-    copy .env.example .env >nul
+    copy "%PROHORI_ROOT%.env.example" "%PROHORI_ROOT%.env" >nul
 )
 
 :: 4. Setup Python Virtual Environment if missing
-if not exist ".venv" (
+if not exist "%PROHORI_ROOT%.venv\Scripts\python.exe" (
     echo [*] Creating Python virtual environment (.venv) ...
-    python -m venv .venv
+    python -m venv "%PROHORI_ROOT%.venv"
     echo [*] Installing Python dependencies (this may take 1-2 minutes) ...
-    call .venv\Scripts\activate.bat
-    python -m pip install --upgrade pip
-    pip install -r requirements.txt
-) else (
-    call .venv\Scripts\activate.bat
+    "%PROHORI_ROOT%.venv\Scripts\python.exe" -m pip install --upgrade pip
+    "%PROHORI_ROOT%.venv\Scripts\pip.exe" install -r "%PROHORI_ROOT%requirements.txt"
 )
 
 :: 5. Setup Frontend dependencies if missing
-if not exist "web\node_modules" (
+if not exist "%PROHORI_ROOT%web\node_modules" (
     echo [*] Installing frontend npm dependencies ...
-    cd web
-    call npm install
-    cd ..
+    call npm --prefix "%PROHORI_ROOT%web" install
 )
 
 echo.
@@ -60,20 +56,17 @@ echo ======================================================================
 echo Launching Prohori AI microservices in dedicated terminal windows...
 echo ======================================================================
 
-:: Set Root Directory for child process isolation
-set "PROHORI_ROOT=%~dp0"
-
 :: Launch 1: Event API & AI Core (Port 8000)
-start "Prohori [1/4] - Event API & AI Core (Port 8000)" cmd /k "cd /d "%PROHORI_ROOT%" && set PYTHONPATH=%PROHORI_ROOT%api;%PROHORI_ROOT% && call .venv\Scripts\activate.bat && python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+start "Prohori [1/4] - Event API & AI Core (Port 8000)" cmd /k "cd /d "%PROHORI_ROOT%" && set "PYTHONPATH=%PROHORI_ROOT%api;%PROHORI_ROOT%" && "%PROHORI_ROOT%.venv\Scripts\python.exe" -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
 
 :: Launch 2: Deception Honeypot Sensor (Port 8081)
-start "Prohori [2/4] - Deception Honeypot (Port 8081)" cmd /k "cd /d "%PROHORI_ROOT%" && set PYTHONPATH=%PROHORI_ROOT%api;%PROHORI_ROOT% && call .venv\Scripts\activate.bat && python -m uvicorn sensors.deception.main:app --host 0.0.0.0 --port 8081 --reload"
+start "Prohori [2/4] - Deception Honeypot (Port 8081)" cmd /k "cd /d "%PROHORI_ROOT%" && set "PYTHONPATH=%PROHORI_ROOT%api;%PROHORI_ROOT%" && "%PROHORI_ROOT%.venv\Scripts\python.exe" -m uvicorn sensors.deception.main:app --host 0.0.0.0 --port 8081 --reload"
 
 :: Launch 3: API Abuse Guard Rate Limiter (Port 8082)
-start "Prohori [3/4] - API Abuse Guard (Port 8082)" cmd /k "cd /d "%PROHORI_ROOT%" && set PYTHONPATH=%PROHORI_ROOT%api;%PROHORI_ROOT% && set UPSTREAM_URL=http://127.0.0.1:8000 && set EVENT_API_URL=http://127.0.0.1:8000 && call .venv\Scripts\activate.bat && python -m uvicorn sensors.ratelimiter.main:app --host 0.0.0.0 --port 8082 --reload"
+start "Prohori [3/4] - API Abuse Guard (Port 8082)" cmd /k "cd /d "%PROHORI_ROOT%" && set "PYTHONPATH=%PROHORI_ROOT%api;%PROHORI_ROOT%" && set "UPSTREAM_URL=http://127.0.0.1:8000" && set "EVENT_API_URL=http://127.0.0.1:8000" && "%PROHORI_ROOT%.venv\Scripts\python.exe" -m uvicorn sensors.ratelimiter.main:app --host 0.0.0.0 --port 8082 --reload"
 
 :: Launch 4: React Operator Console (Port 3000)
-start "Prohori [4/4] - React Web Console (Port 3000)" cmd /k "cd /d "%PROHORI_ROOT%web" && npm run dev"
+start "Prohori [4/4] - React Web Console (Port 3000)" cmd /k "cd /d "%PROHORI_ROOT%" && call npm --prefix web run dev"
 
 echo.
 echo ======================================================================

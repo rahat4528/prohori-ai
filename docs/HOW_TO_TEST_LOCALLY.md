@@ -75,15 +75,13 @@ cp .env.example .env
 
 ## 💻 Step 4: Install Web Console Dependencies
 
-Install the frontend packages for the React 19 + Vite operator console:
+Install the frontend packages directly from the project root:
 
-```bash
-cd web
-npm install
-cd ..
+```powershell
+npm --prefix web install
 ```
 
-*(Takes ~30–60 seconds).*
+*(Takes ~15–30 seconds. You do not need to `cd web`, avoiding directory navigation issues).*
 
 ---
 
@@ -91,20 +89,22 @@ cd ..
 
 You can launch the entire platform either with the one-click launcher or manually terminal-by-terminal.
 
-### Option A: Automated One-Click Launcher (Windows — Recommended)
-In the project root folder `prohori-ai`, double-click `start_all.bat` (or `run_dev.bat`):
+### Option A: Automated One-Click Launcher (Windows — 100% Recommended)
+In the project root folder `prohori-ai`, run:
 ```cmd
-start_all.bat
+.\start_all.bat
 ```
-*(Or in PowerShell: `powershell -ExecutionPolicy Bypass -File scripts/run_all.ps1`)*
+*(Or double-click `start_all.bat` directly in Windows File Explorer)*
 
-This automated script performs all pre-flight checks, creates the `.venv` and `.env` if missing, runs `npm install` if missing, launches all 4 services in dedicated windows, and opens your browser at `http://localhost:3000`!
+> 🌟 **Why this is completely foolproof:** It runs in native Windows Command Prompt (bypassing PowerShell execution policies), provisions `.venv`, installs pip and npm packages, starts all 4 services bound to `0.0.0.0` (ready for LAN/Wi-Fi multi-device access), and opens your browser at `http://localhost:3000` automatically!
+
+*(Alternatively in PowerShell: `powershell -ExecutionPolicy Bypass -File .\run.ps1`)*
 
 ---
 
 ### Option B: Manual Startup (Windows / macOS / Linux)
 
-> ⚠️ **CRITICAL REMINDER**: When you open new terminal tabs in Windows PowerShell, they default to `C:\Users\YourName>`. You **MUST** run `cd prohori-ai` in **EVERY SINGLE TERMINAL** before running commands, otherwise Python will throw `ModuleNotFoundError: No module named 'sensors'`!
+> 💡 **Notice**: Each terminal stays in the `prohori-ai` root directory. We invoke `.\.venv\Scripts\python.exe` directly so PowerShell script execution policies never block you!
 
 Open 4 separate terminal windows:
 
@@ -112,41 +112,38 @@ Open 4 separate terminal windows:
   ```powershell
   # Windows PowerShell:
   cd prohori-ai
-  .\.venv\Scripts\Activate.ps1
   $env:PYTHONPATH="api;."
-  python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+  .\.venv\Scripts\python.exe -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
   # macOS / Linux:
   cd prohori-ai
   source .venv/bin/activate
   export PYTHONPATH="api:."
-  python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+  python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
   ```
 
 - **Terminal 2: Deception Honeypot Sensor (Port 8081)**
   ```powershell
   # Windows PowerShell:
   cd prohori-ai
-  .\.venv\Scripts\Activate.ps1
   $env:PYTHONPATH="api;."
-  python -m uvicorn sensors.deception.main:app --host 127.0.0.1 --port 8081 --reload
+  .\.venv\Scripts\python.exe -m uvicorn sensors.deception.main:app --host 0.0.0.0 --port 8081 --reload
 
   # macOS / Linux:
   cd prohori-ai
   source .venv/bin/activate
   export PYTHONPATH="api:."
-  python -m uvicorn sensors.deception.main:app --host 127.0.0.1 --port 8081 --reload
+  python -m uvicorn sensors.deception.main:app --host 0.0.0.0 --port 8081 --reload
   ```
 
 - **Terminal 3: API Abuse Guard & Rate Limiter (Port 8082)**
   ```powershell
   # Windows PowerShell:
   cd prohori-ai
-  .\.venv\Scripts\Activate.ps1
   $env:PYTHONPATH="api;."
   $env:UPSTREAM_URL="http://127.0.0.1:8000"
   $env:EVENT_API_URL="http://127.0.0.1:8000"
-  python -m uvicorn sensors.ratelimiter.main:app --host 127.0.0.1 --port 8082 --reload
+  .\.venv\Scripts\python.exe -m uvicorn sensors.ratelimiter.main:app --host 0.0.0.0 --port 8082 --reload
 
   # macOS / Linux:
   cd prohori-ai
@@ -154,14 +151,18 @@ Open 4 separate terminal windows:
   export PYTHONPATH="api:."
   export UPSTREAM_URL="http://127.0.0.1:8000"
   export EVENT_API_URL="http://127.0.0.1:8000"
-  python -m uvicorn sensors.ratelimiter.main:app --host 127.0.0.1 --port 8082 --reload
+  python -m uvicorn sensors.ratelimiter.main:app --host 0.0.0.0 --port 8082 --reload
   ```
 
 - **Terminal 4: React Operator Console (Port 3000)**
   ```powershell
-  # Windows / macOS / Linux:
-  cd prohori-ai\web
-  npm run dev
+  # Windows PowerShell:
+  cd prohori-ai
+  npm --prefix web run dev
+
+  # macOS / Linux:
+  cd prohori-ai
+  npm --prefix web run dev
   ```
 
 ---

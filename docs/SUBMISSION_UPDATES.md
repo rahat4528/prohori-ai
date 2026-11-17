@@ -149,9 +149,8 @@ To maintain absolute integrity, no facts or identities were fabricated. Before s
 ### A. Team & Organization Details
 1. **GitHub Repository URL**:
    - **Live Repository**: [https://github.com/rahat4528/prohori-ai](https://github.com/rahat4528/prohori-ai) (Created as private repository and linked as `origin`).
-2. **Team Member Names, Roles & Social Handles**:
-   - Files: `docs/PITCH_DECK.md` (Section 5), `docs/LINKEDIN_POST.md` (Section 1)
-   - Needs: Real names, specific technical contributions, and LinkedIn handles.
+2. **Team Member Names & Roles**:
+   - **Populated**: All 5 members from the official CloudCamp Bangladesh portal are documented across `docs/TEAM.md`, `README.md`, `docs/PITCH_DECK.md`, and `docs/LINKEDIN_POST.md` (Mahamudol Hasan Rahat, Fahim Safwan, Adnan Sami, AS Nehal, Rajimul Islam).
 3. **Congress Bonus Signals**:
    - File: `docs/PITCH_DECK.md` (Section 5)
    - Needs: Any specific Congress eligibility signals (e.g., student-led team, diverse backgrounds, first-time participants).

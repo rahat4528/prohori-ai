@@ -27,9 +27,11 @@ Here is how Prohori AI solves this:
 Proud of our team — Team Orionids (Department of CSE) — for conceptualizing, building, and verifying this prototype, backed by 48 passing automated tests, a modern React 19 console adhering to a strict 90/10 color palette, and a high-performance FastAPI backend!
 
 Team Orionids Builders:
-👥 Member 1: [FILL: Name & @LinkedIn tag] (Lead System Architect)
-👥 Member 2: [FILL: Name & @LinkedIn tag] (Frontend & UI Engineer)
-👥 Member 3: [FILL: Name & @LinkedIn tag] (AI & Cyber Defense Specialist)
+👥 Mahamudol Hasan Rahat (@rahat4528) — Team Lead & Full-Stack Developer
+👥 Fahim Safwan — Team Lead & Full-Stack Developer
+👥 Adnan Sami — AI / ML Engineer
+👥 AS Nehal — Product / UX Designer
+👥 Rajimul Islam — Product / UX Designer
 
 Check out our open-source repository, pitch deck, and architecture documentation:
 🔗 https://github.com/rahat4528/prohori-ai

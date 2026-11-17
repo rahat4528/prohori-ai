@@ -236,17 +236,21 @@ Prohori AI was conceptualized and built independently by **Team Orionids** for t
 
 ## 5. Team Orionids Roster & Academic Credentials
 
-All team members are undergraduate engineers from **Team Orionids**, **Department of Computer Science & Engineering (CSE)**:
+All team members are undergraduate engineers from **Team Orionids**, **Department of Computer Science & Engineering (CSE)**, registered on CloudCamp Bangladesh:
 
 | Member / Role | Focus Area | Hackathon Credibility & Contributions | Academic Affiliation |
 |---|---|---|---|
-| **Member 1: [FILL: name]** | [FILL: role] | [FILL: one credibility line] | Team Orionids · Dept. of CSE |
-| **Member 2: [FILL: name]** | [FILL: role] | [FILL: one credibility line] | Team Orionids · Dept. of CSE |
-| **Member 3: [FILL: name]** | [FILL: role] | [FILL: one credibility line] | Team Orionids · Dept. of CSE |
+| **Mahamudol Hasan Rahat**<br>*(Team Lead)* | System Architecture & Backend | Event Bus pipeline (FastAPI), Layer-2 Network Discovery, WebSocket synchronization, repository lead (`@rahat4528`). | Team Orionids · Dept. of CSE |
+| **Fahim Safwan**<br>*(Team Lead)* | Full-Stack & Microservices | Sensor integrations (Deception Honeypot, API Abuse Guard), test suite architecture, automated stack orchestration. | Team Orionids · Dept. of CSE |
+| **Adnan Sami**<br>*(AI/ML Engineer)* | AI Reasoning & Intelligence | Local Ollama (Llama 3.2 CPU) neural triage, sovereign RAG knowledge retrieval, MITRE ATT&CK & CVE correlation. | Team Orionids · Dept. of CSE |
+| **AS Nehal**<br>*(Product/UX Designer)* | UX Architecture & Ergonomics | Operator console UX, beginner-friendly threat narrative layouts, intuitive incident workflows. | Team Orionids · Dept. of CSE |
+| **Rajimul Islam**<br>*(Product/UX Designer)* | Visual Design & Accessibility | Strict 90/10 palette compliance (#14213D, #F4EDE0, #FF6258), bilingual English/Bengali UI parity, WCAG AAA accessibility. | Team Orionids · Dept. of CSE |
 
-**Bonus Signals Checklist (per Congress Guidelines):**
-- Female team member: `[FILL: None - all male]`
-- Diaspora / NRB Advisor: `[FILL: None yet]`
+**Bonus Signals Checklist (per Congress Guidelines & CloudCamp Portal):**
+- Team Size: 5/5 Members Filled (+5 points bonus)
+- Attendance Mode: All 5 members attending Physical (In-person)
+- Female team member: None detected (all male)
+- Diaspora / NRB Advisor: None detected
 
 ---
 

@@ -658,8 +658,15 @@ Prohori AI is built exclusively for defensive security operations within authori
 
 Prohori AI was engineered by **Team Orionids** for the **International AI Builders Congress 2026** (InfraSphere AI &rarr; SecureAI), hosted at **Daffodil International University (DIU)**.
 
+### Team Members & Roles (CloudCamp Bangladesh Roster)
+- **Mahamudol Hasan Rahat** (`@rahat4528`) — *Team Lead & Full-Stack Developer* (System Architecture, FastAPI Event Bus, WebSocket Synchronization)
+- **Fahim Safwan** — *Team Lead & Full-Stack Developer* (Microservice Orchestration, API Abuse Guard, Deception Sensors)
+- **Adnan Sami** — *AI / ML Engineer* (Autonomous Triage Engine, Local Ollama Llama 3.2 Reasoning, Sovereign RAG, MITRE Mapping)
+- **AS Nehal** — *Product / UX Designer* (Security Console UX, Threat Breakdown Architecture, Incident Workflows)
+- **Rajimul Islam** — *Product / UX Designer* (Visual Design, Strict 90/10 Palette Compliance, Bilingual English/Bengali UI Parity)
+
 - **Competition Host / Venue**: Daffodil International University (DIU)
-- **Team**: Team Orionids
+- **Team**: Team Orionids (5 Members · In-Person Attendance)
 - **Repository**: [https://github.com/rahat4528/prohori-ai](https://github.com/rahat4528/prohori-ai)
 - **Live Console**: [https://prohori-ai.vercel.app](https://prohori-ai.vercel.app)
 - **Official Documentation**: See [`docs/TEAM.md`](docs/TEAM.md), [`docs/PITCH_DECK.md`](docs/PITCH_DECK.md), and [`docs/DEVELOPMENT_LOG.md`](docs/DEVELOPMENT_LOG.md).

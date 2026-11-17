@@ -381,8 +381,8 @@ def create_deck(output_path="docs/Prohori_AI_Pitch_Deck.pptx"):
     p2.space_after = Pt(20)
 
     p3 = tf.add_paragraph()
-    p3.text = "Team Orionids — Department of CSE\n• Member 1: [FILL: name] — [FILL: role] ([FILL: credibility])\n• Member 2: [FILL: name] — [FILL: role] ([FILL: credibility])\n• Member 3: [FILL: name] — [FILL: role] ([FILL: credibility])"
-    p3.font.size = Pt(12)
+    p3.text = "Team Orionids — Department of CSE\n• Mahamudol Hasan Rahat — Team Lead & Full-Stack Developer\n• Fahim Safwan — Team Lead & Full-Stack Developer\n• Adnan Sami — AI / ML Engineer\n• AS Nehal — Product / UX Designer\n• Rajimul Islam — Product / UX Designer"
+    p3.font.size = Pt(11)
     p3.font.color.rgb = NAVY
 
     add_notes(s7, "We are Team Orionids, a focused team of builders from the Department of CSE competing at Daffodil International University. We built Prohori specifically to address the security deficit in emerging markets, delivering a battle-tested prototype backed by 38 passing automated tests, 32-millisecond steady-state offline triage latency, verified on-premises neural LLM reasoning, and production-ready microservice packaging.")

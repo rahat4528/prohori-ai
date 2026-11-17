@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import type { SecurityEvent } from "../types";
-import { getFriendlyEventTitle, getSeverityConfig } from "../utils/alertUtils";
+import {
+  getFriendlyEventTitle,
+  getSeverityConfig,
+  getBeginnerIncidentBreakdown,
+  getIpFriendlyInfo,
+  getMitreFriendlyInfo
+} from "../utils/alertUtils";
 import { generateClientSideAnalystAnswer } from "../utils/analystFallback";
 import {
   parseAnalystResponse,
@@ -8,6 +14,7 @@ import {
 } from "../utils/analystParser";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 import { AnalystResponseView, type AuditConfirmation } from "./AnalystResponseView";
+import { InfoTooltip } from "./InfoTooltip";
 import {
   ShieldAlert,
   ShieldCheck,
@@ -18,7 +25,6 @@ import {
   ChevronUp,
   Shield,
   Sparkles,
-  User,
   Terminal,
   Copy,
   Check,
@@ -26,7 +32,12 @@ import {
   AlertTriangle,
   Layers,
   Network,
-  Info
+  Info,
+  Activity,
+  Globe,
+  ListChecks,
+  Code2,
+  HelpCircle
 } from "lucide-react";
 
 export type { AuditConfirmation };
@@ -57,6 +68,9 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
 
   // Citation expansion state
   const [expandedCitationId, setExpandedCitationId] = useState<string | null>(null);
+
+  // Advanced technical details toggle
+  const [isAdvancedOpen, setIsAdvancedOpen] = useState<boolean>(false);
 
   // Human-in-the-Loop Approval state machine: IDLE -> CONFIRMING -> EXECUTING -> SUCCESS / FAILED
   const [approvalStep, setApprovalStep] = useState<"IDLE" | "CONFIRMING" | "EXECUTING" | "SUCCESS" | "FAILED">("IDLE");
@@ -95,10 +109,10 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
         <h3 style={{ fontSize: "21px", fontWeight: 800, color: "var(--navy)" }}>
           {isBn ? "কোনো সতর্কতা নির্বাচিত নয়" : "No Alert Selected"}
         </h3>
-        <p style={{ fontSize: "16px", maxWidth: "420px", color: "var(--navy-alpha-75)", margin: 0, lineHeight: 1.5 }}>
+        <p style={{ fontSize: "16px", maxWidth: "440px", color: "var(--navy-alpha-75)", margin: 0, lineHeight: 1.5 }}>
           {isBn
-            ? "বামপাশের তালিকা থেকে যেকোনো সতর্কতায় ক্লিক করে কৃত্রিম বুদ্ধিমত্তার (AI) সম্পূর্ণ অডিট ডসিয়ার, ফরেনসিক প্রমাণ ও প্রতিরক্ষা সুপারিশ দেখুন।"
-            : "Select any security alert on the left to inspect the complete autonomous AI incident dossier, forensic telemetry, firewall rules, and human-in-the-loop action gate."}
+            ? "বামপাশের তালিকা থেকে যেকোনো সতর্কতায় ক্লিক করে সহজ বাংলায় এআই নিরাপত্তা বিশ্লেষণ, কী ঘটেছে তার ব্যাখ্যা, এবং আক্রমণকারীকে ব্লক করার উপায় দেখুন।"
+            : "Select any security alert on the left to see an easy-to-understand AI security analysis, a breakdown of what happened, and commands to block the attacker."}
         </p>
       </div>
     );
@@ -134,6 +148,10 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
   );
 
   const confidenceScore = Math.round((event.analyst?.confidence || 0.94) * 100);
+
+  // Beginner breakdown & IP info
+  const breakdown = getBeginnerIncidentBreakdown(event, globalLanguage);
+  const ipInfo = getIpFriendlyInfo(sourceIp, globalLanguage);
 
   // Retriage event
   const handleRetriageClick = async () => {
@@ -262,10 +280,10 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
         gap: "24px"
       }}
       role="region"
-      aria-label={isBn ? "নির্বাচিত সতর্কতার অডিট ডসিয়ার" : "Selected Alert Threat Dossier"}
+      aria-label={isBn ? "নির্বাচিত সতর্কতার বিস্তারিত এআই বিশ্লেষণ" : "Selected Alert Threat Analysis"}
     >
       {/* ─────────────────────────────────────────────────────────────
-          1. UNIFIED DOSSIER HEADER
+          1. UNIFIED INCIDENT HEADER
           ───────────────────────────────────────────────────────────── */}
       <div
         style={{
@@ -279,7 +297,7 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "10px" }}>
           {/* Metadata Badges */}
           <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-            {/* Severity Badge with Accessible Shape */}
+            {/* Severity Badge */}
             <span
               className="font-mono font-tabular"
               style={{
@@ -300,7 +318,7 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
               <span>{sev.label}</span>
             </span>
 
-            {/* IP Address & Scope Tag */}
+            {/* IP Address Tag */}
             <span
               className="font-mono font-tabular"
               style={{
@@ -316,9 +334,14 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
               }}
             >
               IP: {sourceIp}
+              <InfoTooltip
+                term={ipInfo.isPrivate ? "Private IP (LAN)" : "Public IP (WAN)"}
+                isBn={isBn}
+                size={13}
+              />
             </span>
 
-            {/* RFC 1918 Classification */}
+            {/* Network Location Tag */}
             <span
               className="font-mono font-tabular"
               style={{
@@ -326,12 +349,13 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                 borderRadius: "6px",
                 fontSize: "12px",
                 fontWeight: 700,
-                background: parsed.isPrivateIp ? "var(--navy-alpha-10)" : "var(--coral-alpha-15)",
+                background: ipInfo.isPrivate ? "var(--navy-alpha-10)" : "var(--coral-alpha-15)",
                 color: "var(--navy)",
-                border: `1px solid ${parsed.isPrivateIp ? "var(--navy-alpha-25)" : "var(--coral)"}`
+                border: `1px solid ${ipInfo.isPrivate ? "var(--navy-alpha-25)" : "var(--coral)"}`
               }}
+              title={ipInfo.simpleMeaning}
             >
-              {parsed.ipClassification}
+              {ipInfo.typeLabel}
             </span>
 
             {/* Sensor Tag */}
@@ -344,10 +368,17 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                 background: "var(--navy-alpha-08)",
                 color: "var(--navy)",
                 border: "1px solid var(--navy-alpha-20)",
-                textTransform: "capitalize"
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "5px"
               }}
             >
-              {isBn ? "উৎস:" : "Sensor:"} {event.source}
+              <span>{isBn ? "উৎস:" : "Sensor:"} {event.source === "honeypot" ? (isBn ? "হানিপট" : "Honeypot") : event.source === "ratelimiter" ? (isBn ? "রেট লিমিটার" : "Rate Limiter") : event.source}</span>
+              <InfoTooltip
+                term={event.source === "honeypot" ? "Honeypot" : event.source === "ratelimiter" ? "Rate Limiter" : undefined}
+                isBn={isBn}
+                size={12}
+              />
             </span>
 
             {formattedTime && (
@@ -375,42 +406,175 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
               borderRadius: "6px",
               minHeight: "36px"
             }}
-            title="Re-run RAG intelligence over this incident"
-            aria-label={isBn ? "পুনরায় বিশ্লেষণ করুন" : "Re-triage incident"}
+            title="Re-run AI analysis over this incident"
+            aria-label={isBn ? "পুনরায় বিশ্লেষণ করুন" : "Re-analyze incident"}
           >
             <RotateCw size={14} color="var(--navy)" style={{ animation: isRetriaging ? "spin 0.8s linear infinite" : "none" }} />
-            <span>{isRetriaging ? (isBn ? "বিশ্লেষণ হচ্ছে..." : "Analyzing...") : (isBn ? "পুনরায় বিশ্লেষণ" : "Re-Triage")}</span>
+            <span>{isRetriaging ? (isBn ? "বিশ্লেষণ হচ্ছে..." : "Analyzing...") : (isBn ? "পুনরায় বিশ্লেষণ" : "Re-Analyze")}</span>
           </button>
         </div>
 
-        {/* Incident Headline */}
+        {/* Clear Incident Headline */}
         <h2 style={{ fontSize: "22px", fontWeight: 800, color: "var(--navy)", margin: 0, lineHeight: 1.3 }}>
           {friendlyTitle}
         </h2>
       </div>
 
       {/* ─────────────────────────────────────────────────────────────
-          2. GROUNDED TRIAGE VERDICT & NARRATIVE
+          2. BEGINNER-FRIENDLY INCIDENT BREAKDOWN (What, Why, Who, What To Do)
+          ───────────────────────────────────────────────────────────── */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "12px",
+          padding: "18px",
+          background: "var(--navy-alpha-04)",
+          border: "1.5px solid var(--navy-alpha-15)",
+          borderRadius: "10px"
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <HelpCircle size={18} color="var(--navy)" />
+            <h3 style={{ fontSize: "16px", fontWeight: 800, color: "var(--navy)", margin: 0 }}>
+              {isBn ? "সংক্ষেপ: সহজ ভাষায় এই ঘটনাটি বুঝুন" : "Quick Guide: What You Need to Know"}
+            </h3>
+          </div>
+          <span style={{ fontSize: "12px", color: "var(--navy-alpha-70)", fontStyle: "italic" }}>
+            {isBn ? "অ-প্রকৌশলীদের জন্য সহজ ব্যাখ্যা" : "Non-technical beginner breakdown"}
+          </span>
+        </div>
+
+        {/* 4 Cards: What Happened, Why It Matters, Who is the Attacker, What To Do */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "12px"
+          }}
+        >
+          {/* Box 1: What Happened */}
+          <div
+            style={{
+              padding: "14px",
+              background: "var(--cream)",
+              borderRadius: "8px",
+              border: "1px solid var(--navy-alpha-15)",
+              display: "flex",
+              flexDirection: "column",
+              gap: "6px"
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--navy)", fontWeight: 800, fontSize: "13.5px" }}>
+              <Activity size={16} color="var(--navy)" />
+              <span>{isBn ? "১. কী ঘটেছে?" : "1. What Happened?"}</span>
+            </div>
+            <p style={{ margin: 0, fontSize: "13px", color: "var(--navy-alpha-85)", lineHeight: 1.5 }}>
+              {breakdown.whatHappened}
+            </p>
+          </div>
+
+          {/* Box 2: Why It Matters */}
+          <div
+            style={{
+              padding: "14px",
+              background: "var(--cream)",
+              borderRadius: "8px",
+              border: "1px solid var(--navy-alpha-15)",
+              display: "flex",
+              flexDirection: "column",
+              gap: "6px"
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--coral)", fontWeight: 800, fontSize: "13.5px" }}>
+              <AlertTriangle size={16} color="var(--coral)" />
+              <span style={{ color: "var(--navy)" }}>{isBn ? "২. এটি কেন বিপজ্জনক?" : "2. Why It Matters"}</span>
+            </div>
+            <p style={{ margin: 0, fontSize: "13px", color: "var(--navy-alpha-85)", lineHeight: 1.5 }}>
+              {breakdown.whyItMatters}
+            </p>
+          </div>
+
+          {/* Box 3: Who is the Attacker */}
+          <div
+            style={{
+              padding: "14px",
+              background: "var(--cream)",
+              borderRadius: "8px",
+              border: "1px solid var(--navy-alpha-15)",
+              display: "flex",
+              flexDirection: "column",
+              gap: "6px"
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--navy)", fontWeight: 800, fontSize: "13.5px" }}>
+              <Globe size={16} color="var(--navy)" />
+              <span>{isBn ? "৩. আক্রমণকারী কে?" : "3. Who is the Attacker?"}</span>
+            </div>
+            <p style={{ margin: 0, fontSize: "13px", color: "var(--navy-alpha-85)", lineHeight: 1.5 }}>
+              {breakdown.whoIsAttacker}
+            </p>
+          </div>
+
+          {/* Box 4: What You Should Do */}
+          <div
+            style={{
+              padding: "14px",
+              background: "var(--cream)",
+              borderRadius: "8px",
+              border: "1px solid var(--navy-alpha-15)",
+              display: "flex",
+              flexDirection: "column",
+              gap: "6px"
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--navy)", fontWeight: 800, fontSize: "13.5px" }}>
+              <ListChecks size={16} color="var(--navy)" />
+              <span>{isBn ? "৪. আপনার কী করা উচিত?" : "4. What Should You Do?"}</span>
+            </div>
+            <ul style={{ margin: 0, paddingLeft: "18px", fontSize: "12.5px", color: "var(--navy-alpha-85)", lineHeight: 1.5 }}>
+              {breakdown.whatToDo.map((step, idx) => (
+                <li key={idx} style={{ marginBottom: "3px" }}>{step}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* ─────────────────────────────────────────────────────────────
+          3. AI SECURITY ANALYSIS (Formerly Analyst Triage Verdict)
           ───────────────────────────────────────────────────────────── */}
       <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <h3 style={{ fontSize: "16px", fontWeight: 800, color: "var(--navy)", margin: 0 }}>
-              {isBn ? "এআই বিশ্লেষকের সিদ্ধান্ত ও সারসংক্ষেপ" : "Analyst Triage Verdict"}
-            </h3>
-            <span
-              className="font-mono font-tabular"
-              style={{
-                fontSize: "12px",
-                fontWeight: 800,
-                padding: "2px 8px",
-                borderRadius: "4px",
-                background: "var(--navy-alpha-10)",
-                color: "var(--navy)"
-              }}
-            >
-              {confidenceScore}% {isBn ? "আত্মবিশ্বাস" : "CONFIDENCE"}
-            </span>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <h3 style={{ fontSize: "17px", fontWeight: 800, color: "var(--navy)", margin: 0 }}>
+                {isBn ? "এআই নিরাপত্তা বিশ্লেষণ" : "AI Security Analysis"}
+              </h3>
+              <span
+                className="font-mono font-tabular"
+                style={{
+                  fontSize: "12px",
+                  fontWeight: 800,
+                  padding: "2px 8px",
+                  borderRadius: "4px",
+                  background: "var(--navy-alpha-10)",
+                  color: "var(--navy)",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px"
+                }}
+              >
+                <span>{confidenceScore}% {isBn ? "নিশ্চয়তা" : "CONFIDENCE"}</span>
+                <InfoTooltip term="Confidence Score" isBn={isBn} size={11} />
+              </span>
+            </div>
+            <p style={{ margin: "3px 0 0", fontSize: "12.5px", color: "var(--navy-alpha-70)" }}>
+              {isBn
+                ? "প্রহরী এআই রিয়েল-টাইমে নেটওয়ার্ক ট্র্যাফিক বিশ্লেষণ করে ঝুঁকির মাত্রা ও প্রতিরক্ষার সুপারিশ নির্ধারণ করেছে।"
+                : "PROHORI AI analyzed the network traffic in real time and determined this incident's risk level and recommended actions."}
+            </p>
           </div>
 
           {/* Bilingual Narrative Toggle */}
@@ -418,14 +582,14 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
             <button
               onClick={() => setNarrativeLang("en")}
               className={`segmented-btn ${narrativeLang === "en" ? "active" : ""}`}
-              aria-label="View narrative in English"
+              aria-label="View analysis in English"
             >
               English
             </button>
             <button
               onClick={() => setNarrativeLang("bn")}
               className={`segmented-btn ${narrativeLang === "bn" ? "active" : ""}`}
-              aria-label="বাংলা ভাষায় বিবরণ দেখুন"
+              aria-label="বাংলা ভাষায় বিশ্লেষণ দেখুন"
             >
               বাংলা
             </button>
@@ -439,7 +603,7 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
       </div>
 
       {/* ─────────────────────────────────────────────────────────────
-          3. FORENSIC EVIDENCE & BOUNDARY ASSESSMENT GRID
+          4. WHAT HAPPENED? (TECHNICAL EVIDENCE) (Formerly Forensic Evidence & Scope)
           ───────────────────────────────────────────────────────────── */}
       <div
         style={{
@@ -452,99 +616,129 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
           borderRadius: "8px"
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <Network size={17} color="var(--navy)" />
-          <h4 style={{ fontSize: "14px", fontWeight: 800, color: "var(--navy)", margin: 0 }}>
-            {isBn ? "ফরেনসিক প্রমাণ ও নেটওয়ার্ক পরিধি" : "Forensic Evidence & Scope"}
-          </h4>
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <Network size={17} color="var(--navy)" />
+            <h4 style={{ fontSize: "15px", fontWeight: 800, color: "var(--navy)", margin: 0 }}>
+              {isBn ? "কী ঘটেছে? (প্রযুক্তিগত প্রমাণ)" : "What Happened? (Technical Evidence)"}
+            </h4>
+          </div>
+          <p style={{ margin: "3px 0 0", fontSize: "12.5px", color: "var(--navy-alpha-70)" }}>
+            {isBn
+              ? "ঘটনার সময় আমাদের ডিকয় হানিপট ও সেন্সর দ্বারা সরাসরি সংগৃহীত নেটওয়ার্ক তথ্য।"
+              : "Real connection details captured by our honeypots and sensors when the incident took place."}
+          </p>
         </div>
 
-        {/* 4-Column Tactical Telemetry Grid */}
+        {/* 4-Column Tactical Telemetry Grid with Clear Explanatory Subtitles */}
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))",
             gap: "10px"
           }}
         >
-          <div style={{ padding: "8px 12px", background: "var(--cream)", borderRadius: "6px", border: "1px solid var(--navy-alpha-15)" }}>
+          {/* Col 1: Originating IP */}
+          <div style={{ padding: "10px 12px", background: "var(--cream)", borderRadius: "6px", border: "1px solid var(--navy-alpha-15)" }}>
             <div style={{ fontSize: "11px", color: "var(--navy-alpha-65)", fontWeight: 700, textTransform: "uppercase" }}>
-              {isBn ? "উৎস আইপি ঠিকানা" : "Originating IP"}
+              {isBn ? "আক্রমণকারী আইপি ঠিকানা" : "Attacker IP Address"}
             </div>
             <div className="font-mono font-tabular" style={{ fontSize: "15px", fontWeight: 800, color: "var(--navy)", marginTop: "2px" }}>
               {sourceIp}
             </div>
-          </div>
-
-          <div style={{ padding: "8px 12px", background: "var(--cream)", borderRadius: "6px", border: "1px solid var(--navy-alpha-15)" }}>
-            <div style={{ fontSize: "11px", color: "var(--navy-alpha-65)", fontWeight: 700, textTransform: "uppercase" }}>
-              {isBn ? "শনাক্তকরণ কারণ" : "Detection Trigger"}
-            </div>
-            <div style={{ fontSize: "13px", fontWeight: 700, color: "var(--navy)", marginTop: "2px" }}>
-              {event.type.replace(/_/g, " ").toUpperCase()} ({event.source.toUpperCase()})
+            <div style={{ fontSize: "11.5px", color: "var(--navy-alpha-60)", marginTop: "2px" }}>
+              {isBn ? "যে ঠিকানা থেকে ট্র্যাফিক এসেছে" : "Device sending this traffic"}
             </div>
           </div>
 
-          <div style={{ padding: "8px 12px", background: "var(--cream)", borderRadius: "6px", border: "1px solid var(--navy-alpha-15)" }}>
+          {/* Col 2: Detection Trigger */}
+          <div style={{ padding: "10px 12px", background: "var(--cream)", borderRadius: "6px", border: "1px solid var(--navy-alpha-15)" }}>
             <div style={{ fontSize: "11px", color: "var(--navy-alpha-65)", fontWeight: 700, textTransform: "uppercase" }}>
-              {isBn ? "লক্ষ্য পৃষ্ঠ / সারফেস" : "Target Surface / Path"}
+              {isBn ? "শনাক্তকরণ কারণ" : "What Triggered Alert"}
+            </div>
+            <div style={{ fontSize: "13.5px", fontWeight: 700, color: "var(--navy)", marginTop: "2px" }}>
+              {getFriendlyEventTitle(event.type, globalLanguage)}
+            </div>
+            <div style={{ fontSize: "11.5px", color: "var(--navy-alpha-60)", marginTop: "2px" }}>
+              {isBn ? `সেন্সর: ${event.source}` : `Sensor: ${event.source}`}
+            </div>
+          </div>
+
+          {/* Col 3: Target Surface / Path */}
+          <div style={{ padding: "10px 12px", background: "var(--cream)", borderRadius: "6px", border: "1px solid var(--navy-alpha-15)" }}>
+            <div style={{ fontSize: "11px", color: "var(--navy-alpha-65)", fontWeight: 700, textTransform: "uppercase" }}>
+              {isBn ? "টার্গেট করা সিস্টেম / পথ" : "Targeted URL / System"}
             </div>
             <div className="font-mono font-tabular" style={{ fontSize: "13px", fontWeight: 700, color: "var(--navy)", marginTop: "2px" }}>
-              {event.details?.simulated_surface || event.details?.path || event.details?.endpoint || "Simulated Auth Surface"}
+              {event.details?.simulated_surface || event.details?.path || event.details?.endpoint || "/api/v1/auth/login"}
+            </div>
+            <div style={{ fontSize: "11.5px", color: "var(--navy-alpha-60)", marginTop: "2px" }}>
+              {isBn ? "যে সার্ভিসটিতে আঘাত হানা হয়েছে" : "Application service targeted"}
             </div>
           </div>
 
-          <div style={{ padding: "8px 12px", background: "var(--cream)", borderRadius: "6px", border: "1px solid var(--navy-alpha-15)" }}>
+          {/* Col 4: Observed Volume */}
+          <div style={{ padding: "10px 12px", background: "var(--cream)", borderRadius: "6px", border: "1px solid var(--navy-alpha-15)" }}>
             <div style={{ fontSize: "11px", color: "var(--navy-alpha-65)", fontWeight: 700, textTransform: "uppercase" }}>
-              {isBn ? "উইন্ডোতে প্রচেষ্টার সংখ্যা" : "Observed Volume"}
+              {isBn ? "অনুরোধের সংখ্যা" : "Number of Requests"}
             </div>
-            <div className="font-mono font-tabular" style={{ fontSize: "13px", fontWeight: 800, color: "var(--navy)", marginTop: "2px" }}>
-              {event.details?.attempts_in_window || event.details?.attempts || event.details?.count || 1} {isBn ? "টি অনুরোধ" : "requests"}
+            <div className="font-mono font-tabular" style={{ fontSize: "14px", fontWeight: 800, color: "var(--navy)", marginTop: "2px" }}>
+              {event.details?.attempts_in_window || event.details?.attempts || event.details?.count || 1} {isBn ? "টি প্রচেষ্টা" : "requests recorded"}
+            </div>
+            <div style={{ fontSize: "11.5px", color: "var(--navy-alpha-60)", marginTop: "2px" }}>
+              {isBn ? "সময়সীমার মধ্যে প্রাপ্ত সংযোগ" : "Observed in monitor window"}
             </div>
           </div>
         </div>
 
-        {/* Boundary Assessment Note */}
+        {/* Boundary Assessment Note in plain words */}
         <div
           style={{
-            padding: "8px 12px",
+            padding: "10px 14px",
             borderRadius: "6px",
             background: "var(--cream)",
             border: "1px solid var(--navy-alpha-20)",
-            fontSize: "12.5px",
+            fontSize: "13px",
             lineHeight: 1.5,
             color: "var(--navy)",
             display: "flex",
             alignItems: "flex-start",
-            gap: "8px"
+            gap: "10px"
           }}
         >
-          <Info size={16} color="var(--navy)" style={{ flexShrink: 0, marginTop: "2px" }} />
-          <span>
-            <strong>{isBn ? "নেটওয়ার্ক সীমানা বিশ্লেষণ:" : "Perimeter Boundary Assessment:"}</strong>{" "}
-            {parsed.ipRelevance}
-          </span>
+          <Info size={17} color="var(--navy)" style={{ flexShrink: 0, marginTop: "2px" }} />
+          <div>
+            <strong>{isBn ? "আইপি ঠিকানা ও নেটওয়ার্ক সীমানা বিশ্লেষণ:" : "Network Location Assessment:"}</strong>{" "}
+            {ipInfo.dangerContext}
+          </div>
         </div>
       </div>
 
       {/* ─────────────────────────────────────────────────────────────
-          4. FIREWALL RULES BY PLATFORM (Copyable Terminal Blocks)
+          5. HOW TO BLOCK THE ATTACKER (Formerly Perimeter Containment Rules)
           ───────────────────────────────────────────────────────────── */}
       <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <Terminal size={17} color="var(--navy)" />
-            <h4 style={{ fontSize: "14px", fontWeight: 800, color: "var(--navy)", margin: 0 }}>
-              {isBn ? "পেরিমিটার ফায়ারওয়াল কমান্ড (প্ল্যাটফর্ম অনুযায়ী)" : "Perimeter Containment Rules"}
-            </h4>
+        <div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <Terminal size={17} color="var(--navy)" />
+              <h4 style={{ fontSize: "15px", fontWeight: 800, color: "var(--navy)", margin: 0 }}>
+                {isBn ? "আক্রমণকারীকে যেভাবে ব্লক করবেন (ফায়ারওয়াল কমান্ড)" : "How to Block the Attacker (Firewall Commands)"}
+              </h4>
+            </div>
+            <span style={{ fontSize: "12px", color: "var(--navy-alpha-75)", fontStyle: "italic" }}>
+              {isBn ? "*কমান্ডগুলো কপি করে আপনার সার্ভারে প্রয়োগ করুন" : "*Copy and execute on your server terminal or router"}
+            </span>
           </div>
-          <span style={{ fontSize: "12px", color: "var(--navy-alpha-75)", fontStyle: "italic" }}>
-            {isBn ? "*কমান্ডগুলো নেটওয়ার্ক রাউটার বা ফায়ারওয়ালে প্রয়োগ করুন" : "*Deploy rules at perimeter routers or edge host interfaces"}
-          </span>
+          <p style={{ margin: "3px 0 0", fontSize: "12.5px", color: "var(--navy-alpha-70)" }}>
+            {isBn
+              ? "নিচের কমান্ডগুলো আপনার সার্ভারের ফায়ারওয়ালে যোগ করলে এই আইপি থেকে আসা সকল ক্ষতিকর ডেটা প্যাকেট স্বয়ংক্রিয়ভাবে বাতিল হবে।"
+              : "Execute these commands on your host terminal or firewall to immediately instruct the operating system to drop all incoming packets from this IP."}
+          </p>
         </div>
 
-        {/* 3 Dedicated Firewall Cards: Linux iptables, Linux UFW, Cisco Edge ACL */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        {/* 3 Dedicated Firewall Cards: Linux iptables, Linux UFW, Cisco Edge ACL with Before-Command Explanation */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           {parsed.firewallCommands.map((cmd) => {
             const isCopied = copiedPlatform === cmd.platform;
             return (
@@ -557,6 +751,7 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                   overflow: "hidden"
                 }}
               >
+                {/* Header row with Platform Name, Category, and Copy Button */}
                 <div
                   style={{
                     display: "flex",
@@ -570,7 +765,7 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <span style={{ fontSize: "13px", fontWeight: 800, color: "var(--cream)" }}>
+                    <span style={{ fontSize: "13.5px", fontWeight: 800, color: "var(--cream)" }}>
                       {cmd.title}
                     </span>
                     <span
@@ -606,10 +801,39 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                     title={`Copy ${cmd.title} command to clipboard`}
                   >
                     {isCopied ? <Check size={13} color="var(--navy)" /> : <Copy size={13} color="var(--cream)" />}
-                    <span>{isCopied ? (isBn ? "কপি হয়েছে!" : "Copied!") : (isBn ? "কমান্ড কপি" : "Copy Command")}</span>
+                    <span>{isCopied ? (isBn ? "কপি হয়েছে!" : "Copied!") : (isBn ? "কমান্ড কপি করুন" : "Copy Command")}</span>
                   </button>
                 </div>
 
+                {/* Explicit Explanation BEFORE showing command: Where to run, When to run, What it does */}
+                <div
+                  style={{
+                    padding: "10px 14px",
+                    background: "var(--cream-alpha-04)",
+                    borderBottom: "1px solid var(--cream-alpha-10)",
+                    fontSize: "12px",
+                    color: "var(--cream-alpha-85)",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "4px",
+                    lineHeight: 1.45
+                  }}
+                >
+                  <div>
+                    <strong style={{ color: "var(--coral)" }}>{isBn ? "কোথায় চালাবেন:" : "Where to run:"}</strong>{" "}
+                    {cmd.whereToRun}
+                  </div>
+                  <div>
+                    <strong style={{ color: "var(--cream)" }}>{isBn ? "কখন চালাবেন:" : "When to run:"}</strong>{" "}
+                    {cmd.whenToRun}
+                  </div>
+                  <div>
+                    <strong style={{ color: "var(--cream)" }}>{isBn ? "এটি কী করবে:" : "What it does:"}</strong>{" "}
+                    {cmd.whatItDoes}
+                  </div>
+                </div>
+
+                {/* Actual Terminal Command */}
                 <div style={{ padding: "10px 14px", overflowX: "auto" }}>
                   <code
                     className="font-mono font-tabular"
@@ -630,7 +854,7 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
       </div>
 
       {/* ─────────────────────────────────────────────────────────────
-          5. HUMAN-IN-THE-LOOP CONTAINMENT ACTION GATE
+          6. ONE-CLICK ATTACKER CONTAINMENT (Formerly Human-in-the-Loop Gate)
           ───────────────────────────────────────────────────────────── */}
       <div
         style={{
@@ -646,8 +870,8 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <Lock size={17} color="var(--navy)" />
-            <h4 style={{ fontSize: "14px", fontWeight: 800, color: "var(--navy)", margin: 0 }}>
-              {isBn ? "মানবসক্রিয় প্রতিরক্ষা অনুমোদন গেট (HITL Gate)" : "Human-in-the-Loop Containment Gate"}
+            <h4 style={{ fontSize: "15px", fontWeight: 800, color: "var(--navy)", margin: 0 }}>
+              {isBn ? "এক-ক্লিকে আক্রমণকারী প্রতিরোধ (অপারেটর নিশ্চিতকরণ)" : "One-Click Attacker Blocking (Confirmation Required)"}
             </h4>
           </div>
           <span
@@ -660,23 +884,23 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
               fontWeight: 800
             }}
           >
-            {isBn ? "যাচাইকৃত অডিট গেট" : "Mandatory Operator Confirmation"}
+            {isBn ? "নিরাপদ অডিট গেট" : "Safe Human Confirmation Gate"}
           </span>
         </div>
 
         <p style={{ fontSize: "13px", color: "var(--navy-alpha-85)", margin: 0, lineHeight: 1.5 }}>
           {isBn
-            ? "নিরাপত্তা নীতি: উল্লেখিত শেল কমান্ডগুলো কেবল রেফারেন্স হিসেবে দেওয়া হয়েছে, এআই কখনো নিজে থেকে শেল কমান্ড চালায় না। নিচে অনুমোদন করলে শুধুমাত্র স্থানীয় API Abuse Guard ডিনাইলিস্টে আইপিটি যুক্ত করা হবে।"
-            : "Security Boundary: Suggested firewall shell commands above are never executed automatically by the browser. Approval exclusively engages the API Abuse Guard reverse-proxy denylist and writes a forensic record to the immutable audit trail."}
+            ? "নিরাপত্তা নীতি: উল্লেখিত শেল কমান্ডগুলো আপনার সুবিধার জন্য দেওয়া হয়েছে। প্রহরী এআই আপনার সম্মতি ছাড়া নিজে থেকে কোনো কমান্ড চালায় না। নিচে অনুমোদন করলে এই আইপিটি অবিলম্বে এপিআই অপব্যবহার প্রতিরোধ তালিকায় যুক্ত হবে এবং অডিট ট্রেইলে সংরক্ষিত হবে।"
+            : "Safety Guarantee: Suggested terminal commands above are never executed automatically by PROHORI. Approving below instantly adds this IP to the API Abuse Guard denylist and records an immutable cryptographic entry in the audit trail."}
         </p>
 
         {/* WORKFLOW STATES */}
         {approvalStep === "IDLE" && !isApproved && (
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             <div style={{ fontSize: "13px", color: "var(--navy)", fontWeight: 700 }}>
-              {isBn ? "প্রস্তাবিত পদক্ষেপ:" : "Pending Action:"}
-              <span className="font-mono" style={{ marginLeft: "6px", color: "var(--coral)", fontWeight: 800 }}>
-                ADD IP {sourceIp} TO ACTIVE ABUSE GUARD DENYLIST
+              {isBn ? "প্রস্তাবিত পদক্ষেপ:" : "Recommended Defensive Action:"}
+              <span className="font-mono font-tabular" style={{ marginLeft: "6px", color: "var(--coral)", fontWeight: 800 }}>
+                BLOCK IP {sourceIp} IN API ABUSE GUARD
               </span>
             </div>
             <button
@@ -700,7 +924,7 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
               }}
             >
               <ShieldAlert size={18} color="var(--navy)" />
-              <span>{isBn ? "প্রতিরক্ষা অনুমোদন করুন (Approve Defense)" : "Approve Defense Countermeasure"}</span>
+              <span>{isBn ? "আক্রমণকারীকে ব্লক করুন (Approve Defense)" : "Approve Defense: Block This Attacker"}</span>
             </button>
           </div>
         )}
@@ -720,13 +944,13 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <AlertTriangle size={18} color="var(--coral)" />
               <strong style={{ fontSize: "14px", color: "var(--navy)" }}>
-                {isBn ? "অনুমোদন নিশ্চিতকরণ ধাপ:" : "Operator Confirmation Required"}
+                {isBn ? "ব্লক নিশ্চিত করুন:" : "Operator Confirmation Required"}
               </strong>
             </div>
             <p style={{ fontSize: "13.5px", color: "var(--navy)", margin: 0, lineHeight: 1.5 }}>
               {isBn
-                ? `আপনি কি নিশ্চিত যে আইপি ${sourceIp} এর সকল ভবিষ্যৎ ট্র্যাফিক অবিলম্বে ব্লক করবেন? এই সিদ্ধান্ত অপারেটর স্বাক্ষরসহ অডিট ট্রেইলে সংরক্ষিত হবে।`
-                : `Are you sure you want to enforce perimeter containment for IP ${sourceIp}? This action will permanently record an append-only entry in the forensic audit log.`}
+                ? `আপনি কি নিশ্চিত যে আইপি ${sourceIp} থেকে আগত সকল ভবিষ্যৎ সংযোগ অবিলম্বে ব্লক করবেন? এই সিদ্ধান্তটি আপনার ডিজিটাল স্বাক্ষরসহ অডিট লগে সংরক্ষণ করা হবে।`
+                : `Are you sure you want to block all incoming traffic from IP ${sourceIp}? This defensive action will be logged in the permanent audit trail with your timestamp.`}
             </p>
             <div style={{ display: "flex", gap: "10px", marginTop: "4px" }}>
               <button
@@ -744,7 +968,7 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                   minHeight: "38px"
                 }}
               >
-                {isBn ? "হ্যাঁ, ব্লক কার্যকর করুন" : "Confirm Containment"}
+                {isBn ? "হ্যাঁ, ব্লক কার্যকর করুন" : "Yes, Block Attacker"}
               </button>
               <button
                 type="button"
@@ -792,7 +1016,7 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                 animation: "spin 0.8s linear infinite"
               }}
             />
-            <span>{isBn ? "পেরিমিটার প্রতিরোধ কার্যকর ও অডিট লগ তৈরি হচ্ছে..." : "Applying denylist block and writing cryptographic audit record..."}</span>
+            <span>{isBn ? "ব্লক কার্যকর হচ্ছে এবং অডিট লগে এন্ট্রি তৈরি হচ্ছে..." : "Applying denylist block and writing cryptographic audit record..."}</span>
           </div>
         )}
 
@@ -811,11 +1035,11 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <AlertTriangle size={18} color="var(--navy)" />
               <strong style={{ fontSize: "14px", color: "var(--navy)" }}>
-                {isBn ? "প্রতিরক্ষা প্রয়োগ ব্যর্থ হয়েছে" : "Perimeter Enforcement Failed"}
+                {isBn ? "ব্লক প্রয়োগ ব্যর্থ হয়েছে" : "Perimeter Enforcement Failed"}
               </strong>
             </div>
             <p style={{ fontSize: "13px", color: "var(--navy)", margin: 0 }}>
-              {approvalError || (isBn ? "ব্যাকএন্ড সার্ভিস অনুপলব্ধ।" : "The defensive perimeter service could not be reached.")}
+              {approvalError || (isBn ? "সার্ভিসের সাথে যোগাযোগ করা যায়নি।" : "The defensive perimeter service could not be reached.")}
             </p>
             <button
               type="button"
@@ -854,12 +1078,12 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <ShieldCheck size={20} color="var(--coral)" />
               <strong style={{ fontSize: "15px", color: "var(--cream)" }}>
-                {isBn ? "সফলভাবে কার্যকর ও অডিট লগে সংরক্ষিত" : "Defense Verified & Active in Rate-Limiter Denylist"}
+                {isBn ? "আক্রমণকারী ব্লক হয়েছে এবং অডিট লগে সংরক্ষিত" : "Attacker Blocked & Defense Verified in Audit Trail"}
               </strong>
             </div>
             <p style={{ fontSize: "13px", color: "var(--cream-alpha-85)", margin: 0, lineHeight: 1.5 }}>
               {isBn
-                ? `আইপি ${sourceIp} স্থানীয় এপিআই ডিফেন্সিভ ডিনাইলিস্টে যুক্ত হয়েছে। এই হোস্ট থেকে আগত পরবর্তী অনুরোধগুলো HTTP 429 স্ট্যাটাস কোড সহ ড্রপ করা হবে।`
+                ? `আইপি ${sourceIp} সফলভাবে ডিনাইলিস্টে যুক্ত হয়েছে। এই হোস্ট থেকে আগত পরবর্তী সকল রিকোয়েস্ট HTTP 429 কোড দিয়ে বাতিল করা হবে।`
                 : `Target host ${sourceIp} is actively throttled by the local API Abuse Guard reverse proxy. Subsequent connection probes receive HTTP 429 containment.`}
             </p>
 
@@ -890,24 +1114,33 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
       </div>
 
       {/* ─────────────────────────────────────────────────────────────
-          6. GROUNDED INTELLIGENCE CITATIONS (Clickable & Expandable)
+          7. ATTACK TECHNIQUE DETAILS (MITRE & Security Standards)
           ───────────────────────────────────────────────────────────── */}
       <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <Layers size={17} color="var(--navy)" />
-            <h4 style={{ fontSize: "14px", fontWeight: 800, color: "var(--navy)", margin: 0 }}>
-              {isBn ? "প্রমাণিত জ্ঞান ও রেফারেন্স (Grounded Citations)" : "Grounded Knowledge Citations"}
-            </h4>
+        <div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <Layers size={17} color="var(--navy)" />
+              <h4 style={{ fontSize: "15px", fontWeight: 800, color: "var(--navy)", margin: 0 }}>
+                {isBn ? "আক্রমণ কৌশল ও নিরাপত্তা নির্দেশিকা (MITRE ATT&CK)" : "Security Rules & Attack Patterns Explained (MITRE ATT&CK)"}
+              </h4>
+              <InfoTooltip term="MITRE ATT&CK" isBn={isBn} size={14} />
+            </div>
+            <span style={{ fontSize: "12px", color: "var(--navy-alpha-75)" }}>
+              {isBn ? "কার্ডে ক্লিক করে বিস্তারিত প্রশমন নীতি দেখুন" : "Click citation for technical mitigation details"}
+            </span>
           </div>
-          <span style={{ fontSize: "12px", color: "var(--navy-alpha-75)" }}>
-            {isBn ? "কার্ডে ক্লিক করে বিস্তারিত প্রশমন নীতি দেখুন" : "Click citation for technical mitigation details"}
-          </span>
+          <p style={{ margin: "3px 0 0", fontSize: "12.5px", color: "var(--navy-alpha-70)" }}>
+            {isBn
+              ? "আন্তর্জাতিক সাইবার নিরাপত্তা মানদণ্ড অনুসারে এই আক্রমণ কীভাবে কাজ করে এবং কীভাবে স্থায়ী সমাধান করবেন তার বিবরণ।"
+              : "Official cybersecurity references explaining how this attack method operates and how to prevent it."}
+          </p>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
           {parsed.citations.map((cite) => {
             const isExpanded = expandedCitationId === cite.id;
+            const mitreInfo = getMitreFriendlyInfo(cite.id, globalLanguage);
             return (
               <div
                 key={cite.id}
@@ -951,7 +1184,7 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                       [{cite.id}]
                     </span>
                     <strong style={{ fontSize: "14px", color: "var(--navy)" }}>
-                      {cite.name}
+                      {mitreInfo.friendlyName || cite.name}
                     </strong>
                     <span
                       style={{
@@ -987,8 +1220,14 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                       color: "var(--navy)"
                     }}
                   >
-                    <div><strong>Description:</strong> {cite.description}</div>
-                    <div><strong>Incident Relevance:</strong> {cite.relevance}</div>
+                    <div>
+                      <strong>{isBn ? "সহজ ব্যাখ্যা:" : "Simple Explanation:"}</strong>{" "}
+                      {mitreInfo.simpleExplanation || cite.description}
+                    </div>
+                    <div>
+                      <strong>{isBn ? "প্রাসঙ্গিকতা:" : "Incident Relevance:"}</strong>{" "}
+                      {cite.relevance}
+                    </div>
                     <div
                       style={{
                         padding: "8px 10px",
@@ -998,7 +1237,8 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                         marginTop: "4px"
                       }}
                     >
-                      <strong>Recommended Mitigation:</strong> {cite.mitigation}
+                      <strong>{isBn ? "প্রতিরোধ পরামর্শ:" : "Recommended Mitigation:"}</strong>{" "}
+                      {mitreInfo.mitigationTip || cite.mitigation}
                     </div>
                   </div>
                 )}
@@ -1009,7 +1249,114 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
       </div>
 
       {/* ─────────────────────────────────────────────────────────────
-          7. ASK THE AI ANALYST (Interactive Follow-Up Investigation)
+          8. EXPANDABLE ADVANCED FORENSIC DETAILS (For Developers & Engineers)
+          ───────────────────────────────────────────────────────────── */}
+      <div
+        style={{
+          border: "1px solid var(--navy-alpha-20)",
+          borderRadius: "8px",
+          background: "var(--cream)",
+          overflow: "hidden"
+        }}
+      >
+        <button
+          type="button"
+          onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
+          style={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "12px 16px",
+            background: "var(--navy-alpha-04)",
+            border: "none",
+            cursor: "pointer",
+            textAlign: "left",
+            color: "var(--navy)"
+          }}
+          aria-expanded={isAdvancedOpen}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <Code2 size={17} color="var(--navy)" />
+            <span style={{ fontSize: "14px", fontWeight: 800 }}>
+              {isBn ? "উন্নত প্রযুক্তিগত ফরেনসিক বিবরণ (ডেভেলপার ও প্রকৌশলীদের জন্য)" : "Advanced Technical Details (For Developers & Engineers)"}
+            </span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--navy-alpha-75)" }}>
+            <span style={{ fontSize: "12px", fontWeight: 700 }}>
+              {isAdvancedOpen ? (isBn ? "লুকান" : "Hide") : (isBn ? "প্রদর্শন করুন" : "Show")}
+            </span>
+            {isAdvancedOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </div>
+        </button>
+
+        {isAdvancedOpen && (
+          <div
+            style={{
+              padding: "16px",
+              borderTop: "1px solid var(--navy-alpha-15)",
+              display: "flex",
+              flexDirection: "column",
+              gap: "12px",
+              background: "var(--cream)"
+            }}
+          >
+            <p style={{ margin: 0, fontSize: "12.5px", color: "var(--navy-alpha-75)", lineHeight: 1.45 }}>
+              {isBn
+                ? "নিচে সম্পূর্ণ কাঁচা (Raw) টেলিমেট্রি অবজেক্ট ও সেন্সর প্যারামিটার দেওয়া হয়েছে যা প্রোগ্রাম্যাটিক তদন্ত ও ডিবাগিংয়ে সাহায্য করে।"
+                : "Full raw telemetry payload and sensor parameters preserved for programmatic investigation, SIEM ingestion, and debugging."}
+            </p>
+
+            {/* Quick Metadata Key-Value Grid */}
+            <div
+              className="font-mono font-tabular"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                gap: "8px",
+                fontSize: "12px",
+                padding: "10px",
+                background: "var(--navy-alpha-04)",
+                borderRadius: "6px",
+                border: "1px solid var(--navy-alpha-15)",
+                color: "var(--navy)"
+              }}
+            >
+              <div><strong>Event ID:</strong> {event.id}</div>
+              <div><strong>Sensor Type:</strong> {event.source}</div>
+              <div><strong>Raw Type:</strong> {event.type}</div>
+              <div><strong>ISO Timestamp:</strong> {event.ts}</div>
+              <div><strong>Severity:</strong> {event.severity}</div>
+              <div><strong>Confidence:</strong> {event.analyst?.confidence ?? 0.94}</div>
+            </div>
+
+            {/* Raw JSON Code Viewer */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+              <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--navy)" }}>
+                {isBn ? "কাঁচা ইভেন্ট পেলোড (Raw JSON):" : "Raw Event Payload (JSON):"}
+              </div>
+              <pre
+                className="font-mono font-tabular"
+                style={{
+                  margin: 0,
+                  padding: "12px",
+                  background: "var(--navy)",
+                  color: "var(--cream)",
+                  borderRadius: "6px",
+                  fontSize: "12px",
+                  overflowX: "auto",
+                  maxHeight: "220px"
+                }}
+              >
+                {JSON.stringify(event, null, 2)}
+              </pre>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ─────────────────────────────────────────────────────────────
+          9. ASK THE AI ANALYST (Interactive Follow-Up Investigation)
           ───────────────────────────────────────────────────────────── */}
       <div
         style={{
@@ -1037,16 +1384,21 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
           }}
           aria-expanded={isAskOpen}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <MessageSquare size={18} color="var(--navy)" />
-            <span>{isBn ? "এই হুমকি সম্পর্কে এআই বিশ্লেষককে জিজ্ঞাসা করুন" : "Ask AI Analyst About This Threat"}</span>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <MessageSquare size={18} color="var(--navy)" />
+              <span>{isBn ? "এই ঘটনা সম্পর্কে এআই-কে জিজ্ঞাসা করুন" : "Ask PROHORI AI About This Incident"}</span>
+            </div>
+            <p style={{ margin: "2px 0 0 28px", fontSize: "12px", color: "var(--navy-alpha-70)", fontWeight: 500, textAlign: "left" }}>
+              {isBn ? "সহজ বাংলায় বা ইংরেজিতে প্রশ্ন করে বিস্তারিত জানুন" : "Ask questions in plain English or বাংলা to learn more"}
+            </p>
           </div>
           {isAskOpen ? <ChevronUp size={18} color="var(--navy)" /> : <ChevronDown size={18} color="var(--navy)" />}
         </button>
 
         {isAskOpen && (
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            {/* Quick Prompt Suggestion Chips */}
+            {/* Quick Prompt Suggestion Chips in simple language */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
               <button
                 type="button"
@@ -1054,8 +1406,8 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                 onClick={() =>
                   handleExecuteAsk(
                     isBn
-                      ? "এই আক্রমণের মূল কৌশল এবং ক্ষতি করার সম্ভাবনা ব্যাখ্যা করুন।"
-                      : "Explain the primary attack vector and potential impact."
+                      ? "এই আক্রমণটি কতটা বিপজ্জনক এবং এতে কী ক্ষতি হতে পারে?"
+                      : "How dangerous is this attack and what damage could it cause?"
                   )
                 }
                 style={{
@@ -1073,7 +1425,7 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                 }}
               >
                 <Sparkles size={14} color="var(--navy)" />
-                <span>{isBn ? "প্রাথমিক ভেক্টর?" : "Primary vector?"}</span>
+                <span>{isBn ? "কতটা বিপজ্জনক?" : "How dangerous is it?"}</span>
               </button>
 
               <button
@@ -1082,8 +1434,8 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                 onClick={() =>
                   handleExecuteAsk(
                     isBn
-                      ? "এটি প্রতিরোধ করতে ফায়ারওয়ালে কী নিয়ম যোগ করতে হবে?"
-                      : "What firewall rules should I add to prevent this?"
+                      ? "আমি কীভাবে নিশ্চিত হব যে আক্রমণকারী পুরোপুরি ব্লক হয়েছে?"
+                      : "How do I make sure the attacker is completely blocked?"
                   )
                 }
                 style={{
@@ -1101,7 +1453,7 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                 }}
               >
                 <Shield size={14} color="var(--navy)" />
-                <span>{isBn ? "ফায়ারওয়াল কমান্ড" : "Firewall commands"}</span>
+                <span>{isBn ? "ব্লক কীভাবে নিশ্চিত করব?" : "How to confirm blocking?"}</span>
               </button>
 
               <button
@@ -1110,8 +1462,8 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                 onClick={() =>
                   handleExecuteAsk(
                     isBn
-                      ? "এটি কি অভ্যন্তরীণ নিরাপত্তা লঙ্ঘন নাকি বহিঃস্থ আক্রমণ?"
-                      : "Is this an insider threat or external scan?"
+                      ? "এই আক্রমণকারী কি আমার অভ্যন্তরীণ নেটওয়ার্কের নাকি বাইরের ইন্টারনেটের?"
+                      : "Is this attacker someone on my local network or outside on the internet?"
                   )
                 }
                 style={{
@@ -1128,8 +1480,8 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                   gap: "6px"
                 }}
               >
-                <User size={14} color="var(--navy)" />
-                <span>{isBn ? "ইনসাইডার নাকি বহিঃস্থ?" : "Insider or external?"}</span>
+                <Globe size={14} color="var(--navy)" />
+                <span>{isBn ? "লোকাল নাকি বহিরাগত?" : "Inside or outside network?"}</span>
               </button>
             </div>
 
@@ -1141,8 +1493,8 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={
                   isBn
-                    ? "বাংলায় বা ইংরেজিতে প্রশ্ন লিখুন (যেমন: ফায়ারওয়াল নিয়ম কী?)..."
-                    : "Ask in English or Bangla (e.g. firewall commands, attacker IP)..."
+                    ? "সহজ বাংলায় বা ইংরেজিতে প্রশ্ন লিখুন (যেমন: এই আইপি কীভাবে ব্লক করব?)..."
+                    : "Ask in plain English or বাংলা (e.g. How to block this IP? What does this mean?)..."
                 }
                 disabled={isStreaming}
                 style={{
@@ -1152,7 +1504,7 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                   border: "1px solid var(--navy-alpha-30)",
                   borderRadius: "8px",
                   color: "var(--navy)",
-                  fontSize: "15px",
+                  fontSize: "14.5px",
                   fontWeight: 600,
                   minHeight: "44px"
                 }}

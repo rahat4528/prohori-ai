@@ -124,7 +124,7 @@ export const AnalystResponseView: React.FC<AnalystResponseViewProps> = ({
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <MessageSquare size={17} color="var(--navy)" />
           <span style={{ fontSize: "14px", fontWeight: 800, color: "var(--navy)" }}>
-            {isBn ? "বিশ্লেষকের মতামত ও সিদ্ধান্ত" : "Analyst Verdict & Reasoning"}
+            {isBn ? "এআই নিরাপত্তা বিশ্লেষণ ও উত্তর" : "AI Security Analysis & Explanation"}
           </span>
         </div>
 
@@ -185,7 +185,7 @@ export const AnalystResponseView: React.FC<AnalystResponseViewProps> = ({
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <Layers size={14} color="var(--navy)" />
             <span style={{ fontSize: "12px", fontWeight: 800, color: "var(--navy-alpha-75)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
-              {isBn ? "প্রাসঙ্গিক প্রমাণ ও উদ্ধৃতি:" : "Referenced Citations:"}
+              {isBn ? "প্রাসঙ্গিক নিরাপত্তা নিয়ম ও রেফারেন্স:" : "Referenced Security Rules & Techniques:"}
             </span>
           </div>
 

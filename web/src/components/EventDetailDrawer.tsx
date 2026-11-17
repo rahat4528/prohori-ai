@@ -169,7 +169,7 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--navy)", fontWeight: 800, fontSize: "13px" }}>
               <Bot size={18} color="var(--navy)" />
-              <span>AI SOC ANALYST TRIAGE NARRATIVE</span>
+              <span>{langTab === "bn" ? "এআই নিরাপত্তা বিশ্লেষণ ও সারসংক্ষেপ" : "AI SECURITY ANALYSIS & SUMMARY"}</span>
             </div>
 
             {/* Language Tabs */}
@@ -266,7 +266,7 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
                   <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
                     <ShieldAlert size={16} color="var(--navy)" />
                     <span style={{ fontSize: "12px", color: "var(--navy)", fontWeight: 800, textTransform: "uppercase" }}>
-                      Recommended Defensive Countermeasure (HITL)
+                      {langTab === "bn" ? "প্রতিরোধের সুপারিশ (অপারেটর অনুমোদন)" : "Recommended Defensive Action (Human Approval)"}
                     </span>
                   </div>
                   <div style={{ fontSize: "13px", color: "var(--navy)", marginBottom: "12px", lineHeight: 1.5 }}>
@@ -276,7 +276,7 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
                   {actionApproved ? (
                     <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "var(--navy)", color: "var(--cream)", padding: "8px 12px", borderRadius: "6px", fontSize: "12px", fontWeight: 700 }}>
                       <CheckCircle size={16} />
-                      <span>APPROVED & ACTIVE IN PERIMETER DENYLIST</span>
+                      <span>{langTab === "bn" ? "অনুমোদিত ও ডিনাইলিস্টে সক্রিয়" : "APPROVED & ACTIVE IN PERIMETER DENYLIST"}</span>
                     </div>
                   ) : (
                     <button
@@ -285,7 +285,9 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
                       className="btn btn-primary"
                       style={{ padding: "8px 16px", fontSize: "13px", minHeight: "40px" }}
                     >
-                      {approving ? "Enforcing Block..." : "Approve Countermeasure (Human-in-the-Loop)"}
+                      {approving
+                        ? (langTab === "bn" ? "ব্লক কার্যকর হচ্ছে..." : "Enforcing Block...")
+                        : (langTab === "bn" ? "প্রতিরোধ অনুমোদন করুন" : "Approve Defensive Block")}
                     </button>
                   )}
                 </div>
@@ -294,7 +296,9 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
           ) : (
             <div style={{ textAlign: "center", padding: "16px", color: "var(--navy-alpha-75)" }}>
               <AlertOctagon size={24} style={{ margin: "0 auto 6px", display: "block", color: "var(--navy)" }} />
-              <p style={{ fontSize: "14px" }}>No AI triage record exists for this event yet.</p>
+              <p style={{ fontSize: "14px" }}>
+                {langTab === "bn" ? "এই ইভেন্টের জন্য এখনও কোনো এআই বিশ্লেষণ রেকর্ড নেই।" : "No AI security analysis record exists for this event yet."}
+              </p>
             </div>
           )}
 
@@ -306,7 +310,11 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
             style={{ width: "100%", marginTop: "14px", padding: "10px", minHeight: "42px" }}
           >
             <RefreshCw size={15} />
-            <span>{retriaging ? "Running Grounded RAG Triage..." : "Re-Run Autonomous Triage"}</span>
+            <span>
+              {retriaging
+                ? (langTab === "bn" ? "এআই বিশ্লেষণ চলছে..." : "Running AI Analysis...")
+                : (langTab === "bn" ? "পুনরায় এআই বিশ্লেষণ চালান" : "Re-Run AI Security Analysis")}
+            </span>
           </button>
         </div>
 
@@ -314,7 +322,7 @@ export const EventDetailDrawer: React.FC<EventDetailDrawerProps> = ({
         <div style={{ flex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px", color: "var(--navy-alpha-75)", textTransform: "uppercase", fontWeight: 700, marginBottom: "8px" }}>
             <FileText size={14} />
-            <span>Raw Sensor Telemetry Details</span>
+            <span>{langTab === "bn" ? "কাঁচা প্রযুক্তিগত টেলিমেট্রি (JSON)" : "Raw Technical Telemetry (JSON)"}</span>
           </div>
           <pre style={{
             background: "var(--navy)",

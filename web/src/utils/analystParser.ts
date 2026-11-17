@@ -11,6 +11,9 @@ export interface FirewallCommand {
   category: string;
   command: string;
   description: string;
+  whereToRun: string;
+  whenToRun: string;
+  whatItDoes: string;
 }
 
 export interface CitationDetail {
@@ -38,6 +41,33 @@ export interface ParsedAnalystResponse {
 
 // Canonical security knowledge definitions grounded in Prohori's curated STIX & CWE database
 export const KNOWLEDGE_CATALOG: Record<string, CitationDetail> = {
+  "T1190": {
+    id: "T1190",
+    type: "MITRE ATT&CK",
+    name: "Exploit Public-Facing Application",
+    tacticOrCategory: "Initial Access",
+    description: "Adversaries take advantage of a weakness in an Internet-facing computer or program (such as Log4Shell or injection bugs) to execute unauthorized code or gain access.",
+    relevance: "Observed payload targeting application inputs with remote code execution patterns.",
+    mitigation: "Patch vulnerable software libraries (Log4j 2.17.1+), enforce input sanitization, and restrict outbound LDAP/RMI connections."
+  },
+  "CVE-2021-44228": {
+    id: "CVE-2021-44228",
+    type: "CVE",
+    name: "Log4Shell Apache Log4j JNDI Remote Code Execution",
+    tacticOrCategory: "Remote Code Execution",
+    description: "A flaw in Apache Log4j allows remote unauthenticated attackers to execute arbitrary code via JNDI lookup strings.",
+    relevance: "Direct JNDI injection string detected targeting authentication gateway.",
+    mitigation: "Upgrade Log4j to 2.17.1 or higher, remove JndiLookup class from classpath, or set log4j2.formatMsgNoLookups=true."
+  },
+  "T1059": {
+    id: "T1059",
+    type: "MITRE ATT&CK",
+    name: "Command and Scripting Interpreter",
+    tacticOrCategory: "Execution",
+    description: "Adversaries abuse command interpreters to execute arbitrary commands, scripts, or binaries.",
+    relevance: "Attempted execution of operating system commands.",
+    mitigation: "Enforce script execution policies, restrict administrative terminal access, and monitor process creation logs."
+  },
   "T1110.001": {
     id: "T1110.001",
     type: "MITRE ATT&CK",
@@ -173,21 +203,30 @@ export function generateFirewallCommands(ip: string): FirewallCommand[] {
       title: "Linux iptables",
       category: "Host Packet Filter",
       command: `sudo iptables -A INPUT -s ${cleanIp} -j DROP`,
-      description: "Appends a filter table rule to immediately drop all incoming IPv4 packets originating from this IP at the kernel network stack."
+      description: "Appends a filter table rule to immediately drop all incoming IPv4 packets originating from this IP at the kernel network stack.",
+      whereToRun: "Run in the Linux Terminal or SSH console on your server with administrator privileges (sudo).",
+      whenToRun: "Execute immediately if this IP is actively attempting exploits, unauthorized scans, or brute force.",
+      whatItDoes: `Tells the Linux kernel to silently drop and discard all incoming network packets from ${cleanIp} without responding.`
     },
     {
       platform: "ufw",
       title: "Linux UFW (Uncomplicated Firewall)",
       category: "Application Firewall",
       command: `sudo ufw deny from ${cleanIp}`,
-      description: "Inserts a persistent denial rule into the UFW chains, rejecting all inbound connection attempts across all ports."
+      description: "Inserts a persistent denial rule into the UFW chains, rejecting all inbound connection attempts across all ports.",
+      whereToRun: "Run in the Linux Terminal on servers running Ubuntu or Debian with UFW enabled.",
+      whenToRun: "Execute when you want a persistent, reboot-safe rule that blocks this IP across every service and port.",
+      whatItDoes: `Inserts a permanent firewall rule rejecting all incoming connection requests originating from ${cleanIp}.`
     },
     {
       platform: "cisco",
       title: "Cisco Edge ACL",
       category: "Perimeter Router Access List",
       command: `access-list 100 deny ip host ${cleanIp} any`,
-      description: "Applies a standard extended access control list statement at the border gateway router to deny traffic before it traverses the edge."
+      description: "Applies a standard extended access control list statement at the border gateway router to deny traffic before it traverses the edge.",
+      whereToRun: "Run in the configuration terminal (config t) on your border router, firewall appliance, or managed switch.",
+      whenToRun: "Execute when you want to block the attacker at the edge before traffic ever reaches your application servers.",
+      whatItDoes: `Instructs the border gateway hardware to drop traffic from ${cleanIp} before it enters your internal network.`
     }
   ];
 }

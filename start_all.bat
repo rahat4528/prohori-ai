@@ -4,7 +4,7 @@ cd /d "%~dp0"
 
 echo ======================================================================
 echo          PROHORI AI - Automated Local Stack Launcher
-echo               Team Orionids - DIU CSE
+echo               Team Orionids - East West University (EWU)
 echo ======================================================================
 echo.
 
@@ -60,17 +60,20 @@ echo ======================================================================
 echo Launching Prohori AI microservices in dedicated terminal windows...
 echo ======================================================================
 
+:: Set Root Directory for child process isolation
+set "PROHORI_ROOT=%~dp0"
+
 :: Launch 1: Event API & AI Core (Port 8000)
-start "Prohori [1/4] - Event API & AI Core (Port 8000)" cmd /k "cd /d "%~dp0" && set PYTHONPATH=%~dp0api;%~dp0 && call .venv\Scripts\activate.bat && python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload"
+start "Prohori [1/4] - Event API & AI Core (Port 8000)" cmd /k "cd /d "%PROHORI_ROOT%" && set PYTHONPATH=%PROHORI_ROOT%api;%PROHORI_ROOT% && call .venv\Scripts\activate.bat && python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
 
 :: Launch 2: Deception Honeypot Sensor (Port 8081)
-start "Prohori [2/4] - Deception Honeypot (Port 8081)" cmd /k "cd /d "%~dp0" && set PYTHONPATH=%~dp0api;%~dp0 && call .venv\Scripts\activate.bat && python -m uvicorn sensors.deception.main:app --host 127.0.0.1 --port 8081 --reload"
+start "Prohori [2/4] - Deception Honeypot (Port 8081)" cmd /k "cd /d "%PROHORI_ROOT%" && set PYTHONPATH=%PROHORI_ROOT%api;%PROHORI_ROOT% && call .venv\Scripts\activate.bat && python -m uvicorn sensors.deception.main:app --host 0.0.0.0 --port 8081 --reload"
 
 :: Launch 3: API Abuse Guard Rate Limiter (Port 8082)
-start "Prohori [3/4] - API Abuse Guard (Port 8082)" cmd /k "cd /d "%~dp0" && set PYTHONPATH=%~dp0api;%~dp0 && set UPSTREAM_URL=http://127.0.0.1:8000 && set EVENT_API_URL=http://127.0.0.1:8000 && call .venv\Scripts\activate.bat && python -m uvicorn sensors.ratelimiter.main:app --host 127.0.0.1 --port 8082 --reload"
+start "Prohori [3/4] - API Abuse Guard (Port 8082)" cmd /k "cd /d "%PROHORI_ROOT%" && set PYTHONPATH=%PROHORI_ROOT%api;%PROHORI_ROOT% && set UPSTREAM_URL=http://127.0.0.1:8000 && set EVENT_API_URL=http://127.0.0.1:8000 && call .venv\Scripts\activate.bat && python -m uvicorn sensors.ratelimiter.main:app --host 0.0.0.0 --port 8082 --reload"
 
 :: Launch 4: React Operator Console (Port 3000)
-start "Prohori [4/4] - React Web Console (Port 3000)" cmd /k "cd /d "%~dp0web" && npm run dev"
+start "Prohori [4/4] - React Web Console (Port 3000)" cmd /k "cd /d "%PROHORI_ROOT%web" && npm run dev"
 
 echo.
 echo ======================================================================

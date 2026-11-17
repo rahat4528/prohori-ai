@@ -330,7 +330,8 @@ If you prefer running each service manually in its own terminal:
 ```powershell
 # Create & activate Python virtual environment:
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1       # Windows PowerShell (or source .venv/bin/activate on Linux/Mac)
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass   # Unblocks script execution in current PowerShell
+.\.venv\Scripts\Activate.ps1                                # (On Linux/Mac: source .venv/bin/activate)
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 

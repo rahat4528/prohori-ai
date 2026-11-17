@@ -4,6 +4,7 @@ Defensive Security Operations Center Event Bus
 """
 
 import asyncio
+import json
 import logging
 import os
 import sys
@@ -47,6 +48,8 @@ from .connection_mgr import ws_manager
 from .database import AsyncSessionLocal, check_db_health, get_db, init_db
 from .db_models import EventRecord, IncidentRecord
 from .models import (
+    ConnectedDeviceListResponse,
+    DeviceRegisterRequest,
     Event,
     EventCreate,
     EventListResponse,
@@ -515,19 +518,91 @@ async def reset_demo(
     return {"status": "ok", "message": "Demo state reset to clean slate"}
 
 
+@app.get(
+    "/devices",
+    response_model=ConnectedDeviceListResponse,
+    tags=["Connected Devices"],
+    summary="List all currently and recently connected devices"
+)
+async def list_connected_devices():
+    """Returns the inventory of active and recent devices connected to Prohori AI."""
+    devices = ws_manager.get_devices()
+    active = ws_manager.get_active_devices()
+    return {
+        "devices": devices,
+        "total_connected": len(active),
+        "total_registered": len(devices),
+        "timestamp": datetime.now(UTC).isoformat()
+    }
+
+
+@app.post(
+    "/devices/register",
+    tags=["Connected Devices"],
+    summary="Register or refresh a connected device over HTTP"
+)
+async def register_device_http(
+    payload: DeviceRegisterRequest,
+    request: Request
+):
+    """Registers a client device session over HTTP."""
+    client_ip = request.client.host if request.client else "127.0.0.1"
+    forwarded = request.headers.get("x-forwarded-for")
+    if forwarded:
+        client_ip = forwarded.split(",")[0].strip()
+    ua = payload.user_agent or request.headers.get("user-agent", "")
+
+    device = await ws_manager.register_device_http(
+        device_id=payload.device_id,
+        device_name=payload.device_name,
+        client_ip=client_ip,
+        user_agent=ua
+    )
+    return {
+        "status": "ok",
+        "device": device,
+        "total_connected": len(ws_manager.get_active_devices())
+    }
+
+
 @app.websocket("/stream")
 async def event_stream(websocket: WebSocket):
-    """WebSocket endpoint broadcasting newly ingested events in real-time."""
-    await ws_manager.connect(websocket)
+    """WebSocket endpoint broadcasting newly ingested events and connected device state in real-time."""
+    client_ip = websocket.client.host if websocket.client else "127.0.0.1"
+    forwarded = websocket.headers.get("x-forwarded-for")
+    if forwarded:
+        client_ip = forwarded.split(",")[0].strip()
+    user_agent = websocket.headers.get("user-agent", "")
+
+    await ws_manager.connect(websocket, client_ip=client_ip, user_agent=user_agent)
     try:
         while True:
-            # Keep connection alive; client can send pings
             data = await websocket.receive_text()
             if data == "ping" or '"ping"' in data:
+                await ws_manager.heartbeat(websocket)
                 await websocket.send_text("pong")
+                continue
+
+            try:
+                msg = json.loads(data)
+                mtype = msg.get("type")
+                if mtype == "register_device":
+                    await ws_manager.register_device(
+                        websocket=websocket,
+                        device_id=msg.get("device_id"),
+                        device_name=msg.get("device_name"),
+                        client_ip=client_ip,
+                        user_agent=msg.get("user_agent") or user_agent
+                    )
+                elif mtype == "heartbeat":
+                    await ws_manager.heartbeat(websocket, device_id=msg.get("device_id"))
+                    await websocket.send_text("pong")
+            except Exception:
+                pass
     except WebSocketDisconnect:
-        ws_manager.disconnect(websocket)
+        await ws_manager.disconnect(websocket)
     except Exception as e:
         logger.debug(f"WebSocket client error: {e}")
-        ws_manager.disconnect(websocket)
+        await ws_manager.disconnect(websocket)
+
 

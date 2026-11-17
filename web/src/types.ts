@@ -67,3 +67,14 @@ export interface AskResponse {
   provider: string;
 }
 
+export interface ConnectedDevice {
+  device_id: string;
+  device_name: string;
+  ip_address: string;
+  user_agent: string;
+  status: "online" | "offline";
+  connected_at: string;
+  last_seen: string;
+}
+
+

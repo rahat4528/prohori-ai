@@ -30,6 +30,7 @@ export const ShortcutsModal: React.FC<ShortcutsModalProps> = ({
     { key: "Shift + D", desc: isBn ? "আক্রমণ ডেমো চালান (Run Demo)" : "Run attack detection demo" },
     { key: "Shift + A", desc: isBn ? "দায়িত্বশীল এআই অডিট লগ খুলুন" : "Open Immutable Audit Log" },
     { key: "Shift + P", desc: isBn ? "৮-স্লাইড পিচ ডেক খুলুন" : "Open 8-Slide Pitch Deck" },
+    { key: "Shift + W", desc: isBn ? "সংযুক্ত ডিভাইস তালিকা প্রদর্শন" : "View Connected LAN/Wi-Fi Devices" },
     { key: "Shift + S", desc: isBn ? "জাতীয় ডেটা সার্বভৌমত্ব মোড টগল" : "Toggle Data Sovereignty Mode" },
     { key: "Shift + L", desc: isBn ? "ভাষা পরিবর্তন করুন (বাংলা / EN)" : "Toggle Language (Bangla / English)" },
     { key: "Shift + R", desc: isBn ? "ডেমো রিস্টার্ট বা পরিষ্কার করুন" : "Reset demo state to empty" },

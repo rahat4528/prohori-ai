@@ -6,7 +6,9 @@ import { AuditLogDrawer } from "./components/AuditLogDrawer";
 import { PitchDeckModal } from "./components/PitchDeckModal";
 import { ShortcutsModal } from "./components/ShortcutsModal";
 import { EventDetailDrawer } from "./components/EventDetailDrawer";
-import type { SecurityEvent, Incident } from "./types";
+import { ConnectedDevicesModal } from "./components/ConnectedDevicesModal";
+import type { SecurityEvent, Incident, ConnectedDevice } from "./types";
+import { getDeviceId, getDeviceName } from "./utils/deviceInfo";
 import { Shield, Lock, Cpu, BookOpen, ShieldAlert, Sparkles } from "lucide-react";
 
 const isHttps = typeof window !== "undefined" && window.location.protocol === "https:";
@@ -198,6 +200,9 @@ export const App: React.FC = () => {
   const [activeProvider, setActiveProvider] = useState<string>("deterministic-offline-rag");
   const [activeMobileTab, setActiveMobileTab] = useState<"alerts" | "analysis">("alerts");
   const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [connectedDevices, setConnectedDevices] = useState<ConnectedDevice[]>([]);
+  const [isDevicesModalOpen, setIsDevicesModalOpen] = useState<boolean>(false);
+  const [currentDeviceId] = useState<string>(() => getDeviceId());
 
   const wsRef = useRef<WebSocket | null>(null);
   const demoIndexRef = useRef<number>(0);
@@ -212,14 +217,22 @@ export const App: React.FC = () => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // 1. Fetch initial telemetry and sovereignty status
+  // 1. Fetch initial telemetry, devices, and sovereignty status
   const fetchTelemetry = useCallback(async () => {
     try {
-      const [eventsRes, incRes, sovRes] = await Promise.all([
+      const [eventsRes, incRes, sovRes, devicesRes] = await Promise.all([
         fetch(`${API_BASE}/events?limit=100`),
         fetch(`${API_BASE}/analyst/incidents`),
-        fetch(`${API_BASE}/sovereignty/status`).catch(() => null)
+        fetch(`${API_BASE}/sovereignty/status`).catch(() => null),
+        fetch(`${API_BASE}/devices`).catch(() => null)
       ]);
+
+      if (devicesRes && devicesRes.ok) {
+        const devData = await devicesRes.json();
+        if (devData.devices) {
+          setConnectedDevices(devData.devices);
+        }
+      }
 
       if (eventsRes.ok) {
         const data = await eventsRes.json();
@@ -283,12 +296,30 @@ export const App: React.FC = () => {
         ws.onopen = () => {
           if (!isMounted) return;
           setWsConnected(true);
+
+          // Register client device session immediately on connect
+          try {
+            ws.send(
+              JSON.stringify({
+                type: "register_device",
+                device_id: currentDeviceId,
+                device_name: getDeviceName(),
+                user_agent: navigator.userAgent
+              })
+            );
+          } catch {}
+
           // Establish periodic heartbeat every 15s to prevent NAT / proxy / browser idle socket timeouts
           clearInterval(pingInterval);
           pingInterval = setInterval(() => {
             if (ws.readyState === WebSocket.OPEN) {
               try {
-                ws.send("ping");
+                ws.send(
+                  JSON.stringify({
+                    type: "heartbeat",
+                    device_id: currentDeviceId
+                  })
+                );
               } catch {}
             }
           }, 15000);
@@ -301,7 +332,15 @@ export const App: React.FC = () => {
           }
           try {
             const data = JSON.parse(event.data);
-            if (data.type === "new_event" && data.event) {
+            if (data.type === "connection_established") {
+              if (data.devices) {
+                setConnectedDevices(data.devices);
+              }
+            } else if (data.type === "device_list_update") {
+              if (data.devices) {
+                setConnectedDevices(data.devices);
+              }
+            } else if (data.type === "new_event" && data.event) {
               setEvents((prev) => [data.event, ...prev.filter((e) => e.id !== data.event.id)]);
               // Auto-select latest streamed event for instant feedback
               setSelectedEvent(data.event);
@@ -369,7 +408,7 @@ export const App: React.FC = () => {
         } catch {}
       }
     };
-  }, [fetchTelemetry]);
+  }, [fetchTelemetry, currentDeviceId]);
 
   // 3. Trigger simulated attack telemetry (single "Run demo" action - cycles through diverse threat spectrum)
   const handleTriggerDemo = useCallback(async () => {
@@ -525,6 +564,7 @@ export const App: React.FC = () => {
         setIsPitchDeckOpen(false);
         setIsShortcutsOpen(false);
         setIsRawDrawerOpen(false);
+        setIsDevicesModalOpen(false);
       } else if (e.key === "?" || (e.shiftKey && e.key === "/")) {
         e.preventDefault();
         setIsShortcutsOpen((prev) => !prev);
@@ -537,6 +577,9 @@ export const App: React.FC = () => {
       } else if (e.shiftKey && e.key === "P") {
         e.preventDefault();
         setIsPitchDeckOpen((prev) => !prev);
+      } else if (e.shiftKey && e.key === "W") {
+        e.preventDefault();
+        setIsDevicesModalOpen((prev) => !prev);
       } else if (e.shiftKey && e.key === "L") {
         e.preventDefault();
         setGlobalLanguage((prev) => (prev === "en" ? "bn" : "en"));
@@ -567,6 +610,8 @@ export const App: React.FC = () => {
         onOpenShortcuts={() => setIsShortcutsOpen(true)}
         activeProvider={activeProvider}
         apiBase={API_BASE}
+        connectedDevicesCount={connectedDevices.filter((d) => d.status === "online").length || 1}
+        onOpenConnectedDevices={() => setIsDevicesModalOpen(true)}
       />
 
       {/* 2. Mobile Tab Switcher (< 900px) */}
@@ -707,7 +752,7 @@ export const App: React.FC = () => {
             {isBn ? "কাঁচা ফরেনসিক তথ্য" : "Raw Forensic Event"}
           </button>
           <span className="font-mono" style={{ color: "var(--cream-alpha-65)", fontSize: "12px" }}>
-            [? : Shortcuts | Shift+D: Demo | Shift+A: Audit | Shift+P: Pitch Deck | Shift+R: Reset]
+            [? : Shortcuts | Shift+D: Demo | Shift+A: Audit | Shift+P: Pitch Deck | Shift+W: Devices | Shift+R: Reset]
           </span>
         </div>
       </footer>
@@ -729,6 +774,20 @@ export const App: React.FC = () => {
         isOpen={isShortcutsOpen}
         onClose={() => setIsShortcutsOpen(false)}
         globalLanguage={globalLanguage}
+      />
+
+      <ConnectedDevicesModal
+        isOpen={isDevicesModalOpen}
+        onClose={() => setIsDevicesModalOpen(false)}
+        devices={connectedDevices}
+        currentDeviceId={currentDeviceId}
+        globalLanguage={globalLanguage}
+        onRefresh={() => {
+          fetch(`${API_BASE}/devices`)
+            .then((r) => (r.ok ? r.json() : null))
+            .then((d) => d?.devices && setConnectedDevices(d.devices))
+            .catch(() => {});
+        }}
       />
 
       {isRawDrawerOpen && (

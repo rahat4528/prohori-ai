@@ -11,7 +11,8 @@ import {
   BookOpen,
   Keyboard,
   Cpu,
-  RotateCcw
+  RotateCcw,
+  Wifi
 } from "lucide-react";
 
 interface HeaderProps {
@@ -27,6 +28,8 @@ interface HeaderProps {
   onOpenShortcuts: () => void;
   activeProvider?: string;
   apiBase?: string;
+  connectedDevicesCount?: number;
+  onOpenConnectedDevices?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -41,7 +44,9 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleSovereignty,
   onOpenShortcuts,
   activeProvider = "deterministic-offline-rag",
-  apiBase = "http://localhost:8000"
+  apiBase = "http://localhost:8000",
+  connectedDevicesCount = 1,
+  onOpenConnectedDevices
 }) => {
   const [isRunningDemo, setIsRunningDemo] = useState<boolean>(false);
   const [isMoreOpen, setIsMoreOpen] = useState<boolean>(false);
@@ -124,6 +129,35 @@ export const Header: React.FC<HeaderProps> = ({
           />
           {wsConnected ? (isBn ? "টেলিমেট্রি লাইভ" : "STREAM LIVE") : (isBn ? "পুনঃসংযোগ..." : "STREAM STANDBY")}
         </span>
+
+        {/* Live Connected LAN/Wi-Fi Devices Indicator */}
+        {onOpenConnectedDevices && (
+          <button
+            onClick={onOpenConnectedDevices}
+            className="btn"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              fontSize: "12px",
+              fontWeight: 800,
+              color: "var(--cream)",
+              padding: "3px 10px",
+              borderRadius: "4px",
+              background: "var(--cream-alpha-15)",
+              border: "1px solid var(--cream-alpha-30)",
+              cursor: "pointer",
+              letterSpacing: "0.02em"
+            }}
+            title={isBn ? "সংযুক্ত ডিভাইসসমূহ পর্যালোচনা করুন" : "View connected LAN / Wi-Fi devices"}
+            aria-label={isBn ? `${connectedDevicesCount}টি ডিভাইস সংযুক্ত` : `${connectedDevicesCount} Connected Devices`}
+          >
+            <Wifi size={13} color="var(--cream)" />
+            <span>
+              {connectedDevicesCount} {isBn ? "ডিভাইস" : connectedDevicesCount === 1 ? "Device" : "Devices"}
+            </span>
+          </button>
+        )}
       </div>
 
       {/* 2. Center: Honest AI Engine Badge (Cream on Navy) */}
@@ -296,6 +330,28 @@ export const Header: React.FC<HeaderProps> = ({
                   </span>
                 </div>
               </button>
+
+              {/* Connected Devices */}
+              {onOpenConnectedDevices && (
+                <button
+                  onClick={() => {
+                    setIsMoreOpen(false);
+                    onOpenConnectedDevices();
+                  }}
+                  className="dropdown-item"
+                  role="menuitem"
+                >
+                  <Wifi size={16} color="var(--cream)" />
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    <span style={{ fontWeight: 700, color: "var(--cream)" }}>
+                      {isBn ? "সংযুক্ত ডিভাইসসমূহ" : "Connected Devices"}
+                    </span>
+                    <span style={{ fontSize: "11px", color: "var(--cream-alpha-75)" }}>
+                      {connectedDevicesCount} {isBn ? "টি ডিভাইস সংযুক্ত" : connectedDevicesCount === 1 ? "device online" : "devices online"}
+                    </span>
+                  </div>
+                </button>
+              )}
 
               {/* Pitch Deck */}
               <button

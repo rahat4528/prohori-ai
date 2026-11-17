@@ -67,3 +67,30 @@ class EventListResponse(BaseModel):
     offset: int
     events: list[Event]
 
+
+class DeviceRegisterRequest(BaseModel):
+    """Client device registration request."""
+    device_id: str = Field(..., description="Unique persistent client device identifier")
+    device_name: str | None = Field(default=None, description="Human readable device name/platform")
+    user_agent: str | None = Field(default=None, description="Client User-Agent string")
+
+
+class ConnectedDevice(BaseModel):
+    """Model representing an active or recent client device connected to Prohori AI."""
+    device_id: str
+    device_name: str
+    ip_address: str
+    user_agent: str = ""
+    status: str = Field(default="online", description="online or offline")
+    connected_at: str
+    last_seen: str
+
+
+class ConnectedDeviceListResponse(BaseModel):
+    """List of connected client devices."""
+    devices: list[ConnectedDevice]
+    total_connected: int
+    total_registered: int
+    timestamp: str
+
+

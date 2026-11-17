@@ -315,6 +315,11 @@ In PowerShell inside the `prohori-ai` directory, run:
 powershell -ExecutionPolicy Bypass -File scripts/run_all.ps1
 ```
 
+> [!TIP]
+> **Home Wi-Fi / LAN Multi-Device Access**:  
+> The stack binds to `0.0.0.0` and dynamically detects hostnames. Once launched, any phone, tablet, or PC connected to the same Wi-Fi can open the console via `http://<YOUR-SERVER-IP>:3000` (e.g. `http://192.168.0.198:3000`).  
+> *Note: If accessing from another device, ensure inbound firewall ports `3000, 8000, 8081, 8082` are allowed in Windows Firewall.*
+
 ---
 
 #### 🛠️ Method C: Manual Setup & Launch (Terminal by Terminal)

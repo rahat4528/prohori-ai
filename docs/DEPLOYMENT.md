@@ -121,6 +121,15 @@ This is the verified, zero-cloud baseline used for hackathon evaluation and air-
    powershell -ExecutionPolicy Bypass -File scripts/run_all.ps1
    ```
 
+3. **Home Wi-Fi / Local Network (LAN) Multi-Device Access**:
+   All services bind to `0.0.0.0` by default. To access the platform from any phone, tablet, or laptop on the same local Wi-Fi:
+   - Identify server Wi-Fi IP: `ipconfig` (e.g. `192.168.0.198`).
+   - Allow ports in Windows Firewall (Admin):
+     ```powershell
+     New-NetFirewallRule -DisplayName "Prohori AI SOC" -Direction Inbound -LocalPort 3000,8000,8081,8082 -Protocol TCP -Action Allow
+     ```
+   - Connect from any device browser on the Wi-Fi at `http://<SERVER-IP>:3000` (e.g. `http://192.168.0.198:3000`).
+
 #### Linux / macOS / Manual Terminal Launch
 Open 4 terminal windows:
 ```bash

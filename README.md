@@ -267,6 +267,21 @@ prohori-ai/
 > 💡 **Testing on a fresh or unfamiliar computer?** Follow our comprehensive, beginner-friendly guide:  
 > 👉 [**Step-by-Step Clean PC Testing Guide (`docs/HOW_TO_TEST_LOCALLY.md`)**](docs/HOW_TO_TEST_LOCALLY.md)
 
+### 🚀 Universal 1-Click Launch (Runs from ANY folder in PowerShell)
+
+Copy and paste this single line into your PowerShell terminal:
+
+```powershell
+if (Test-Path ".git") { git pull } elseif (Test-Path "prohori-ai\.git") { cd prohori-ai; git pull } else { git clone https://github.com/rahat4528/prohori-ai.git; cd prohori-ai }; .\start_all.bat
+```
+
+> 💡 **What this line does automatically:**
+> - Detects whether you are already inside `prohori-ai`, in the parent directory (`C:\Users\YourName`), or starting on a clean computer.
+> - Automatically clones or pulls the latest code.
+> - Enters the project root folder and executes `start_all.bat` seamlessly.
+
+---
+
 ### 📋 Prerequisites Check (Do this first!)
 Make sure these free tools are installed on your computer:
 1. **Git**: Verify by running `git --version`
@@ -275,7 +290,7 @@ Make sure these free tools are installed on your computer:
 
 ---
 
-### Step 1: Clone and Enter the Directory
+### Step 1: Clone and Enter the Directory (Manual Alternative)
 
 Open your terminal (PowerShell, Command Prompt, or bash).
 
@@ -289,7 +304,7 @@ git clone https://github.com/rahat4528/prohori-ai.git
 cd prohori-ai
 ```
 
-> ⚠️ **CRITICAL NOTE**: You **MUST** run all subsequent commands from inside the `prohori-ai` folder! If your terminal prompt shows `C:\Users\YourName>` instead of `C:\Users\YourName\prohori-ai>`, the launchers and Python modules cannot locate project files.
+> ⚠️ **CRITICAL NOTE**: You **MUST** run all subsequent commands from inside the `prohori-ai` folder! If your terminal prompt shows `C:\Users\YourName>` instead of `C:\Users\YourName\prohori-ai>`, running `.\start_all.bat` or `.\run.ps1` will fail because those files live inside `prohori-ai\`.
 
 ---
 
@@ -299,11 +314,11 @@ Choose whichever launch method you prefer:
 
 #### ⚡ Method A: Automated One-Click Launcher (Windows — Easiest & Recommended)
 
-Simply run in your terminal:
+From inside the `prohori-ai` directory, run:
 ```cmd
-.\start_all.bat
+if (Test-Path "prohori-ai") { cd prohori-ai }; .\start_all.bat
 ```
-*(Or double-click `start_all.bat` in Windows File Explorer)*
+*(Or double-click `start_all.bat` directly in Windows File Explorer)*
 
 **Why this is 100% foolproof:**
 - **Zero Script Policy Errors**: Runs in native Windows Command Prompt, completely avoiding PowerShell `PSSecurityException` and script restrictions.
@@ -317,7 +332,7 @@ Simply run in your terminal:
 
 If you prefer running inside a PowerShell terminal:
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\run.ps1
+if (Test-Path "prohori-ai") { cd prohori-ai }; powershell -ExecutionPolicy Bypass -File .\run.ps1
 ```
 *(Or `powershell -ExecutionPolicy Bypass -File .\scripts\run_all.ps1`)*
 

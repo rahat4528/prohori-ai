@@ -25,10 +25,11 @@ dist/
 .vscode/
 
 # DB
-data/
+/data/
 pgdata/
 *.db
 *.sqlite3
+!knowledge/data/
 
 # Video & Media
 *.mp4

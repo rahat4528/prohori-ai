@@ -1,101 +1,36 @@
-# Prohori AI — 10-Minute Final Submission Checklist
+# Prohori AI — Actionable Human Checklist for Hackathon Submission
 
-**Team Orionids · Department of Computer Science & Engineering, East West University**  
-**International AI Builders Congress 2026 (Venue: Daffodil International University) · Domain: InfraSphere AI &rarr; SecureAI**  
+**Team**: Team Orionids · Department of Computer Science & Engineering, East West University  
+**Host Venue**: Daffodil International University (DIU), Dhaka, Bangladesh  
+**Competition**: International AI Builders Congress 2026 (InfraSphere AI &rarr; SecureAI)  
 **Target Repository**: [https://github.com/rahat4528/prohori-ai](https://github.com/rahat4528/prohori-ai)
 
 > [!IMPORTANT]
-> All software engineering, multi-port defensive sensors, deterministic triage, local Ollama integration, decoupled event ingestion, UI simplification, test suites (43/43 passed), and empirical benchmark verifications are **100% complete and verified**.
-> For a clean step-by-step installation and local testing guide on another PC, see [`docs/HOW_TO_TEST_LOCALLY.md`](HOW_TO_TEST_LOCALLY.md).
-> Follow this sequential 10-minute checklist to complete the human-only items and finalize your submission.
+> All automated backend engineering, deterministic triage, local Ollama integration, UI simplification, 48/48 test suite, strict 90/10 palette compliance, and technical documentation are **100% complete and verified**.
+> The remaining items below require human decisions, personal identity details, or physical recording. Follow this checklist to complete your submission in minutes.
 
 ---
 
-## ⏱️ The 10-Minute Action Checklist
+## ⏱️ Remaining Human Action Items Checklist
 
-### Task 1: Fill Official Team Roster (~2 minutes)
-Open [`docs/TEAM.md`](TEAM.md) and replace the `[FILL]` placeholders:
-1. **Member 1 (Lead)**: Name, role (e.g. Lead System Architect), credibility line (e.g. CSE Senior, built FastAPI event bus).
-2. **Member 2**: Name, role (e.g. Frontend & UI Engineer), credibility line (e.g. Built React 19 operator console).
-3. **Member 3**: Name, role (e.g. AI & Cyber Defense Specialist), credibility line (e.g. Curated MITRE ATT&CK & STIX datasets).
-4. **Pitch slot duration**: Enter your allocated presentation minutes (e.g. `3`, `4`, or `5` minutes). See the 4-part 90% segment budget table in [`docs/PITCH_DECK.md`](PITCH_DECK.md#a-4-part-segment-budget-target-finish-at-90-of-slot) (calibrated to measured ~7.2s demo execution).
-5. **Bonus signals**: Specify female team member or diaspora advisor if applicable; otherwise leave as `"none"`.
-
-*(Once filled, [`README.md`](../README.md) and [`docs/PITCH_DECK.md`](PITCH_DECK.md) automatically align).*
-
----
-
-### Task 2: Native Bengali Speaker Sign-Off (~3 minutes)
-Open [`docs/BANGLA_REVIEW.md`](BANGLA_REVIEW.md):
-1. Have a teammate who reads native Bangla inspect the 10 rows in the **Review Matrix** and the **UI Strings Table**.
-   - Note: Rows 01–05 are from the deterministic engine (grammatically sound).
-   - Rows 06–10 are from the 3B Llama 3.2 model running on CPU (contain synthetic phrasing; note any corrections).
-2. Check the `[ ]` boxes for **Accurate?**, **Fluent?**, and **Terminology OK?**.
-3. Fill the **Reviewer Sign-Off Block** at the bottom of [`docs/BANGLA_REVIEW.md`](BANGLA_REVIEW.md):
-   - Reviewer Name, Affiliation, Date, and Signature line.
-4. In [`docs/FINAL_SIGNOFF.md`](FINAL_SIGNOFF.md), change `[ ] Gate 2: Bengali Linguistic Review Signed` to `[x]`.
+| Task | Item & Action Required | Target File | Estimated Time | Status |
+|:---:|---|---|:---:|:---:|
+| **1** | **Fill Official Team Orionids Roster**<br>Replace `[FILL]` placeholders with real names, technical roles, and one-line credibility statements for all 3 members. | [`docs/TEAM.md`](file:///c:/diu/docs/TEAM.md) | ~2 mins | `[ ] PENDING` |
+| **2** | **Specify Pitch Slot Length & Format**<br>Verify your allocated presentation slot (e.g. 3, 4, or 5 minutes) and presentation format (team vs solo). | [`docs/TEAM.md`](file:///c:/diu/docs/TEAM.md#L36-L41) | ~1 min | `[ ] PENDING` |
+| **3** | **Declare Bonus Signals (If Applicable)**<br>Specify female team member or NRB/diaspora advisor if applicable to claim Congress bonus points; otherwise set to `"none"`. | [`docs/TEAM.md`](file:///c:/diu/docs/TEAM.md#L28-L33) | ~1 min | `[ ] PENDING` |
+| **4** | **Native Bengali Speaker Sign-Off**<br>Have a teammate who reads Bangla inspect the 10 rows in the review matrix and complete the sign-off block at the bottom. | [`docs/BANGLA_REVIEW.md`](file:///c:/diu/docs/BANGLA_REVIEW.md#L90-L110) | ~5 mins | `[ ] PENDING` |
+| **5** | **Record 60–90s Backup Video & Upload Link**<br>Follow [`docs/DEMO_VIDEO_SCRIPT.md`](file:///c:/diu/docs/DEMO_VIDEO_SCRIPT.md), record screen on `http://localhost:3000` using `Win + Alt + R`, upload to YouTube (Unlisted) or Google Drive (Public Viewer), and test the link in Incognito. | [`docs/DEMO_VIDEO_SCRIPT.md`](file:///c:/diu/docs/DEMO_VIDEO_SCRIPT.md) | ~8 mins | `[ ] PENDING` |
+| **6** | **Fill AI Dev Tools in Submission Form**<br>List the exact AI coding assistants and tools your team used (e.g. Claude Code, Antigravity, GitHub Copilot, VS Code) in the AI Detail Usage section. | [`docs/SUBMISSION_FORM_ANSWERS.md`](file:///c:/diu/docs/SUBMISSION_FORM_ANSWERS.md#L145-L160) | ~2 mins | `[ ] PENDING` |
+| **7** | **Repository Visibility Decision**<br>Decide whether to make the repo public or add judges as private collaborators. (Review the secrets scan and git status before executing). | Terminal / GitHub | ~2 mins | `[ ] PENDING` |
+| **8** | **Copy-Paste Form Answers**<br>Copy answers from `docs/SUBMISSION_FORM_ANSWERS.md` into the competition portal (AI Detail Usage: 110 pts; Data Lifecycle: 25 pts). | Competition Portal | ~5 mins | `[ ] PENDING` |
+| **9** | **Publish LinkedIn Post (Optional / Social)**<br>Copy the verified draft from `docs/LINKEDIN_POST.md`, tag your teammates and institution, attach screenshots, and post. | [`docs/LINKEDIN_POST.md`](file:///c:/diu/docs/LINKEDIN_POST.md) | ~3 mins | `[ ] PENDING` |
+| **10** | **Lead Developer Final Sign-Off**<br>Sign the final certification block at the bottom of the sign-off document. | [`docs/FINAL_SIGNOFF.md`](file:///c:/diu/docs/FINAL_SIGNOFF.md#L106-L112) | ~1 min | `[ ] PENDING` |
 
 ---
 
-### Task 3: Record the 75-Second Narrated Video (~3 minutes)
-Follow the step-by-step protocol in [`docs/BACKUP_VIDEO_GUIDE.md`](BACKUP_VIDEO_GUIDE.md):
-1. **Launch Stack**: Run `run_dev.bat` or `scripts/run_all.ps1`.
-2. **Open Browser**: Navigate to [http://localhost:3000](http://localhost:3000) (press `F11` for clean full-screen).
-3. **Record**: Press `Win + Alt + R` (Windows Game Bar) or use OBS Studio.
-4. **Follow the Narration Script**:
-   - `0:00 – 0:15`: Show 2-column console, live status dot, and header controls.
-   - `0:15 – 0:35`: Click **"Run demo"** (`Shift+D`). Show incoming alert card in left feed.
-   - `0:35 – 0:50`: Highlight right panel (What Happened narrative, MITRE citation chip `[T1110.001]`, Bengali reasoning).
-   - `0:50 – 0:65`: Click green **"🛡️ প্রতিরক্ষা অনুমোদন করুন (Approve Defense)"** button. Point to instant inline audit confirmation card.
-   - `0:65 – 0:75`: Press `Shift+A` to show the append-only Audit Log drawer, then `Shift+P` to reveal the pitch deck.
-5. **Save Copies**:
-   - Save the recording to `docs/backup/prohori_demo_backup.mp4` and copy to a backup USB drive for the competition venue.
-6. In [`docs/FINAL_SIGNOFF.md`](FINAL_SIGNOFF.md), tick `[x] Gate 3: Live Teammate Pitch Dry-Run Completed`.
+## 🚦 Gate Status Summary
 
----
-
-### Task 4: Decide Repository Visibility & Push to Remote (~2 minutes)
-
-The repository currently resides on your GitHub account as a private repository (`https://github.com/rahat4528/prohori-ai`). Check the competition guidelines for submission requirements:
-
-#### Option A: Make Repository Public (Standard for Open Hackathons)
-Run the following GitHub CLI command from your PowerShell terminal:
-```powershell
-gh repo edit rahat4528/prohori-ai --visibility public --yes
-```
-
-#### Option B: Keep Private and Add Judges / Organizers as Collaborators
-If the competition requires private repositories with invited evaluators:
-```powershell
-# Add evaluator or judge by their GitHub username:
-gh api -X PUT /repos/rahat4528/prohori-ai/collaborators/[JUDGE_GITHUB_USERNAME] -f permission=pull
-```
-
-#### Final Push Verification
-To push all certified commits from branch `ui-simplify` to `main` on GitHub:
-```powershell
-# Merge ui-simplify cleanly into main:
-git checkout main
-git merge ui-simplify --no-edit
-
-# Push main and ui-simplify to remote:
-git push origin main
-git push origin ui-simplify
-
-# Confirm remote status:
-gh repo view rahat4528/prohori-ai
-```
-
----
-
-## 🎯 Summary of Gates in [`docs/FINAL_SIGNOFF.md`](FINAL_SIGNOFF.md)
-
-| Gate | Status | Owner | Evidence |
-|---|---|---|---|
-| **Gate 1: Real LLM Inference & Decoupling** | **CERTIFIED** | Automated Agent | Tested on Ollama `llama3.2`, JSON grammar failover, benchmark in `docs/evidence/llm_runs.md`. Ingestion decoupled to 35ms. |
-| **Gate 2: Bengali Linguistic Review** | **PENDING** | Native Teammate | Awaiting reviewer name & sign-off in `docs/BANGLA_REVIEW.md`. |
-| **Gate 3: Live Pitch Rehearsal & Backup Video** | **PENDING** | Presenter | Awaiting 75s narrated MP4 recording via `docs/BACKUP_VIDEO_GUIDE.md`. |
-| **Gate 4: Official Team Orionids Roster** | **PENDING** | Team Lead | Awaiting 3 student names and roles in `docs/TEAM.md`. |
-
-Once Tasks 1, 2, 3, and 4 are done, all 4 gates are signed and Prohori AI is **100% READY FOR SUBMISSION**!
-
+- **Gate 1: Real LLM Inference & Decoupling**: ✅ **CERTIFIED** (48/48 tests pass; Ollama CPU latency benchmarked; decoupled 35ms ingestion).
+- **Gate 2: Bengali Linguistic Review**: ⏳ **PENDING** (Awaiting teammate sign-off in `docs/BANGLA_REVIEW.md`).
+- **Gate 3: Official Team Orionids Roster**: ⏳ **PENDING** (Awaiting 3 member names in `docs/TEAM.md`).
+- **Gate 4: Narrated Backup Demo Video**: ⏳ **PENDING** (Awaiting screen recording and upload URL).

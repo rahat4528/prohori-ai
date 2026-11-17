@@ -9,6 +9,7 @@ Unit and integration tests for Prohori AI Security Audit Layers:
 
 import os
 import secrets
+
 import pytest
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
@@ -16,8 +17,6 @@ from httpx import ASGITransport, AsyncClient
 os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///:memory:"
 
 from app.database import Base, engine
-from app.audit import AuditRecordModel  # Ensure audit model registered in Base.metadata
-from app.db_models import EventRecord, IncidentRecord
 from app.main import app
 
 

@@ -164,8 +164,8 @@ class DeterministicOfflineProvider(LLMProvider):
                     f"Assessed as single exploratory probe."
                 )
                 bn_narrative = (
-                    f"ডিকয় সারফেসে বিচ্ছিন্ন একক প্রমাণীকরণ ব্যর্থতা রেকর্ড করা হয়েছে। "
-                    f"এটি প্রাথমিক অনুসন্ধানমূলক পরীক্ষা হিসেবে চিহ্নিত।"
+                    "ডিকয় সারফেসে বিচ্ছিন্ন একক প্রমাণীকরণ ব্যর্থতা রেকর্ড করা হয়েছে। "
+                    "এটি প্রাথমিক অনুসন্ধানমূলক পরীক্ষা হিসেবে চিহ্নিত।"
                 )
                 recommendation = "Log authentication event and maintain passive monitoring."
 
@@ -203,10 +203,10 @@ class DeterministicOfflineProvider(LLMProvider):
             else:
                 severity = "low"
                 en_narrative = (
-                    f"Minor request burst throttled by token-bucket rate limiter. Normal system operations unaffected."
+                    "Minor request burst throttled by token-bucket rate limiter. Normal system operations unaffected."
                 )
                 bn_narrative = (
-                    f"টোকেন-বাকেট রেট লিমিটার দ্বারা সাময়িক অনুরোধের বৃদ্ধি নিয়ন্ত্রণে রাখা হয়েছে। সিস্টেম স্বাভাবিক রয়েছে।"
+                    "টোকেন-বাকেট রেট লিমিটার দ্বারা সাময়িক অনুরোধের বৃদ্ধি নিয়ন্ত্রণে রাখা হয়েছে। সিস্টেম স্বাভাবিক রয়েছে।"
                 )
                 recommendation = "Continue passive rate-limit enforcement."
 
@@ -253,7 +253,7 @@ class DeterministicOfflineProvider(LLMProvider):
                 f"No malicious indicator observed."
             )
             bn_narrative = (
-                f"স্বাভাবিক পেরিমিটার সার্ভিস টেলিমেট্রি ইনডেক্স করা হয়েছে। কোনো ক্ষতিকর আচরণ শনাক্ত হয়নি।"
+                "স্বাভাবিক পেরিমিটার সার্ভিস টেলিমেট্রি ইনডেক্স করা হয়েছে। কোনো ক্ষতিকর আচরণ শনাক্ত হয়নি।"
             )
             recommendation = "Continue passive perimeter monitoring."
 

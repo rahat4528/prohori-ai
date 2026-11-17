@@ -1,5 +1,5 @@
 # Prohori AI - All-in-One Local Development Stack Launcher (PowerShell)
-# Author: Team Orionids - East West University (CSE)
+# Author: Team Orionids
 
 $ErrorActionPreference = "Stop"
 

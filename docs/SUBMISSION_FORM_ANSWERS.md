@@ -1,6 +1,6 @@
 # Prohori AI — Official Hackathon Form Submission Answers
 
-**Team**: Team Orionids · Department of Computer Science & Engineering, East West University  
+**Team**: Team Orionids  
 **Host Institution / Venue**: Daffodil International University (DIU), Dhaka, Bangladesh  
 **Competition**: International AI Builders Congress 2026 (InfraSphere AI &rarr; SecureAI)  
 **Verification Baseline**: Code-grounded against repository commit `3c61bd7` (48/48 tests passing)

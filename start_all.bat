@@ -8,7 +8,7 @@ if "%PROHORI_ROOT:~-1%"=="\" set "PROHORI_ROOT=%PROHORI_ROOT:~0,-1%"
 
 echo ======================================================================
 echo          PROHORI AI - Automated Local Stack Launcher
-echo               Team Orionids - East West University (EWU)
+echo                           Team Orionids
 echo ======================================================================
 echo.
 

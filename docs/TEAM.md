@@ -8,7 +8,6 @@
 ## 1. Academic & Institutional Identity
 
 - **Team Name**: Team Orionids
-- **Institution**: East West University (EWU), Dhaka, Bangladesh
 - **Competition Host / Venue**: Daffodil International University (DIU), Dhaka, Bangladesh
 - **Department**: Department of Computer Science & Engineering (CSE)
 - **Track**: InfraSphere AI &rarr; SecureAI (Defensive Cybersecurity)
@@ -19,9 +18,9 @@
 
 | Member | Full Name | Technical Role | Hackathon Credibility & Contributions | Affiliation |
 |:---:|---|---|---|---|
-| **01** | `[FILL: name]` | `[FILL: role]` | `[FILL: credibility line]` | Dept. of CSE, East West University |
-| **02** | `[FILL: name]` | `[FILL: role]` | `[FILL: credibility line]` | Dept. of CSE, East West University |
-| **03** | `[FILL: name]` | `[FILL: role]` | `[FILL: credibility line]` | Dept. of CSE, East West University |
+| **01** | `[FILL: name]` | `[FILL: role]` | `[FILL: credibility line]` | Team Orionids · Dept. of CSE |
+| **02** | `[FILL: name]` | `[FILL: role]` | `[FILL: credibility line]` | Team Orionids · Dept. of CSE |
+| **03** | `[FILL: name]` | `[FILL: role]` | `[FILL: credibility line]` | Team Orionids · Dept. of CSE |
 
 ---
 

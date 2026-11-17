@@ -1,6 +1,6 @@
 # Prohori AI — Submission Evidence Matrix & Technical Grounding Audit
 
-**Team**: Team Orionids · Department of Computer Science & Engineering, East West University  
+**Team**: Team Orionids  
 **Event**: International AI Builders Congress 2026 (Host: Daffodil International University)  
 **Track**: InfraSphere AI &rarr; SecureAI  
 **Audit Date**: November 17, 2026  

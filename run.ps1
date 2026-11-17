@@ -1,5 +1,5 @@
 # Prohori AI - All-in-One Local Development Stack Launcher (PowerShell)
-# Author: Team Orionids - East West University (CSE)
+# Author: Team Orionids
 # Competition: International AI Builders Congress 2026 (InfraSphere AI -> SecureAI)
 
 $ErrorActionPreference = "Stop"

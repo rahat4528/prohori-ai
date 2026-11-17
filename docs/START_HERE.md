@@ -1,6 +1,6 @@
 # Prohori AI — Actionable Human Checklist for Hackathon Submission
 
-**Team**: Team Orionids · Department of Computer Science & Engineering, East West University  
+**Team**: Team Orionids  
 **Host Venue**: Daffodil International University (DIU), Dhaka, Bangladesh  
 **Competition**: International AI Builders Congress 2026 (InfraSphere AI &rarr; SecureAI)  
 **Target Repository**: [https://github.com/rahat4528/prohori-ai](https://github.com/rahat4528/prohori-ai)

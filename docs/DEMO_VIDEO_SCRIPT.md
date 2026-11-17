@@ -1,6 +1,6 @@
 # Prohori AI ("প্রহরী") — Official 3-Minute Video Pitch Script & Narration Guide
 
-**Team**: Team Orionids · Department of Computer Science & Engineering, East West University  
+**Team**: Team Orionids  
 **Event**: International AI Builders Congress 2026 (Venue: Daffodil International University)  
 **Track**: InfraSphere AI &rarr; SecureAI  
 **Target Duration**: Exactly 180 seconds (3 minutes)  

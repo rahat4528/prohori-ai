@@ -1,6 +1,6 @@
 # Prohori AI ("প্রহরী") — Complete Project & Engineering Manual
 
-**Team Orionids · Department of Computer Science & Engineering, East West University**  
+**Team Orionids · Department of Computer Science & Engineering**  
 **International AI Builders Congress 2026 (Venue: Daffodil International University) · Track: InfraSphere AI &rarr; SecureAI**  
 **GitHub Repository**: [https://github.com/rahat4528/prohori-ai](https://github.com/rahat4528/prohori-ai)  
 **Live Production Console**: [https://prohori-ai.vercel.app](https://prohori-ai.vercel.app)  

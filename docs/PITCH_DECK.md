@@ -223,7 +223,7 @@ Empirically calibrated using the live dress rehearsal measurements (tool executi
 
 ### A. Independent Student Research & Standards Alignment
 
-Prohori AI was conceptualized and built independently by **Team Orionids** (East West University, Department of Computer Science & Engineering) for the competition hosted at Daffodil International University, without an assigned industry corporate mentor. In lieu of commercial mentorship, the team strictly aligned the engineering architecture with international open defensive frameworks and rigorous academic peer reviews:
+Prohori AI was conceptualized and built independently by **Team Orionids** for the competition hosted at Daffodil International University, without an assigned industry corporate mentor. In lieu of commercial mentorship, the team strictly aligned the engineering architecture with international open defensive frameworks and rigorous academic peer reviews:
 
 | Foundation Area | Guidance Framework | Architectural Principle Enforced | Status in Code |
 |---|---|---|---|
@@ -236,13 +236,13 @@ Prohori AI was conceptualized and built independently by **Team Orionids** (East
 
 ## 5. Team Orionids Roster & Academic Credentials
 
-All team members are undergraduate students from **East West University (EWU)**, **Department of Computer Science & Engineering (CSE)**:
+All team members are undergraduate engineers from **Team Orionids**, **Department of Computer Science & Engineering (CSE)**:
 
 | Member / Role | Focus Area | Hackathon Credibility & Contributions | Academic Affiliation |
 |---|---|---|---|
-| **Member 1: [FILL: name]** | [FILL: role] | [FILL: one credibility line] | Department of CSE, East West University |
-| **Member 2: [FILL: name]** | [FILL: role] | [FILL: one credibility line] | Department of CSE, East West University |
-| **Member 3: [FILL: name]** | [FILL: role] | [FILL: one credibility line] | Department of CSE, East West University |
+| **Member 1: [FILL: name]** | [FILL: role] | [FILL: one credibility line] | Team Orionids · Dept. of CSE |
+| **Member 2: [FILL: name]** | [FILL: role] | [FILL: one credibility line] | Team Orionids · Dept. of CSE |
+| **Member 3: [FILL: name]** | [FILL: role] | [FILL: one credibility line] | Team Orionids · Dept. of CSE |
 
 **Bonus Signals Checklist (per Congress Guidelines):**
 - Female team member: `[FILL: None - all male]`

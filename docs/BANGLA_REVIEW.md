@@ -1,6 +1,6 @@
 # Prohori AI — Bilingual (Bengali & English) Native Speaker Review Pack
 
-> **Review Notice**: Automated AI coding agents cannot verify linguistic fluency, cultural naturalness, or subjective clarity of native Bengali text. This document is the official review pack prepared for human verification by a native Bengali speaker from **Team Orionids (East West University, Dept. of CSE)**.
+> **Review Notice**: Automated AI coding agents cannot verify linguistic fluency, cultural naturalness, or subjective clarity of native Bengali text. This document is the official review pack prepared for human verification by a native Bengali speaker from **Team Orionids (Dept. of CSE)**.
 > **DO NOT SUBMIT AS VERIFIED** until a human reviewer has evaluated each row, filled the checklist columns, and signed at the bottom.
 
 ---

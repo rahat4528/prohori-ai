@@ -24,9 +24,9 @@ Here is how Prohori AI solves this:
 🤝 5. Human-in-the-Loop Governance: The AI recommends containment countermeasures (such as iptables, UFW, or Cisco ACL drops), but never executes blocks unilaterally. Operators approve actions with one click, recorded in an immutable append-only audit log.
 📡 6. 3 Defensive Sensor Feeds: Fed by an isolated deception honeypot, a token-bucket API abuse guard, and an allowlist-restricted asset discovery scanner.
 
-Proud of our team — Team Orionids from East West University (Department of CSE) — for conceptualizing, building, and verifying this prototype, backed by 48 passing automated tests, a modern React 19 console adhering to a strict 90/10 color palette, and a high-performance FastAPI backend!
+Proud of our team — Team Orionids (Department of CSE) — for conceptualizing, building, and verifying this prototype, backed by 48 passing automated tests, a modern React 19 console adhering to a strict 90/10 color palette, and a high-performance FastAPI backend!
 
-Team Orionids Builders (East West University):
+Team Orionids Builders:
 👥 Member 1: [FILL: Name & @LinkedIn tag] (Lead System Architect)
 👥 Member 2: [FILL: Name & @LinkedIn tag] (Frontend & UI Engineer)
 👥 Member 3: [FILL: Name & @LinkedIn tag] (AI & Cyber Defense Specialist)

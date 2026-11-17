@@ -5,7 +5,7 @@
 [![Live Console](https://img.shields.io/badge/Live%20Demo-prohori--ai.vercel.app-FF6258?style=for-the-badge&logo=vercel&logoColor=14213D)](https://prohori-ai.vercel.app)
 [![Render Blueprint](https://img.shields.io/badge/Render%20Blueprint-exs--dbrh0kec6qcc73dstli0-14213D?style=for-the-badge&logo=render&logoColor=F4EDE0)](https://dashboard.render.com/blueprints/exs-dbrh0kec6qcc73dstli0)
 [![Design System](https://img.shields.io/badge/90%2F10%20Palette-Strict%20Navy%2FCream%2FCoral-14213D?style=for-the-badge&logoColor=FF6258)](#6-strict-9010-color-discipline--design-system)
-[![Tests Passing](https://img.shields.io/badge/pytest-43%20passed-14213D?style=for-the-badge&logo=pytest&logoColor=46E3B7)](#8-testing-verification--code-quality)
+[![Tests Passing](https://img.shields.io/badge/pytest-48%20passed-14213D?style=for-the-badge&logo=pytest&logoColor=46E3B7)](#8-testing-verification--code-quality)
 [![Data Sovereignty](https://img.shields.io/badge/Data%20Sovereignty-100%25%20On--Prem%20Air--Gapped-14213D?style=for-the-badge&logo=shield&logoColor=F4EDE0)](#3-key-technical-differentiators--innovations)
 [![Bilingual Parity](https://img.shields.io/badge/Languages-English%20%7C%20বাংলা-14213D?style=for-the-badge)](#3-key-technical-differentiators--innovations)
 
@@ -262,14 +262,14 @@ prohori-ai/
 
 ---
 
-## 5. How to Run Locally on Any PC (Step-by-Step)
+## 5. Setup & Local Deployment Guide
 
 > 💡 **Testing on a fresh or unfamiliar computer?** Follow our comprehensive, beginner-friendly guide:  
 > 👉 [**Step-by-Step Clean PC Testing Guide (`docs/HOW_TO_TEST_LOCALLY.md`)**](docs/HOW_TO_TEST_LOCALLY.md)
 
 ### 🚀 Universal 1-Click Launch (Runs from ANY folder in PowerShell)
 
-Copy and paste this single line into your PowerShell terminal:
+If you just want to run everything with a single copy-paste, run this in PowerShell:
 
 ```powershell
 if (Test-Path ".git") { git pull } elseif (Test-Path "prohori-ai\.git") { cd prohori-ai; git pull } else { git clone https://github.com/rahat4528/prohori-ai.git; cd prohori-ai }; .\start_all.bat
@@ -282,140 +282,243 @@ if (Test-Path ".git") { git pull } elseif (Test-Path "prohori-ai\.git") { cd pro
 
 ---
 
-### 📋 Prerequisites Check (Do this first!)
-Make sure these free tools are installed on your computer:
-1. **Git**: Verify by running `git --version`
-2. **Python 3.11, 3.12, or 3.13**: Verify with `python --version` *(On Windows, make sure "Add Python to PATH" was checked)*
-3. **Node.js 18+ & npm**: Verify with `node --version` and `npm --version`
+### 1. System Requirements
+
+#### Supported Operating Systems
+- **Windows**: Windows 10 or Windows 11 (64-bit) — PowerShell 5.1+, Windows Terminal, or Command Prompt (CMD).
+- **macOS**: macOS 12 (Monterey), 13 (Ventura), 14 (Sonoma), 15 (Sequoia) — Apple Silicon (M1/M2/M3/M4) or Intel.
+- **Linux**: Ubuntu 20.04+, Debian 11+, Fedora, Arch Linux, or any modern systemd/kernel 5.4+ distribution.
+
+#### Minimum vs. Recommended Hardware Requirements
+
+| Component | Minimum Specification (Standard / Deterministic Mode) | Recommended Specification (Local Ollama / Llama 3.2 LLM) |
+|---|---|---|
+| **Processor (CPU)** | 2 Cores (Intel Core i3 / AMD Ryzen 3 or equivalent) | 4+ Cores (Intel Core i5/i7 / AMD Ryzen 5/7 / Apple M-series) |
+| **Memory (RAM)** | 4 GB RAM | 8 GB – 16 GB RAM |
+| **Disk Storage** | 2 GB free disk space (code, node_modules, and .venv) | 10 GB free disk space (to store local 3B LLM model weights) |
+| **Network** | Air-gapped capable (Internet required only for initial clone & pip/npm install) | Air-gapped capable |
+| **Display** | 1280 × 720 minimum resolution | 1920 × 1080 Full HD (optimized for high-density SOC view) |
+
+#### Required Software, Tools & Runtimes (All Free & Open Source)
+Before installing, verify these 3 tools in your terminal:
+1. **Git**: Distributed version control.  
+   *Verify*: `git --version` (e.g. `git version 2.40+`)
+2. **Python (3.11, 3.12, or 3.13)**: Python runtime for AI Core and microservice sensors.  
+   *Verify*: `python --version`  
+   *(⚠️ Windows Installation Note: You MUST check the box **"Add python.exe to PATH"** in the Python installer).*
+3. **Node.js (18+, 20+, or 22+ LTS) & npm**: JavaScript runtime for the React 19 web console.  
+   *Verify*: `node --version` and `npm --version`
+4. **Modern Web Browser**: Google Chrome, Microsoft Edge, Brave, Firefox, or Safari (no browser extensions required).
 
 ---
 
-### Step 1: Clone and Enter the Directory (Manual Alternative)
+### 2. Installation Steps (Numbered Step-by-Step)
 
-Open your terminal (PowerShell, Command Prompt, or bash).
+Follow these clear steps to install Prohori AI from scratch:
 
-1. Clone the repository (skip if already cloned):
+#### Step 1: Verify Prerequisites
+Open your terminal (PowerShell, Command Prompt, or bash) and run:
+```powershell
+git --version
+python --version
+node --version
+npm --version
+```
+*If any tool is missing, install it from [git-scm.com](https://git-scm.com/), [python.org](https://www.python.org/), or [nodejs.org](https://nodejs.org/).*
+
+#### Step 2: Clone the Repository
+Clone the repository to your computer:
 ```powershell
 git clone https://github.com/rahat4528/prohori-ai.git
 ```
+*(If you have already cloned the repository previously, skip to Step 3).*
 
-2. Enter the project root directory:
+#### Step 3: Enter the Project Root Directory
+Navigate into the newly cloned project folder:
 ```powershell
 cd prohori-ai
 ```
+> ⚠️ **CRITICAL NOTE**: You **MUST** run all subsequent commands from inside the `prohori-ai` folder! If your terminal prompt displays `C:\Users\YourName>` instead of `C:\Users\YourName\prohori-ai>`, running scripts will fail with `File does not exist` or `ModuleNotFoundError`.
 
-> ⚠️ **CRITICAL NOTE**: You **MUST** run all subsequent commands from inside the `prohori-ai` folder! If your terminal prompt shows `C:\Users\YourName>` instead of `C:\Users\YourName\prohori-ai>`, running `.\start_all.bat` or `.\run.ps1` will fail because those files live inside `prohori-ai\`.
-
----
-
-### Step 2: Launch the Entire Platform
-
-Choose whichever launch method you prefer:
-
-#### ⚡ Method A: Automated One-Click Launcher (Windows — Easiest & Recommended)
-
-From inside the `prohori-ai` directory, run:
-```cmd
-if (Test-Path "prohori-ai") { cd prohori-ai }; .\start_all.bat
-```
-*(Or double-click `start_all.bat` directly in Windows File Explorer)*
-
-**Why this is 100% foolproof:**
-- **Zero Script Policy Errors**: Runs in native Windows Command Prompt, completely avoiding PowerShell `PSSecurityException` and script restrictions.
-- **Zero Directory Traps**: Never navigates your current terminal out of the project folder.
-- **Complete Automation**: Checks Python and Node.js, provisions `.venv`, installs all backend requirements via pip, generates `.env` if missing, installs npm dependencies, and spawns all 4 microservices in dedicated, labeled terminal windows.
-- **Auto-Browser Launch**: Opens `http://localhost:3000` automatically once the services are initialized.
-
----
-
-#### ⚡ Method B: Automated PowerShell Launcher (Windows)
-
-If you prefer running inside a PowerShell terminal:
+#### Step 4: Create Local Environment Configuration (`.env`)
+Create your local environment configuration file from the provided example template:
 ```powershell
-if (Test-Path "prohori-ai") { cd prohori-ai }; powershell -ExecutionPolicy Bypass -File .\run.ps1
+# Windows PowerShell / CMD:
+copy .env.example .env
+
+# macOS / Linux:
+cp .env.example .env
 ```
-*(Or `powershell -ExecutionPolicy Bypass -File .\scripts\run_all.ps1`)*
+
+#### Step 5: Provision Python Virtual Environment & Install Dependencies
+Create a dedicated virtual environment (`.venv`) and install all pinned backend dependencies:
+```powershell
+# Create virtual environment:
+python -m venv .venv
+
+# Install dependencies directly into .venv (bypasses Windows script execution policy restrictions):
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\pip.exe install -r requirements.txt
+```
+*(On macOS/Linux: `source .venv/bin/activate && pip install -r requirements.txt`)*
+
+#### Step 6: Install Frontend Dependencies
+Install the React 19 web console packages directly from the root directory:
+```powershell
+npm --prefix web install
+```
+*(Using `--prefix web` allows you to stay safely in the project root without navigating into subfolders).*
+
+---
+
+### 3. Launch Methods
+
+Choose the launch method that fits your workflow:
+
+#### ⚡ Method A: Automated One-Click Setup (Recommended for Windows)
+
+- **What it does**: Automatically checks runtimes, creates `.env` and `.venv` if missing, installs dependencies, binds all services to `0.0.0.0` (ready for local and Wi-Fi access), spawns all 4 microservices in dedicated labeled windows, and opens your browser.
+- **When to use it**: Recommended for all Windows users, hackathon evaluators, and quick demonstrations.
+- **Exact Copy-Paste Command**:
+  ```powershell
+  if (Test-Path "prohori-ai") { cd prohori-ai }; .\start_all.bat
+  ```
+  *(Or double-click `start_all.bat` directly inside the `prohori-ai` folder in Windows File Explorer).*
+- **Expected Output**:
+  A master console window will report:
+  ```text
+  ======================================================================
+  [SUCCESS] All 4 Prohori AI services are running!
+  ======================================================================
+    - Operator Console:    http://localhost:3000
+    - Event API & Core:    http://localhost:8000
+    - Interactive Docs:    http://localhost:8000/docs
+    - Deception Honeypot:  http://localhost:8081
+    - API Abuse Guard:     http://localhost:8082
+  ======================================================================
+  ```
+  Four labeled terminal windows will appear on your desktop running each microservice.
+- **How to verify it worked**: Your web browser will automatically open [**http://localhost:3000**](http://localhost:3000) showing the Prohori AI Operator Console.
 
 > [!TIP]
 > **Home Wi-Fi / Local Network (LAN) Multi-Device Access**:  
-> All services bind to `0.0.0.0` by default and the web console dynamically detects hostnames. Once launched, any phone, tablet, or laptop on the same local Wi-Fi can open the console via `http://<YOUR-SERVER-IP>:3000` (e.g. `http://192.168.0.198:3000`).  
-> *Note: If accessing from another device, ensure inbound firewall ports `3000, 8000, 8081, 8082` are allowed in Windows Firewall (run as Admin: `New-NetFirewallRule -DisplayName "Prohori AI SOC" -Direction Inbound -LocalPort 3000,8000,8081,8082 -Protocol TCP -Action Allow`).*
+> Because services bind to `0.0.0.0`, any phone, tablet, or laptop connected to the same Wi-Fi can access the console via `http://<SERVER-IP>:3000` (e.g. `http://192.168.0.198:3000`).  
+> *Windows Firewall rule (Run as Admin once)*:  
+> `New-NetFirewallRule -DisplayName "Prohori AI SOC" -Direction Inbound -LocalPort 3000,8000,8081,8082 -Protocol TCP -Action Allow`
 
 ---
 
-#### 🛠️ Method C: Manual Setup & Launch (Terminal by Terminal)
+#### 🛠️ Method B: Manual Setup (Terminal-by-Terminal)
 
-If you prefer running each service manually in its own terminal, follow these exact commands. All commands are run directly from the `prohori-ai` root folder:
+- **What it does**: Runs each microservice individually in its own terminal window.
+- **When to use it**: When running on macOS/Linux, when debugging a specific microservice, or when you want direct visibility into individual service logs.
+- **Exact Copy-Paste Commands**:
+  Open 4 separate terminal windows. In **every** window, ensure you are inside `prohori-ai`:
 
-##### 1. Initial One-Time Setup (Run from `prohori-ai`):
-```powershell
-# Create Python virtual environment:
-python -m venv .venv
+  - **Terminal 1: Event API & AI SOC Core (Port 8000)**
+    ```powershell
+    cd prohori-ai
+    $env:PYTHONPATH="api;."
+    .\.venv\Scripts\python.exe -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    ```
+    *(macOS/Linux: `export PYTHONPATH="api:."; .venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload`)*
 
-# Install Python dependencies directly inside .venv (bypasses script activation policies):
-.\.venv\Scripts\python.exe -m pip install --upgrade pip
-.\.venv\Scripts\pip.exe install -r requirements.txt
+  - **Terminal 2: Deception Honeypot Sensor (Port 8081)**
+    ```powershell
+    cd prohori-ai
+    $env:PYTHONPATH="api;."
+    .\.venv\Scripts\python.exe -m uvicorn sensors.deception.main:app --host 0.0.0.0 --port 8081 --reload
+    ```
+    *(macOS/Linux: `export PYTHONPATH="api:."; .venv/bin/uvicorn sensors.deception.main:app --host 0.0.0.0 --port 8081 --reload`)*
 
-# Create .env config:
-copy .env.example .env
+  - **Terminal 3: API Abuse Guard Rate Limiter (Port 8082)**
+    ```powershell
+    cd prohori-ai
+    $env:PYTHONPATH="api;."
+    $env:UPSTREAM_URL="http://127.0.0.1:8000"
+    $env:EVENT_API_URL="http://127.0.0.1:8000"
+    .\.venv\Scripts\python.exe -m uvicorn sensors.ratelimiter.main:app --host 0.0.0.0 --port 8082 --reload
+    ```
+    *(macOS/Linux: `export PYTHONPATH="api:."; export UPSTREAM_URL="http://127.0.0.1:8000"; export EVENT_API_URL="http://127.0.0.1:8000"; .venv/bin/uvicorn sensors.ratelimiter.main:app --host 0.0.0.0 --port 8082 --reload`)*
 
-# Install frontend packages (without leaving the root folder):
-npm --prefix web install
-```
-
-##### 2. Start the Microservices (Open 4 Terminals):
-
-> 💡 **Notice**: Each terminal stays in the `prohori-ai` root directory. We invoke `.\.venv\Scripts\python.exe` directly so PowerShell script execution policy restrictions never block you!
-
-- **Terminal 1: Event API & AI SOC Core (Port 8000)**
-  ```powershell
-  cd prohori-ai
-  $env:PYTHONPATH="api;."
-  .\.venv\Scripts\python.exe -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-  ```
-
-- **Terminal 2: Deception Honeypot Sensor (Port 8081)**
-  ```powershell
-  cd prohori-ai
-  $env:PYTHONPATH="api;."
-  .\.venv\Scripts\python.exe -m uvicorn sensors.deception.main:app --host 0.0.0.0 --port 8081 --reload
-  ```
-
-- **Terminal 3: API Abuse Guard Rate Limiter (Port 8082)**
-  ```powershell
-  cd prohori-ai
-  $env:PYTHONPATH="api;."
-  $env:UPSTREAM_URL="http://127.0.0.1:8000"
-  $env:EVENT_API_URL="http://127.0.0.1:8000"
-  .\.venv\Scripts\python.exe -m uvicorn sensors.ratelimiter.main:app --host 0.0.0.0 --port 8082 --reload
-  ```
-
-- **Terminal 4: React Operator Console (Port 3000)**
-  ```powershell
-  cd prohori-ai
-  npm --prefix web run dev
-  ```
+  - **Terminal 4: React Operator Console (Port 3000)**
+    ```powershell
+    cd prohori-ai
+    npm --prefix web run dev
+    ```
+- **Expected Output**:
+  - Terminals 1–3: `INFO: Uvicorn running on http://0.0.0.0:PORT (Press CTRL+C to quit)`.
+  - Terminal 4: `VITE v8.3.6 ready in ... ms -> Local: http://localhost:3000/`.
+- **How to verify it worked**: Navigate to [**http://localhost:3000**](http://localhost:3000) in your web browser.
 
 ---
 
-### Step 3: Open and Test in Browser
+#### 🧪 Method C: Development & Testing Mode
 
-Open [**http://localhost:3000**](http://localhost:3000) in your web browser.  
-Click **"Run demo"** in the top header to send live test attacks through the sensors and watch the AI SOC Analyst triage, cite MITRE techniques, and recommend defenses!
+- **What it does**: Runs developer tests, type checking, linting, and automated color palette audits to verify code health.
+- **When to use it**: Before committing code, during code reviews, or when verifying system integrity on a fresh development machine.
+- **Exact Copy-Paste Commands**:
+  From inside the `prohori-ai` directory, run:
+
+  1. **Run Full Backend Pytest Suite (48 Tests)**:
+     ```powershell
+     .\.venv\Scripts\python.exe -m pytest api/tests analyst/tests sensors/
+     ```
+  2. **Verify Strict 90/10 Color Palette Discipline**:
+     ```powershell
+     .\.venv\Scripts\python.exe scripts/check_palette.py
+     ```
+  3. **Build Frontend & Run Linter**:
+     ```powershell
+     npm --prefix web run build
+     npx --prefix web oxlint
+     ```
+  4. **Run Live Playwright End-to-End Verification**:
+     ```powershell
+     .\.venv\Scripts\python.exe scripts/verify_live_ui.py
+     ```
+- **Expected Output**:
+  - Pytest: `============================= 48 passed in 5.03s =============================`
+  - Palette Linter: `[PASS] 100% Palette Compliance! Zero unauthorized colors detected.`
+  - Oxlint: `Found 0 warnings and 0 errors.`
+  - Vite Build: `✓ built in 409ms`
+- **How to verify it worked**: All 4 automated checks pass with exit code `0`.
 
 ---
 
-### ❓ Troubleshooting FAQ
+### 4. Troubleshooting (Common Errors & Step-by-Step Solutions)
 
-| Problem | Root Cause | Solution |
+| Error Message / Symptom | Root Cause | Step-by-Step Solution |
 |---|---|---|
-| `fatal: destination path 'prohori-ai' already exists` | The repository was already cloned previously. | Do not re-run `git clone`. Simply run `cd prohori-ai` to enter the folder. |
-| `File ... Activate.ps1 cannot be loaded because running scripts is disabled` | Windows PowerShell default `Restricted` execution policy. | Run `.\start_all.bat` (which has no script restrictions), or call `.\.venv\Scripts\python.exe` directly, or run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`. |
-| `Set-Location : A positional parameter cannot be found that accepts argument 'start_all.bat'` | Multiple commands were accidentally pasted together onto a single line. | Run commands one by one: first `cd prohori-ai`, then `.\start_all.bat`. |
-| `ModuleNotFoundError: No module named 'sensors'` | Terminal is sitting in `C:\Users\YourName` instead of `prohori-ai`, or `PYTHONPATH` is missing. | Run `cd prohori-ai` and set `$env:PYTHONPATH="api;."`, or simply run `.\start_all.bat`. |
-| `File ... npm.ps1 cannot be loaded` | Node's npm.ps1 blocked by execution policy. | Run `npm.cmd --prefix web install` or run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`. |
-| Port already in use (`8000` or `3000`) | Previous process is still running. | Open Task Manager and end python/node processes, or run `netstat -ano \| findstr :8000` and kill the PID. |
-Navigate to [**http://localhost:3000**](http://localhost:3000) in your web browser. Click **"Run demo"** in the top navigation bar to populate live incoming attack telemetry!
+| `fatal: destination path 'prohori-ai' already exists and is not an empty directory.` | The repository has already been cloned to this location. | Do **not** re-run `git clone`. Simply navigate into the existing folder with `cd prohori-ai`. If you want to update it to the latest code, run `git pull`. |
+| `The argument '.\run.ps1' to the -File parameter does not exist.` | Your terminal is sitting in `C:\Users\YourName>` (outside the project folder). | Enter the project directory first: run `cd prohori-ai`, then run `powershell -ExecutionPolicy Bypass -File .\run.ps1`. |
+| `File ... Activate.ps1 cannot be loaded because running scripts is disabled on this system.` | Windows PowerShell defaults to `ExecutionPolicy Restricted` (blocks `.ps1` execution). | **Solution 1 (Recommended)**: Use `.\start_all.bat` (batch files have no script execution restrictions).<br>**Solution 2**: Run Python directly without activating: `.\.venv\Scripts\python.exe ...`<br>**Solution 3**: Unblock current session with `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`. |
+| `Set-Location : A positional parameter cannot be found that accepts argument 'start_all.bat'` | Two commands were copied together and pasted onto one line (`cd prohori-ai start_all.bat`). | Execute commands one at a time: first type `cd prohori-ai` and press Enter, then type `.\start_all.bat` and press Enter. |
+| `ModuleNotFoundError: No module named 'sensors'` or `No module named 'app'` | Terminal is not in the root directory, or `$env:PYTHONPATH` was not exported. | Run `cd prohori-ai` and set `$env:PYTHONPATH="api;."`, or simply run `.\start_all.bat` which configures paths automatically. |
+| `File C:\Program Files\nodejs\npm.ps1 cannot be loaded` | Node.js `.ps1` wrapper is blocked by Windows script execution policy. | Run `npm.cmd --prefix web install` or run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`. |
+| `ERROR: [Errno 10048] error while attempting to bind on address ('0.0.0.0', 8000)` | Port `8000` (or `3000`, `8081`, `8082`) is still held open by a previous process. | Find and kill the stale process: run `netstat -ano \| findstr :8000`, then run `taskkill /F /PID <PID>` (or close previous terminal windows). |
+| Cannot access Web Console from another phone/laptop on Wi-Fi | Windows Firewall is blocking inbound connections on local network. | Open PowerShell as Administrator and run:<br>`New-NetFirewallRule -DisplayName "Prohori AI SOC" -Direction Inbound -LocalPort 3000,8000,8081,8082 -Protocol TCP -Action Allow` |
+
+---
+
+### 5. Final Verification (Component & Feature Checklist)
+
+Use this checklist to confirm that all layers of the Prohori AI platform are functioning correctly:
+
+#### Infrastructure & Service Health
+- [ ] **React Operator Console**: Open [**http://localhost:3000**](http://localhost:3000) &rarr; Web UI loads cleanly in strict Navy (`#14213D`) and Cream (`#F4EDE0`).
+- [ ] **Core Event API Health Check**: Open [**http://127.0.0.1:8000/healthz**](http://127.0.0.1:8000/healthz) &rarr; Returns `{"status": "healthy", "database": "connected"}`.
+- [ ] **Interactive API Documentation**: Open [**http://127.0.0.1:8000/docs**](http://127.0.0.1:8000/docs) &rarr; Swagger UI renders all 18 documented endpoints.
+- [ ] **Deception Honeypot Trap**: Open [**http://127.0.0.1:8081**](http://127.0.0.1:8081) &rarr; Decoy web portal renders simulated credential traps.
+- [ ] **API Abuse Guard Reverse Proxy**: Open [**http://127.0.0.1:8082**](http://127.0.0.1:8082) &rarr; Responds and forwards traffic to upstream API.
+
+#### Operational SOC Workflow & Feature Verification
+- [ ] **Live Attack Ingestion ("Run demo")**: Click **"Run demo"** in the top navigation bar &rarr; Live simulated attacks (SSH brute force, honeypot reconnaissance, API rate limit abuse) stream into the Alert Feed.
+- [ ] **Incident Dossier Triage**: Click any alert in the feed (e.g. `Brute Force Suspected (192.168.1.189)`) &rarr; The right panel renders the Master Incident Dossier with telemetry metrics and MITRE technique tags.
+- [ ] **AI Threat Consultation**: Click quick-action chips (e.g. "Firewall commands", "MITRE Details") &rarr; The AI analyst generates instant, contextual remediation guidance and iptables commands.
+- [ ] **Human-in-the-Loop (HITL) Containment**: Click **"Approve Defense Countermeasure"** &rarr; The alert changes state to "Defense Verified", firewall rules lock in, and an entry is recorded.
+- [ ] **Immutable Audit Trail**: Click the top-right menu **"..."** &rarr; **"Audit Log"** &rarr; Verify that triage verdicts, analyst queries, and approved defense actions are permanently logged.
+- [ ] **Bilingual Parity (English / বাংলা)**: Click the **"বাংলা"** button in the header &rarr; Entire interface, alerts, severity badges, and AI triage narratives switch immediately to native Bengali.
 
 ---
 

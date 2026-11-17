@@ -38,9 +38,8 @@ Create an isolated Python environment so dependencies don't conflict with system
 ### On Windows (PowerShell or Command Prompt):
 ```powershell
 python -m venv .venv
-.venv\Scripts\activate
-python -m pip install --upgrade pip
-pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\pip.exe install -r requirements.txt
 ```
 
 ### On macOS / Linux:
@@ -213,23 +212,21 @@ Perform the complete 6-stage operational test in your browser at [http://localho
 Run our automated verification suites to guarantee that everything passes with zero errors:
 
 ```powershell
-# 1. Run Complete Pytest Suite (43 tests)
-.venv\Scripts\python -m pytest
+# 1. Run Complete Pytest Suite (48 tests)
+.\.venv\Scripts\python.exe -m pytest api/tests analyst/tests sensors/
 
 # 2. Run 15-Point Architectural Verification
-.venv\Scripts\python scripts/verify_e2e.py
+.\.venv\Scripts\python.exe scripts/verify_e2e.py
 
 # 3. Verify Strict 90/10 Palette Compliance (Navy, Cream, Coral)
-.venv\Scripts\python scripts/check_palette.py
+.\.venv\Scripts\python.exe scripts/check_palette.py
 
 # 4. Verify TypeScript Compilation & Production Build
-cd web
-npm run build
-cd ..
+npm --prefix web run build
 ```
 
 **Certified Benchmark**:
-- Pytest: **43 / 43 PASSED (100%)**
+- Pytest: **48 / 48 PASSED (100%)**
 - Architectural E2E: **15 / 15 PASSED (100%)**
 - Palette Compliance: **100% Compliant (Zero unauthorized colors)**
 - Frontend Build: **Built in ~400ms (0 errors)**

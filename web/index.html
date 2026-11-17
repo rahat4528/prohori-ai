@@ -7,11 +7,20 @@
     <meta name="theme-color" content="#14213D" />
     <title>Prohori AI (প্রহরী) — Autonomous AI-Native SOC Console</title>
     <script>
-      // Prevent localhost collision: unregister any legacy service workers from past projects
+      // Prevent localhost collision: aggressively unregister any legacy service workers & clear caches from past projects
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.getRegistrations().then(function(registrations) {
           for (let registration of registrations) {
             registration.unregister();
+            console.log('[Prohori AI] Unregistered stale legacy service worker:', registration);
+          }
+        }).catch(function() {});
+      }
+      if ('caches' in window) {
+        caches.keys().then(function(names) {
+          for (let name of names) {
+            caches.delete(name);
+            console.log('[Prohori AI] Cleared stale cache storage:', name);
           }
         }).catch(function() {});
       }

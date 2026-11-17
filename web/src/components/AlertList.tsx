@@ -114,6 +114,7 @@ export const AlertList: React.FC<AlertListProps> = ({
             <option value="high">{isBn ? "উচ্চ (High)" : "High"}</option>
             <option value="medium">{isBn ? "মাঝারি (Medium)" : "Medium"}</option>
             <option value="low">{isBn ? "নিম্ন (Low)" : "Low"}</option>
+            <option value="info">{isBn ? "তথ্য (Info)" : "Info"}</option>
           </select>
         </div>
       </div>

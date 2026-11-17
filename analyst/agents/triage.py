@@ -103,8 +103,9 @@ Return a single JSON object with these exact keys:
             # Reconcile mitre_technique with knowledge base
             mitre_val = str(triage_result.get("mitre_technique", "")).strip().strip("[]")
             if mitre_val and mitre_val not in known_kb_ids:
-                logger.warning(f"Reconciling ungrounded mitre_technique '{mitre_val}' to '{retrieved_docs[0]['id']}'")
-                triage_result["mitre_technique"] = retrieved_docs[0]["id"]
+                fallback_id = retrieved_docs[0]["id"] if retrieved_docs else "T1110.001"
+                logger.warning(f"Reconciling ungrounded mitre_technique '{mitre_val}' to '{fallback_id}'")
+                triage_result["mitre_technique"] = fallback_id
             elif not mitre_val and retrieved_docs:
                 triage_result["mitre_technique"] = retrieved_docs[0]["id"]
 

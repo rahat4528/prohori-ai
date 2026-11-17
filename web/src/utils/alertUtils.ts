@@ -76,7 +76,6 @@ export function getSeverityConfig(severity: EventSeverity, lang: "en" | "bn") {
         shape: "◆"
       };
     case "low":
-    default:
       return {
         label: isBn ? "নিম্ন (Low)" : "Low",
         icon: Info,
@@ -85,6 +84,17 @@ export function getSeverityConfig(severity: EventSeverity, lang: "en" | "bn") {
         border: "var(--navy-alpha-25)",
         className: "severity-badge-low",
         shape: "●"
+      };
+    case "info":
+    default:
+      return {
+        label: isBn ? "তথ্য (Info)" : "Info",
+        icon: Info,
+        color: "var(--navy-alpha-75)",
+        bg: "var(--navy-alpha-08)",
+        border: "var(--navy-alpha-20)",
+        className: "severity-badge-info",
+        shape: "○"
       };
   }
 }

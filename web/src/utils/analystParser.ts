@@ -267,7 +267,7 @@ export function parseAnalystResponse(
   const matches = rawText.match(/\[(T\d+(?:\.\d+)?|CWE-\d+)\]/g);
   if (matches) {
     matches.forEach((m) => {
-      const clean = m.replace(/[\[\]]/g, "").trim();
+      const clean = m.replace(/[[\]]/g, "").trim();
       allCitationIds.add(clean);
     });
   }

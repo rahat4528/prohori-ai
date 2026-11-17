@@ -250,6 +250,7 @@ export const AlertList: React.FC<AlertListProps> = ({
                     }}
                   >
                     <SevIcon size={13} color={sev.color} />
+                    <span aria-hidden="true">{sev.shape}</span>
                     <span>{sev.label}</span>
                   </span>
 

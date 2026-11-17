@@ -446,62 +446,39 @@ button {
   letter-spacing: -0.01em;
 }
 
-/* 2. Tactical Telemetry Feed Item */
+/* 2. Tactical Telemetry Feed Item (Human-Crafted Hairline Aesthetic) */
 .alert-feed-item {
   display: flex;
   flex-direction: column;
   gap: 8px;
   padding: 14px 16px;
   background: var(--cream);
-  border: 1.5px solid var(--navy-alpha-20);
-  border-left-width: 4px;
-  border-left-style: solid;
-  border-left-color: var(--navy-alpha-30);
+  border: 1px solid var(--navy-alpha-20);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
   text-align: left;
   width: 100%;
   position: relative;
-  box-shadow: 0 1px 3px var(--navy-alpha-08);
+  box-shadow: 0 1px 2px var(--navy-alpha-08);
 }
 
 .alert-feed-item:hover {
   background: var(--navy-alpha-04);
   border-color: var(--navy-alpha-40);
   transform: translateY(-1px);
-  box-shadow: 0 4px 10px var(--navy-alpha-15);
+  box-shadow: 0 3px 8px var(--navy-alpha-15);
 }
 
 .alert-feed-item.selected {
-  background: var(--navy-alpha-08);
+  background: var(--cream);
   border-color: var(--navy);
-  border-left-width: 4px;
-  border-left-style: solid;
-  border-left-color: var(--coral) !important;
-  box-shadow: 0 2px 8px var(--navy-alpha-15);
+  box-shadow: 0 0 0 1.5px var(--navy), 0 2px 8px var(--navy-alpha-15);
 }
 
 .alert-feed-item:focus-visible {
   outline: 2px solid var(--coral);
   outline-offset: 2px;
-}
-
-/* Severity Indicator Strips */
-.alert-feed-item.severity-critical {
-  border-left-color: var(--coral) !important;
-}
-
-.alert-feed-item.severity-high {
-  border-left-color: var(--coral) !important;
-}
-
-.alert-feed-item.severity-medium {
-  border-left-color: var(--navy-alpha-65) !important;
-}
-
-.alert-feed-item.severity-low {
-  border-left-color: var(--navy-alpha-30) !important;
 }
 
 /* 3. Segmented Control Switcher */

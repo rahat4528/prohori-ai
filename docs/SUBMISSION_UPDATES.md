@@ -151,7 +151,7 @@ To maintain absolute integrity, no facts or identities were fabricated. Before s
    - **Live Repository**: [https://github.com/rahat4528/prohori-ai](https://github.com/rahat4528/prohori-ai) (Created as private repository and linked as `origin`).
 2. **Team Member Names, Roles & Social Handles**:
    - Files: `docs/PITCH_DECK.md` (Section 5), `docs/LINKEDIN_POST.md` (Section 1)
-   - Needs: Real names, academic enrollments (e.g., Daffodil International University / DIU), specific technical contributions, and LinkedIn handles.
+   - Needs: Real names, academic enrollments (e.g., East West University / EWU), specific technical contributions, and LinkedIn handles.
 3. **Congress Bonus Signals**:
    - File: `docs/PITCH_DECK.md` (Section 5)
    - Needs: Any specific Congress eligibility signals (e.g., student-led team, diverse backgrounds, first-time participants).

@@ -9,8 +9,10 @@ import { EventDetailDrawer } from "./components/EventDetailDrawer";
 import type { SecurityEvent, Incident } from "./types";
 import { Shield, Lock, Cpu, BookOpen, ShieldAlert, Sparkles } from "lucide-react";
 
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000";
-const WS_URL = import.meta.env.VITE_WS_URL || "ws://localhost:8000/stream";
+const isHttps = typeof window !== "undefined" && window.location.protocol === "https:";
+const defaultHost = typeof window !== "undefined" && window.location.hostname ? window.location.hostname : "localhost";
+const API_BASE = import.meta.env.VITE_API_BASE || (isHttps ? `https://${defaultHost}:8000` : `http://${defaultHost}:8000`);
+const WS_URL = import.meta.env.VITE_WS_URL || (isHttps ? `wss://${defaultHost}:8000/stream` : `ws://${defaultHost}:8000/stream`);
 const API_KEY = import.meta.env.VITE_PROHORI_API_KEY || "";
 const jsonHeaders: Record<string, string> = API_KEY
   ? { "Content-Type": "application/json", "X-API-Key": API_KEY }

@@ -71,9 +71,16 @@ export interface ConnectedDevice {
   device_id: string;
   device_name: string;
   ip_address: string;
-  user_agent: string;
-  status: "online" | "offline";
-  connected_at: string;
+  mac_address?: string;
+  mac_vendor?: string;
+  device_type?: "server" | "router" | "laptop" | "mobile" | "iot" | "unknown";
+  discovery_source?: "websocket_session" | "lan_arp_scan" | "both";
+  user_agent?: string;
+  status: "online" | "reachable" | "detected" | "offline";
+  is_local_host?: boolean;
+  is_gateway?: boolean;
+  has_active_console?: boolean;
+  connected_at?: string;
   last_seen: string;
 }
 

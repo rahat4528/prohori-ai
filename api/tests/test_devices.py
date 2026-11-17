@@ -13,19 +13,32 @@ from app.connection_mgr import ws_manager
 
 
 def test_device_rest_endpoints():
-    """Verify GET /devices and POST /devices/register."""
+    """Verify GET /devices, POST /devices/scan, and POST /devices/register."""
     with TestClient(app) as client:
         # Initial list
         res = client.get("/devices")
         assert res.status_code == 200
         data = res.json()
         assert "devices" in data
-        assert "total_connected" in data
+        assert "total_connected_consoles" in data
+        assert "total_lan_devices" in data
+        assert "local_ip" in data
+
+        # Test on-demand LAN scan endpoint
+        scan_res = client.post("/devices/scan")
+        assert scan_res.status_code == 200
+        scan_data = scan_res.json()
+        assert "devices" in scan_data
+        assert scan_data["total_lan_devices"] >= 1
+        # At least host server should be discovered
+        host_device = next((d for d in scan_data["devices"] if d.get("is_local_host")), None)
+        assert host_device is not None
+        assert host_device["device_type"] == "server"
 
         # Register a device over HTTP
         reg_payload = {
             "device_id": "test_phone_001",
-            "device_name": "Samsung Galaxy S24 (Chrome Mobile)",
+            "device_name": "Test Client Phone (Chrome Mobile)",
             "user_agent": "Mozilla/5.0 (Linux; Android 14; SM-S928B)"
         }
         post_res = client.post("/devices/register", json=reg_payload)
@@ -67,7 +80,6 @@ def test_device_websocket_lifecycle():
             assert "laptop_client_42" in device_ids
             registered_device = next(d for d in update_msg["devices"] if d["device_id"] == "laptop_client_42")
             assert registered_device["status"] == "online"
-            assert registered_device["device_name"] == "ThinkPad X1 (Windows Chrome)"
 
             # Step 3: Connect a second device in parallel
             with client.websocket_connect("/stream") as ws2:

@@ -203,6 +203,9 @@ export const App: React.FC = () => {
   const [connectedDevices, setConnectedDevices] = useState<ConnectedDevice[]>([]);
   const [isDevicesModalOpen, setIsDevicesModalOpen] = useState<boolean>(false);
   const [currentDeviceId] = useState<string>(() => getDeviceId());
+  const [localIp, setLocalIp] = useState<string>("192.168.1.104");
+  const [defaultGateway, setDefaultGateway] = useState<string | null>("192.168.1.1");
+  const [subnet, setSubnet] = useState<string>("192.168.1.0/24");
 
   const wsRef = useRef<WebSocket | null>(null);
   const demoIndexRef = useRef<number>(0);
@@ -229,9 +232,10 @@ export const App: React.FC = () => {
 
       if (devicesRes && devicesRes.ok) {
         const devData = await devicesRes.json();
-        if (devData.devices) {
-          setConnectedDevices(devData.devices);
-        }
+        if (devData.devices) setConnectedDevices(devData.devices);
+        if (devData.local_ip) setLocalIp(devData.local_ip);
+        if (devData.default_gateway) setDefaultGateway(devData.default_gateway);
+        if (devData.subnet) setSubnet(devData.subnet);
       }
 
       if (eventsRes.ok) {
@@ -333,13 +337,15 @@ export const App: React.FC = () => {
           try {
             const data = JSON.parse(event.data);
             if (data.type === "connection_established") {
-              if (data.devices) {
-                setConnectedDevices(data.devices);
-              }
+              if (data.devices) setConnectedDevices(data.devices);
+              if (data.local_ip) setLocalIp(data.local_ip);
+              if (data.default_gateway) setDefaultGateway(data.default_gateway);
+              if (data.subnet) setSubnet(data.subnet);
             } else if (data.type === "device_list_update") {
-              if (data.devices) {
-                setConnectedDevices(data.devices);
-              }
+              if (data.devices) setConnectedDevices(data.devices);
+              if (data.local_ip) setLocalIp(data.local_ip);
+              if (data.default_gateway) setDefaultGateway(data.default_gateway);
+              if (data.subnet) setSubnet(data.subnet);
             } else if (data.type === "new_event" && data.event) {
               setEvents((prev) => [data.event, ...prev.filter((e) => e.id !== data.event.id)]);
               // Auto-select latest streamed event for instant feedback
@@ -552,6 +558,22 @@ export const App: React.FC = () => {
       return simulatedApproval;
     }
   };
+
+  // 6.5. Trigger On-Demand LAN Device Sweep
+  const handleTriggerLanScan = useCallback(async () => {
+    try {
+      const res = await fetch(`${API_BASE}/devices/scan`, { method: "POST" });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.devices) setConnectedDevices(data.devices);
+        if (data.local_ip) setLocalIp(data.local_ip);
+        if (data.default_gateway) setDefaultGateway(data.default_gateway);
+        if (data.subnet) setSubnet(data.subnet);
+      }
+    } catch (err) {
+      console.warn("LAN sweep failed:", err);
+    }
+  }, []);
 
   // 7. Global Accessible Keyboard Shortcuts
   useEffect(() => {
@@ -782,12 +804,21 @@ export const App: React.FC = () => {
         devices={connectedDevices}
         currentDeviceId={currentDeviceId}
         globalLanguage={globalLanguage}
+        localIp={localIp}
+        defaultGateway={defaultGateway}
+        subnet={subnet}
         onRefresh={() => {
           fetch(`${API_BASE}/devices`)
             .then((r) => (r.ok ? r.json() : null))
-            .then((d) => d?.devices && setConnectedDevices(d.devices))
+            .then((d) => {
+              if (d?.devices) setConnectedDevices(d.devices);
+              if (d?.local_ip) setLocalIp(d.local_ip);
+              if (d?.default_gateway) setDefaultGateway(d.default_gateway);
+              if (d?.subnet) setSubnet(d.subnet);
+            })
             .catch(() => {});
         }}
+        onTriggerLanScan={handleTriggerLanScan}
       />
 
       {isRawDrawerOpen && (

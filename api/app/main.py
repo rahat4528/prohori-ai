@@ -8,6 +8,7 @@ import json
 import logging
 import os
 import sys
+import time
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 from pathlib import Path
@@ -91,7 +92,27 @@ async def lifespan(app: FastAPI):
         await init_db()
     except Exception as e:
         logger.warning(f"Initial DB connection could not be established: {e}. Will retry on requests.")
+
+    async def background_lan_monitor():
+        # Quick initial LAN scan on startup
+        try:
+            await asyncio.sleep(1)
+            await ws_manager.scan_and_refresh_lan(broadcast_after=False)
+        except Exception as e:
+            logger.debug(f"Initial LAN discovery scan error: {e}")
+
+        while True:
+            try:
+                await asyncio.sleep(25)
+                await ws_manager.scan_and_refresh_lan(broadcast_after=True)
+            except asyncio.CancelledError:
+                break
+            except Exception as e:
+                logger.debug(f"Periodic LAN scan error: {e}")
+
+    scan_task = asyncio.create_task(background_lan_monitor())
     yield
+    scan_task.cancel()
     logger.info("Shutting down Prohori Event API...")
 
 
@@ -522,18 +543,23 @@ async def reset_demo(
     "/devices",
     response_model=ConnectedDeviceListResponse,
     tags=["Connected Devices"],
-    summary="List all currently and recently connected devices"
+    summary="List all currently and recently connected devices and LAN assets"
 )
 async def list_connected_devices():
-    """Returns the inventory of active and recent devices connected to Prohori AI."""
-    devices = ws_manager.get_devices()
-    active = ws_manager.get_active_devices()
-    return {
-        "devices": devices,
-        "total_connected": len(active),
-        "total_registered": len(devices),
-        "timestamp": datetime.now(UTC).isoformat()
-    }
+    """Returns unified inventory of active console sessions and discovered LAN assets."""
+    return ws_manager.get_network_summary()
+
+
+@app.post(
+    "/devices/scan",
+    response_model=ConnectedDeviceListResponse,
+    tags=["Connected Devices"],
+    summary="Trigger an immediate on-demand LAN sweep and device refresh"
+)
+async def trigger_lan_scan():
+    """Performs an immediate subnet sweep + ARP table refresh and broadcasts updates."""
+    await ws_manager.scan_and_refresh_lan(broadcast_after=True)
+    return ws_manager.get_network_summary()
 
 
 @app.post(

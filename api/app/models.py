@@ -80,17 +80,28 @@ class ConnectedDevice(BaseModel):
     device_id: str
     device_name: str
     ip_address: str
+    mac_address: str = ""
+    mac_vendor: str = ""
+    device_type: str = "unknown"  # server, router, laptop, mobile, iot, unknown
+    discovery_source: str = "lan_arp_scan"  # websocket_session, lan_arp_scan, both
     user_agent: str = ""
-    status: str = Field(default="online", description="online or offline")
-    connected_at: str
-    last_seen: str
+    status: str = Field(default="detected", description="online, reachable, detected, or offline")
+    is_local_host: bool = False
+    is_gateway: bool = False
+    has_active_console: bool = False
+    connected_at: str = ""
+    last_seen: str = ""
 
 
 class ConnectedDeviceListResponse(BaseModel):
-    """List of connected client devices."""
+    """List of connected client devices and discovered LAN endpoints."""
     devices: list[ConnectedDevice]
-    total_connected: int
+    total_connected_consoles: int
+    total_lan_devices: int
     total_registered: int
+    local_ip: str
+    default_gateway: str | None = None
+    subnet: str
     timestamp: str
 
 

@@ -4,9 +4,10 @@
 
 $ErrorActionPreference = "Stop"
 
-# 1. Ensure working directory is the project root
+# 1. Ensure working directory is the project root without trailing slash
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 if (-not $scriptDir) { $scriptDir = (Get-Location).Path }
+$scriptDir = $scriptDir.TrimEnd('\').TrimEnd('/')
 Set-Location $scriptDir
 
 # 2. Automatically bypass execution policy in current session if possible
@@ -19,14 +20,20 @@ Write-Host "       PROHORI AI - Sentinel SOC Stack Launcher (Team Orionids)" -Fo
 Write-Host "======================================================================" -ForegroundColor Cyan
 Write-Host "[+] Root directory: $scriptDir" -ForegroundColor Yellow
 
-# 3. Check Python
+# 3. Check Python (Supports python and Windows py launcher)
+$pythonCmd = "python"
 try {
-    $pyVer = & python --version 2>&1
-    Write-Host "[+] Python detected: $pyVer" -ForegroundColor Green
+    $null = & python --version 2>&1
 } catch {
-    Write-Error "[!] Python 3.11+ is required but not found in PATH. Please install Python from https://www.python.org/ and check 'Add python.exe to PATH'."
-    exit 1
+    try {
+        $null = & py -3 --version 2>&1
+        $pythonCmd = "py -3"
+    } catch {
+        Write-Error "[!] Python 3.11+ is required but not found in PATH. Please install Python from https://www.python.org/ and check 'Add python.exe to PATH'."
+        exit 1
+    }
 }
+Write-Host "[+] Python runtime detected ($pythonCmd)" -ForegroundColor Green
 
 # 4. Check Node.js & npm
 try {
@@ -44,18 +51,26 @@ if (-not (Test-Path "$scriptDir\.env")) {
     Copy-Item "$scriptDir\.env.example" "$scriptDir\.env"
 }
 
-# 6. Setup Python Virtual Environment (.venv)
+# 6. Setup Python Virtual Environment (.venv) & verify dependencies
 $venvPython = "$scriptDir\.venv\Scripts\python.exe"
 if (-not (Test-Path $venvPython)) {
     Write-Host "[*] Creating Python virtual environment (.venv) ..." -ForegroundColor Yellow
-    python -m venv "$scriptDir\.venv"
-    Write-Host "[*] Installing Python backend dependencies (this may take 1-2 minutes) ..." -ForegroundColor Yellow
-    & "$scriptDir\.venv\Scripts\pip.exe" install --upgrade pip
-    & "$scriptDir\.venv\Scripts\pip.exe" install -r "$scriptDir\requirements.txt"
+    if ($pythonCmd -eq "py -3") {
+        & py -3 -m venv "$scriptDir\.venv"
+    } else {
+        & python -m venv "$scriptDir\.venv"
+    }
 }
 
-# 7. Setup Frontend dependencies
-if (-not (Test-Path "$scriptDir\web\node_modules")) {
+# Verify critical backend package is installed; self-heal if interrupted
+if (-not (Test-Path "$scriptDir\.venv\Lib\site-packages\uvicorn")) {
+    Write-Host "[*] Installing Python backend dependencies (this may take 1-2 minutes) ..." -ForegroundColor Yellow
+    & $venvPython -m pip install --upgrade pip
+    & $venvPython -m pip install -r "$scriptDir\requirements.txt"
+}
+
+# 7. Setup Frontend dependencies if missing
+if (-not (Test-Path "$scriptDir\web\node_modules\vite")) {
     Write-Host "[*] Installing frontend npm dependencies ..." -ForegroundColor Yellow
     npm --prefix "$scriptDir\web" install
 }
@@ -63,16 +78,16 @@ if (-not (Test-Path "$scriptDir\web\node_modules")) {
 Write-Host "`n[+] Spawning Prohori AI microservices in dedicated terminal windows..." -ForegroundColor Cyan
 
 # Service 1: Event API & AI Core (Port 8000)
-Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass", "-NoExit", "-Command", "Set-Location '$scriptDir'; `$env:PYTHONPATH='$scriptDir\api;$scriptDir'; & '$scriptDir\.venv\Scripts\python.exe' -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+Start-Process powershell -ArgumentList "-ExecutionPolicy", "Bypass", "-NoExit", "-Command", "Set-Location '$scriptDir'; `$env:PYTHONPATH='$scriptDir\api;$scriptDir'; & '$venvPython' -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
 
 # Service 2: Deception Honeypot Sensor (Port 8081)
-Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass", "-NoExit", "-Command", "Set-Location '$scriptDir'; `$env:PYTHONPATH='$scriptDir\api;$scriptDir'; & '$scriptDir\.venv\Scripts\python.exe' -m uvicorn sensors.deception.main:app --host 0.0.0.0 --port 8081 --reload"
+Start-Process powershell -ArgumentList "-ExecutionPolicy", "Bypass", "-NoExit", "-Command", "Set-Location '$scriptDir'; `$env:PYTHONPATH='$scriptDir\api;$scriptDir'; & '$venvPython' -m uvicorn sensors.deception.main:app --host 0.0.0.0 --port 8081 --reload"
 
 # Service 3: API Abuse Guard Rate Limiter (Port 8082)
-Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass", "-NoExit", "-Command", "Set-Location '$scriptDir'; `$env:PYTHONPATH='$scriptDir\api;$scriptDir'; `$env:UPSTREAM_URL='http://127.0.0.1:8000'; `$env:EVENT_API_URL='http://127.0.0.1:8000'; & '$scriptDir\.venv\Scripts\python.exe' -m uvicorn sensors.ratelimiter.main:app --host 0.0.0.0 --port 8082 --reload"
+Start-Process powershell -ArgumentList "-ExecutionPolicy", "Bypass", "-NoExit", "-Command", "Set-Location '$scriptDir'; `$env:PYTHONPATH='$scriptDir\api;$scriptDir'; `$env:UPSTREAM_URL='http://127.0.0.1:8000'; `$env:EVENT_API_URL='http://127.0.0.1:8000'; & '$venvPython' -m uvicorn sensors.ratelimiter.main:app --host 0.0.0.0 --port 8082 --reload"
 
 # Service 4: React Operator Console (Port 3000)
-Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass", "-NoExit", "-Command", "Set-Location '$scriptDir'; npm --prefix web run dev"
+Start-Process powershell -ArgumentList "-ExecutionPolicy", "Bypass", "-NoExit", "-Command", "Set-Location '$scriptDir'; npm --prefix web run dev"
 
 Write-Host "======================================================================" -ForegroundColor Cyan
 Write-Host "[SUCCESS] All 4 Prohori AI microservices launched!" -ForegroundColor Green

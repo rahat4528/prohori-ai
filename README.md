@@ -358,7 +358,7 @@ python -m venv .venv
 
 # Install dependencies directly into .venv (bypasses Windows script execution policy restrictions):
 .\.venv\Scripts\python.exe -m pip install --upgrade pip
-.\.venv\Scripts\pip.exe install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 *(On macOS/Linux: `source .venv/bin/activate && pip install -r requirements.txt`)*
 

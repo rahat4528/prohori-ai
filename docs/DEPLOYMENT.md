@@ -36,7 +36,7 @@ Prohori AI is engineered as a **modular, defense-in-depth cybersecurity platform
                  ┌──────────────────────────────┐  ┌──────────────────────────────┐
                  │    Database Storage Layer    │  │   Operator Console (Web)     │
                  │  • SQLite: prohori.db        │  │  • React 19 + Vite + Tailwind│
-                 │  • Postgres + pgvector: 5432 │  │  • 100% Offline Local Fonts │
+                 │  • Postgres (pgvector-ready) │  │  • 100% Offline Local Fonts │
                  │  • Cloud: Supabase / Neon    │  │  • Simplified 2-Column UI    │
                  └──────────────────────────────┘  │         [Port 3000]          │
                                                    └──────────────────────────────┘
@@ -81,9 +81,9 @@ Prohori AI utilizes SQLAlchemy 2.0 with asynchronous drivers (`aiosqlite` and `a
    - URI: `sqlite+aiosqlite:///prohori.db`
    - Zero-configuration, zero-dependency embedded database ideal for hackathon evaluation, local development, and air-gapped demo runs.
    - Pre-seeded with 256 realistic security events, 25 multi-stage incidents, and 310 append-only audit entries.
-2. **Enterprise Production Engine (PostgreSQL 16 + pgvector)**:
+2. **Enterprise Production Engine (PostgreSQL 16 + pgvector-ready)**:
    - URI: `postgresql+asyncpg://postgres:postgres@localhost:5432/prohori`
-   - Leverages native `pgvector` extension for vector similarity search over MITRE ATT&CK STIX documents and CVE embeddings.
+   - Supports PostgreSQL schema and pgvector extension for dense vector similarity search over MITRE ATT&CK STIX documents and CVE embeddings. Active local retrieval defaults to deterministic in-memory token-overlap (Jaccard) with technique-ID boosting; pgvector is planned for enterprise deployments.
 3. **Automatic Fallback Mechanics**:
    - On server startup (`init_db()`), the API attempts to connect to the configured PostgreSQL instance.
    - If PostgreSQL is unreachable or connection is refused, the database subsystem **automatically falls back to local SQLite** (`prohori.db`) without throwing fatal runtime exceptions.
@@ -170,7 +170,7 @@ docker compose -f infra/docker-compose.yml up --build -d
 ```
 
 Containers provisioned:
-1. `prohori-db`: PostgreSQL 16 with `pgvector` on port `5432`.
+1. `prohori-db`: PostgreSQL 16 on port `5432`.
 2. `prohori-api`: FastAPI backend & AI core on port `8000`.
 3. `prohori-deception-sensor`: Honeypot decoy trap on port `8081`.
 4. `prohori-ratelimiter-guard`: Edge proxy & rate limiter on port `8082`.

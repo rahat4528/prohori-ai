@@ -45,7 +45,7 @@ This document prepares Team Orionids for the toughest technical, operational, an
 ### Question 5: "What parts of the system are real vs. simulated / mocked?"
 **Honest Answer:**
 > *"Let's be 100% transparent:
-> - **Real & Production-Ready:** The FastAPI ingestion bus, SQLite / PostgreSQL with pgvector schema, the real-time WebSocket broadcaster, the PII/secret scrubbing regex pipeline, the RAG retrieval engine over 14 MITRE techniques & 8 CVEs, the immutable audit trail database, and the React 19 console with live SSE typewriter streaming.
+> - **Real & Functional Prototype:** The FastAPI ingestion bus, SQLite / PostgreSQL schema (pgvector-ready), the real-time WebSocket broadcaster, the PII/secret scrubbing regex pipeline, the RAG retrieval engine over 14 MITRE techniques & 8 CVEs, the immutable audit trail database, and the React 19 console with live SSE typewriter streaming.
 > - **Deliberately Scoped / Simulated:** The 3 defensive sensors are lab-grade sensors. The Deception Honeypot traps real HTTP authentication bursts and path probes, but is strictly isolated and never executes shell commands. The Asset Discovery Scanner performs real socket connections and banner grabs, but has a hardcoded IP allowlist (`127.0.0.1`, `10.0.0.0/8`, `192.168.0.0/16`) so it cannot be abused for offensive scanning.
 > - **Roadmap:** Automated continuous cron synchronization with the live NIST NVD API is currently a roadmap feature; today, knowledge updates are ingested via a manual script (`python knowledge/ingest.py`)."*
 
@@ -83,4 +83,28 @@ This document prepares Team Orionids for the toughest technical, operational, an
 **Honest Answer:**
 > *"Wazuh and Splunk are exceptional log aggregation and rule-matching engines, but they require seasoned, expensive SOC analysts to configure YAML rules and interpret cryptic alerts.
 > Prohori is an **AI-native analyst layer**. Instead of handing an IT officer 500 alert rows, Prohori correlates them into a multi-stage attack chain, explains the adversary's intent in plain Bengali and English with MITRE citations, and drafts an immediate containment action. It is designed specifically for organizations that cannot afford a 5-person 24/7 SOC team."*
+
+---
+
+## 10. Safe Technical Wording & Grounded Claims Reference
+
+When presenting or answering technical judge questions, Team Orionids adheres strictly to the following verified wording to maintain absolute credibility:
+
+1. **Default AI Engine**:
+   - *Safe Wording*: Prohori defaults out-of-the-box to `DeterministicOfflineProvider` (`analyst/providers/offline.py`). It is a high-speed, rule- and keyword-guided expert system using Jaccard token overlap against curated MITRE STIX 2.1 knowledge files — not a generative neural LLM.
+   - *Neural LLM Role*: Local Ollama (`llama3.2`) or cloud providers (Gemini / Groq) are opt-in reasoning layers for generative narrative expansion and conversational inquiry.
+
+2. **Analysis Latency**:
+   - *Safe Wording*: The synchronous event ingestion and fast triage pipeline achieves a **32.03 ms median latency** (empirically measured across 20 distinct alerts via `scripts/benchmark_latency.py`).
+   - *Neural LLM Latency*: Running local `llama3.2` on CPU exhibits a steady-state median latency of **~70.55 s** (measured via `scripts/benchmark_ollama.py` and documented in `docs/evidence/llm_runs.md`). Ingestion is decoupled so API callers never wait for the neural LLM.
+
+3. **Approve Defense & Enforcement Reality**:
+   - *Safe Wording*: Clicking the **"Approve Defense"** button in the operator console immediately adds the offending IP address to `default_limiter.denylist` (`api/app/routes/sovereignty.py#L91-L95`). Subsequent requests from that IP are actively intercepted and blocked with HTTP 429 via `RateLimitMiddleware` (`sensors/ratelimiter/middleware.py#L42-L46` & `api/app/main.py#L204-L211`).
+   - *Firewall Boundary*: Approving does **NOT** execute operating system shell firewall commands (`iptables` / `ufw`) on the host. Shell commands shown in the UI are structured containment guides intended for copy-pasting or SIEM webhook ingestion.
+
+4. **Hallucination Mitigation & Citation Validation**:
+   - *Safe Wording*: The system uses citation-grounded RAG rather than ungrounded generation. During empirical testing with local Ollama, the post-inference validator (`analyst/core/validator.py`) detected and **removed an invented sub-technique** (`T1490.001` in Alert 08, documented in `docs/evidence/llm_runs.md#L65`) while preserving the valid parent technique `T1490`.
+
+5. **Data Sovereignty & Offline Execution**:
+   - *Safe Wording*: In default sovereign mode, verified runs make **zero outbound network calls**. All telemetry, reasoning, and database operations remain entirely confined to loopback (`127.0.0.1`).
 

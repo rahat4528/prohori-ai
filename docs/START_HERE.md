@@ -6,7 +6,7 @@
 **Target Repository**: [https://github.com/rahat4528/prohori-ai](https://github.com/rahat4528/prohori-ai)
 
 > [!IMPORTANT]
-> All automated backend engineering, deterministic triage, local Ollama integration, UI simplification, 48/48 test suite, strict 90/10 palette compliance, and technical documentation are **100% complete and verified**.
+> All automated backend engineering, deterministic triage, local Ollama integration, UI simplification, 50/50 test suite, strict 90/10 palette compliance, and technical documentation are **100% complete and verified**.
 > The remaining items below require human decisions, personal identity details, or physical recording. Follow this checklist to complete your submission in minutes.
 
 ---
@@ -30,7 +30,7 @@
 
 ## 🚦 Gate Status Summary
 
-- **Gate 1: Real LLM Inference & Decoupling**: ✅ **CERTIFIED** (48/48 tests pass; Ollama CPU latency benchmarked; decoupled 35ms ingestion).
+- **Gate 1: Real LLM Inference & Decoupling**: ✅ **CERTIFIED** (50/50 tests pass; Ollama CPU latency benchmarked; decoupled synchronous fast triage benchmarked at median 32.03 ms).
 - **Gate 2: Bengali Linguistic Review**: ⏳ **PENDING** (Awaiting teammate sign-off in `docs/BANGLA_REVIEW.md`).
 - **Gate 3: Official Team Orionids Roster**: ⏳ **PENDING** (Awaiting 3 member names in `docs/TEAM.md`).
 - **Gate 4: Narrated Backup Demo Video**: ⏳ **PENDING** (Awaiting screen recording and upload URL).

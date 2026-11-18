@@ -23,8 +23,9 @@ Prohori AI is an AI-native, self-hostable Security Operations Center. It replace
             │       • PII & Credential scrubbing      │           │
             └────────────────────┬────────────────────┘           │
                                  ▼                                 │
-                     Postgres + pgvector Database                 │
+                     Postgres / SQLite Database                   │
                      (Events + ATT&CK / CVE / CWE Store)          │
+                     (In-memory token RAG; pgvector-ready)        │
                                  │                                 │
             ┌────────────────────▼────────────────────┐           │
             │        AI SOC ANALYST (Core Engine)     │           │
@@ -55,9 +56,9 @@ Prohori AI is an AI-native, self-hostable Security Operations Center. It replace
 | **User Interaction** | React 19 + TypeScript + Vite (`web/`) | Dense, tactical SOC dark console. Projector-optimized contrast. |
 | **Application Logic** | Python 3.11+ / FastAPI (`api/app/`) | Asynchronous, non-blocking ingestion and WebSocket broadcast bus. |
 | **AI Intelligence** | Multi-Provider Engine (`analyst/providers/`) | Google Gemini free-tier, Groq Llama-3.3, local Ollama (Llama 3.2), deterministic offline RAG. |
-| **Knowledge Retrieval** | pgvector + Curated STIX/NVD (`knowledge/`) | Retrieval-Augmented Generation (RAG) over MITRE ATT&CK techniques, CVEs, and CWEs. |
+| **Knowledge Retrieval** | In-Memory Token RAG + Curated STIX/NVD (`knowledge/`) | Retrieval-Augmented Generation (RAG) over MITRE ATT&CK techniques, CVEs, and CWEs (pgvector-ready for enterprise). |
 | **Agent Orchestration** | Autonomous Agents (`analyst/agents/`) | Triage, Correlation, and Response Advisor agents with Human-in-the-Loop gates. |
-| **Data Infrastructure** | PostgreSQL + JSONB + pgvector | Unified telemetry store with relational integrity, JSONB metadata, and vector embeddings. |
+| **Data Infrastructure** | SQLite / PostgreSQL + JSONB | Unified telemetry store with relational integrity, JSONB metadata, and schema support for pgvector embeddings. |
 | **Deployment & Security** | Docker Compose (`infra/`) + On-Premises Mode | One-command orchestration; strictly defensible lab scope; zero-cloud data sovereignty mode. |
 
 ---
@@ -83,7 +84,7 @@ Prohori AI is architected for flexible deployment across edge, container, and cl
    - Microservices communicate over loopback (`127.0.0.1`): Operator Console (3000), Event API (8000), Honeypot (8081), Rate Limiter (8082), Scanner (8083), and Ollama Daemon (11434).
    - Storage: Embedded SQLite (`prohori.db`) via `aiosqlite`.
 2. **Containerized Multi-Service Mesh (`infra/docker-compose.yml`)**:
-   - 6 isolated containers: `prohori-db` (PostgreSQL 16 + pgvector), `prohori-api`, `prohori-deception-sensor`, `prohori-ratelimiter-guard`, `prohori-discovery-sensor`, and `prohori-web-console`.
+   - 6 isolated containers: `prohori-db` (PostgreSQL 16), `prohori-api`, `prohori-deception-sensor`, `prohori-ratelimiter-guard`, `prohori-discovery-sensor`, and `prohori-web-console`.
 3. **Cloud Distributed Architecture (Render & Vercel)**:
    - Backend & Sensors: Infrastructure-as-Code Render Blueprint (`render.yaml`).
    - Frontend: Vercel Single-Page Application (`vercel.json` & `web/vercel.json`).

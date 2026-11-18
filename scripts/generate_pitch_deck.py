@@ -240,13 +240,13 @@ def create_deck(output_path="docs/Prohori_AI_Pitch_Deck.pptx"):
     p2.font.color.rgb = CORAL
     p2.space_after = Pt(10)
     p2_body = tf2.add_paragraph()
-    p2_body.text = "• 3 sensors feed unified bus\n• Scrubbed telemetry into pgvector RAG\n• Real-time operator WebSocket stream"
+    p2_body.text = "• 3 sensors feed unified bus\n• Scrubbed telemetry into sovereign RAG\n• Real-time operator WebSocket stream"
     p2_body.font.size = Pt(16)
     p2_body.font.bold = True
     p2_body.font.color.rgb = NAVY
     p2_body.space_after = Pt(14)
     p2_sub = tf2.add_paragraph()
-    p2_sub.text = "Automated PII scrubber removes secrets.\nDense pgvector similarity search over MITRE ATT&CK & CVE intelligence."
+    p2_sub.text = "Automated PII scrubber removes secrets.\nIn-memory token RAG over MITRE ATT&CK & CVE intelligence (pgvector-ready)."
     p2_sub.font.size = Pt(12)
     p2_sub.font.color.rgb = NAVY
 
@@ -385,7 +385,7 @@ def create_deck(output_path="docs/Prohori_AI_Pitch_Deck.pptx"):
     p3.font.size = Pt(11)
     p3.font.color.rgb = NAVY
 
-    add_notes(s7, "We are Team Orionids, a focused team of builders from the Department of CSE competing at Daffodil International University. We built Prohori specifically to address the security deficit in emerging markets, delivering a battle-tested prototype backed by 38 passing automated tests, 32-millisecond steady-state offline triage latency, verified on-premises neural LLM reasoning, and production-ready microservice packaging.")
+    add_notes(s7, "We are Team Orionids, a focused team of builders from the Department of CSE competing at Daffodil International University. We built Prohori specifically to address the security deficit in emerging markets, delivering a battle-tested prototype backed by 50 passing automated tests, 32-millisecond median synchronous triage latency, verified on-premises neural LLM reasoning, and containerized microservice packaging.")
 
     # -------------------------------------------------------------------------
     # SLIDE 8: Commercial Hypothesis & Next Steps (with QR Code)

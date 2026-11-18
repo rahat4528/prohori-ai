@@ -3,7 +3,7 @@
 **Team**: Team Orionids  
 **Host Institution / Venue**: Daffodil International University (DIU), Dhaka, Bangladesh  
 **Competition**: International AI Builders Congress 2026 (InfraSphere AI &rarr; SecureAI)  
-**Verification Baseline**: Code-grounded against repository commit `3c61bd7` (48/48 tests passing)
+**Verification Baseline**: Code-grounded against repository codebase (50/50 tests passing, Nov 18, 2026)
 
 ---
 
@@ -145,7 +145,7 @@
 > 2. **Correlation Agent (`analyst/agents/correlation.py`)**: A deterministic rule agent that aggregates individual alerts by source IP or target host into multi-stage `INC-` incident campaigns, tracks progression across the cyber kill chain (Recon &rarr; Credential Access &rarr; DoS), and computes campaign-level severity.
 > 3. **Response Advisor (`analyst/agents/advisor.py`)**: A deterministic expert agent that generates targeted defensive countermeasures (`FIREWALL_BLOCK_IP`, `THROTTLE_RATE_LIMIT`, `ROTATE_DECEPTION_DECOY`).
 > 
-> **Human-in-the-Loop Orchestration**: Agents never execute automated network blocks. All countermeasures require explicit operator authorization, which is cryptographically logged in an append-only audit trail (`api/app/audit.py`).
+> **Human-in-the-Loop Orchestration**: Agents never execute automated network blocks. All countermeasures require explicit operator authorization, which is permanently logged in an append-only audit trail (`api/app/audit.py`).
 
 #### User Fill Required:
 - None.

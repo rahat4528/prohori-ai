@@ -62,10 +62,11 @@ To balance zero-friction evaluation by hackathon judges with production-grade se
 - **Configuration:**
   - Configured via environment variable `PROHORI_API_KEY`.
   - Client header: `X-API-Key: <PROHORI_API_KEY>`
-- **Behavior:**
+- **Behavior & Default State:**
+  - **API authentication is OFF by default in demo mode** so judges and evaluators can test the complete stack immediately without configuring credentials.
   - **If `PROHORI_API_KEY` is UNSET:** Write endpoints allow requests without a key, facilitating immediate local testing, and the server logs a visible startup warning:
     `WARNING: PROHORI_API_KEY is not set. API write endpoints are running in UNPROTECTED DEMO MODE.`
-  - **If `PROHORI_API_KEY` is SET:** Requests missing or supplying an invalid `X-API-Key` header are immediately rejected with **HTTP 401 Unauthorized**.
+  - **If `PROHORI_API_KEY` is SET:** Requests missing or supplying an invalid `X-API-Key` header are immediately rejected with **HTTP 401 Unauthorized**. Production deployments must set `PROHORI_API_KEY`.
 
 ---
 
@@ -73,3 +74,19 @@ To balance zero-friction evaluation by hackathon judges with production-grade se
 
 - **Prompt Injection:** Secrets and personal data are redacted before prompting; prompt injection is not fully mitigated against sophisticated adversarial inputs.
 - **Audit Log Immutability:** Audit records are stored in an append-only database table (`audit_logs`). Cryptographic hash-chaining across sequential entries is a planned roadmap enhancement.
+
+---
+
+## 6. Dependency Vulnerability Audit & Advisory (Nov 18, 2026)
+
+- **Backend (Python)**:
+  - Audited with `pip-audit`.
+  - Result: **0 known vulnerabilities found** across all dependencies in `requirements.txt`.
+- **Frontend (Node.js / React)**:
+  - Audited with `npm audit --json`.
+  - Result: **5 high-severity advisories** identified in `picomatch` (GHSA-fc5q-39xc-vjpf: Method Injection / ReDoS).
+  - **Dependency Path**: `picomatch` &rarr; `fdir` &rarr; `tinyglobby` &rarr; `vite@8.3.8` / `@vitejs/plugin-react`.
+  - **Impact & Threat Analysis**:
+    1. **Strictly Development-Time Only**: `picomatch` and `tinyglobby` are build-time glob-matching utilities utilized exclusively by Vite during local development bundling and file watching.
+    2. **Zero Runtime / Client Bundle Footprint**: Inspection of compiled production assets in `web/dist/assets/*.js` confirms `picomatch` is **completely excluded** from client JavaScript output. It cannot be reached or executed by browser users or remote actors.
+    3. **Remediation Status**: Fixing via `npm audit fix` requires a breaking major downgrade to legacy `vite@6.2.7`, which introduces build regressions. Because the advisory is confined entirely to local developer build pipelines and has zero production exposure, it is logged and documented here as an acceptable dev-only risk until Vite releases a patched upstream semver-minor bump.

@@ -50,9 +50,9 @@ It combines:
                     │       • Deduplication & rate control    │           │
                     └────────────────────┬────────────────────┘           │
                                          ▼                                 │
-                             Postgres + pgvector Database                 │
+                             Postgres / SQLite Database                   │
                              (Events + ATT&CK / CVE Store)                │
-                             (Auto SQLite fallback in dev)                │
+                             (In-Memory RAG; pgvector-ready)              │
                                          │                                 │
                     ┌────────────────────▼────────────────────┐           │
                     │        AI SOC ANALYST (Core Engine)     │           │
@@ -89,7 +89,7 @@ It combines:
 
 ### Phase 1: Foundation & Defensive Sensor Microservices
 - Designed decoupled sensor topology across ports 8000, 8081, 8082, and 8083.
-- Implemented asynchronous database layer supporting PostgreSQL 16 (`pgvector`) with automatic zero-configuration fallback to embedded SQLite (`prohori.db`).
+- Implemented asynchronous database layer supporting SQLite (default local) and PostgreSQL 16 (with pgvector schema support for enterprise). Active retrieval operates via deterministic in-memory token-overlap (Jaccard) with technique-ID boosting.
 - Built central PII & credential scrubbing engine redacting passwords, API keys, JWT tokens, Bearer tokens, and emails prior to storage or prompting.
 
 ### Phase 2: AI Intelligence Core & Grounded RAG Reasoning
@@ -244,7 +244,7 @@ cd ..
 ### 4.1 Automated Test Execution
 
 ```bash
-# 1. Run full Pytest suite (43 passed):
+# 1. Run full Pytest suite (50 passed):
 pytest api/tests sensors/deception/tests sensors/ratelimiter/tests analyst/tests sensors/discovery/tests -v
 
 # 2. Run 15-Point End-to-End Architectural Verification:
@@ -259,13 +259,16 @@ cd web && npm run build
 
 **Verified Test Results**:
 ```
-api/tests/test_api.py ...........                                         [ 25%]
-sensors/deception/tests/test_deception.py .....                          [ 37%]
-sensors/ratelimiter/tests/test_ratelimiter.py ......                      [ 51%]
-analyst/tests/test_analyst.py ..............                              [ 83%]
-sensors/discovery/tests/test_discovery.py .......                         [100%]
+api/tests/test_api.py ...........                                         [ 22%]
+api/tests/test_auth.py ..                                                 [ 26%]
+api/tests/test_devices.py .                                               [ 28%]
+sensors/deception/tests/test_deception.py .....                          [ 38%]
+sensors/ratelimiter/tests/test_ratelimiter.py ......                      [ 50%]
+analyst/tests/test_analyst.py ..............                              [ 78%]
+sensors/discovery/tests/test_discovery.py ......                          [ 90%]
+analyst/tests/test_intent_matcher.py .....                                [100%]
 
-43 passed in 7.64s (100% pass rate)
+50 passed in 38.90s (100% pass rate)
 ```
 
 ### 4.2 Interactive Attack Simulation Scripts
@@ -310,7 +313,7 @@ sensors/discovery/tests/test_discovery.py .......                         [100%]
 docker compose -f infra/docker-compose.yml up --build -d
 ```
 Orchestrates 6 isolated containers:
-- `db`: PostgreSQL 16 with `pgvector`
+- `db`: PostgreSQL 16 (pgvector-ready)
 - `api`: Event Ingestion Bus and AI Core (`http://localhost:8000`)
 - `honeypot`: Deception Sensor (`http://localhost:8081`)
 - `ratelimiter`: API Abuse Guard (`http://localhost:8082`)

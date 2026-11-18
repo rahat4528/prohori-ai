@@ -200,7 +200,7 @@ Perform the complete 6-stage operational test in your browser at [http://localho
    - Click **"👤 Insider or external?"**: Watch it evaluate `192.168.1.189` as an **RFC 1918 private LAN address** and warn of potential lateral movement.
 5. **Approve Defensive Countermeasure (Human-in-the-Loop)**:
    - Click the prominent **"Approve Defense Countermeasure"** button.
-   - An inline cryptographic confirmation appears confirming the adversary IP is now blocked on the rate limiter.
+   - An inline confirmation appears confirming the adversary IP is now blocked on the rate limiter, with an entry written to the append-only audit log.
 6. **Inspect the Immutable Audit Trail**:
    - Click **"Audit Log"** in the footer (or press `Shift + A`).
    - The drawer reveals the append-only audit record with timestamp, operator ID, and defense decision.

@@ -5,7 +5,7 @@
 [![Live Console](https://img.shields.io/badge/Live%20Demo-prohori--ai.vercel.app-FF6258?style=for-the-badge&logo=vercel&logoColor=14213D)](https://prohori-ai.vercel.app)
 [![Render Blueprint](https://img.shields.io/badge/Render%20Blueprint-exs--dbrh0kec6qcc73dstli0-14213D?style=for-the-badge&logo=render&logoColor=F4EDE0)](https://dashboard.render.com/blueprints/exs-dbrh0kec6qcc73dstli0)
 [![Design System](https://img.shields.io/badge/90%2F10%20Palette-Strict%20Navy%2FCream%2FCoral-14213D?style=for-the-badge&logoColor=FF6258)](#6-strict-9010-color-discipline--design-system)
-[![Tests Passing](https://img.shields.io/badge/pytest-48%20passed-14213D?style=for-the-badge&logo=pytest&logoColor=46E3B7)](#8-testing-verification--code-quality)
+[![Tests Passing](https://img.shields.io/badge/pytest-50%20passed-14213D?style=for-the-badge&logo=pytest&logoColor=46E3B7)](#8-testing-verification--code-quality)
 [![Data Sovereignty](https://img.shields.io/badge/Data%20Sovereignty-100%25%20On--Prem%20Air--Gapped-14213D?style=for-the-badge&logo=shield&logoColor=F4EDE0)](#3-key-technical-differentiators--innovations)
 [![Bilingual Parity](https://img.shields.io/badge/Languages-English%20%7C%20বাংলা-14213D?style=for-the-badge)](#3-key-technical-differentiators--innovations)
 
@@ -104,9 +104,9 @@ Modern organizations face relentless cyberattacks, but conventional defense solu
                       │       • Deduplication & rate control    │           │
                       └────────────────────┬────────────────────┘           │
                                            ▼                                 │
-                               Postgres + pgvector Database                 │
+                               Postgres / SQLite Database                 │
                                (Events + ATT&CK / CVE Store)                │
-                               (Auto SQLite fallback in dev)                │
+                               (In-Memory RAG; pgvector-ready)              │
                                            │                                 │
                       ┌────────────────────▼────────────────────┐           │
                       │        AI SOC ANALYST (Core Engine)     │           │
@@ -181,7 +181,7 @@ prohori-ai/
 ├── api/                             # Central Event Ingestion Bus & REST API (FastAPI)
 │   ├── app/
 │   │   ├── main.py                  # API entrypoint, routes, CORS, WebSocket /stream & discovery
-│   │   ├── database.py              # Async SQLAlchemy engine (Postgres pgvector with SQLite fallback)
+│   │   ├── database.py              # Async SQLAlchemy engine (SQLite in dev, Postgres pgvector-ready for enterprise)
 │   │   ├── models.py                # Database schemas (events, incidents, audit_logs, knowledge)
 │   │   └── scrubber.py              # PII and credential redaction engine (passwords, tokens, keys)
 │   └── tests/                       # Pytest test suite for API endpoints and event ingestion
@@ -243,7 +243,7 @@ prohori-ai/
 │   └── screenshots/                 # Multi-resolution verified screenshots (before and after)
 │
 ├── infra/                           # Infrastructure-as-Code & Container Orchestration
-│   └── docker-compose.yml           # Production multi-container spec (Postgres+pgvector, API, Sensors, Web)
+│   └── docker-compose.yml           # Production multi-container spec (Postgres db, API, Sensors, Web)
 │
 ├── scripts/                         # Automation, Verification & Linters
 │   ├── run_all.ps1                  # PowerShell parallel multi-service launcher
@@ -478,10 +478,10 @@ Choose the launch method that fits your workflow:
      .\.venv\Scripts\python.exe scripts/verify_live_ui.py
      ```
 - **Expected Output**:
-  - Pytest: `============================= 48 passed in 5.03s =============================`
+  - Pytest: `============================= 50 passed in 38.90s =============================`
   - Palette Linter: `[PASS] 100% Palette Compliance! Zero unauthorized colors detected.`
   - Oxlint: `Found 0 warnings and 0 errors.`
-  - Vite Build: `✓ built in 409ms`
+  - Vite Build: `✓ built in 743ms`
 - **How to verify it worked**: All 4 automated checks pass with exit code `0`.
 
 ---
@@ -492,7 +492,7 @@ Choose the launch method that fits your workflow:
 |---|---|---|
 | `fatal: destination path 'prohori-ai' already exists and is not an empty directory.` | The repository has already been cloned to this location. | Do **not** re-run `git clone`. Simply navigate into the existing folder with `cd prohori-ai`. If you want to update it to the latest code, run `git pull`. |
 | `The argument '.\run.ps1' to the -File parameter does not exist.` | Your terminal is sitting in `C:\Users\YourName>` (outside the project folder). | Enter the project directory first: run `cd prohori-ai`, then run `powershell -ExecutionPolicy Bypass -File .\run.ps1`. Or use the universal command: `if (Test-Path "prohori-ai") { cd prohori-ai }; powershell -ExecutionPolicy Bypass -File .\run.ps1` |
-| Browser loads old website or project (e.g. `EWUProPORTAL` or `ERR_CONNECTION_REFUSED`) instead of Prohori AI | Stale browser Service Worker or Cache Storage from an old project running on port 3000, or local services not running. | 1. Ensure `start_all.bat` is running.<br>2. Open Chrome DevTools (`F12`) &rarr; **Application** &rarr; **Service Workers** &rarr; click **Unregister**. Under **Storage**, click **Clear site data**.<br>3. Hard reload with `Ctrl + F5` or `Ctrl + Shift + R`. |
+| Browser loads old website or project (e.g. `ERR_CONNECTION_REFUSED` or cached previous project) instead of Prohori AI | Stale browser Service Worker or Cache Storage from an old project running on port 3000, or local services not running. | 1. Ensure `start_all.bat` is running.<br>2. Open Chrome DevTools (`F12`) &rarr; **Application** &rarr; **Service Workers** &rarr; click **Unregister**. Under **Storage**, click **Clear site data**.<br>3. Hard reload with `Ctrl + F5` or `Ctrl + Shift + R`. |
 | `File ... Activate.ps1 cannot be loaded because running scripts is disabled on this system.` | Windows PowerShell defaults to `ExecutionPolicy Restricted` (blocks `.ps1` execution). | **Solution 1 (Recommended)**: Use `.\start_all.bat` (batch files have no script execution restrictions).<br>**Solution 2**: Run Python directly without activating: `.\.venv\Scripts\python.exe ...`<br>**Solution 3**: Unblock current session with `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`. |
 | `Set-Location : A positional parameter cannot be found that accepts argument 'start_all.bat'` | Two commands were copied together and pasted onto one line (`cd prohori-ai start_all.bat`). | Execute commands one at a time: first type `cd prohori-ai` and press Enter, then type `.\start_all.bat` and press Enter. |
 | `ModuleNotFoundError: No module named 'sensors'` or `No module named 'app'` | Terminal is not in the root directory, or `$env:PYTHONPATH` was not exported. | Run `cd prohori-ai` and set `$env:PYTHONPATH="api;."`, or simply run `.\start_all.bat` which configures paths automatically. |
@@ -597,7 +597,7 @@ For complete cloud configuration details, environment variables, and Docker para
 Prohori AI includes a comprehensive, verified test suite covering every layer of the application:
 
 ```bash
-# 1. Run all Pytest suites (43 passed):
+# 1. Run all Pytest suites (50 passed):
 pytest api/tests sensors/deception/tests sensors/ratelimiter/tests analyst/tests sensors/discovery/tests -v
 
 # 2. Run 15-point End-to-End Architectural Verification:
@@ -612,15 +612,18 @@ cd web && npm run build
 
 ```
 ============================== test session starts ==============================
-collected 43 items
+collected 50 items
 
-api/tests/test_api.py ...........                                         [ 25%]
-sensors/deception/tests/test_deception.py .....                          [ 37%]
-sensors/ratelimiter/tests/test_ratelimiter.py ......                      [ 51%]
-analyst/tests/test_analyst.py ..............                              [ 83%]
-sensors/discovery/tests/test_discovery.py .......                         [100%]
+api/tests/test_api.py ...........                                         [ 22%]
+api/tests/test_auth.py ..                                                 [ 26%]
+api/tests/test_devices.py .                                               [ 28%]
+sensors/deception/tests/test_deception.py .....                          [ 38%]
+sensors/ratelimiter/tests/test_ratelimiter.py ......                      [ 50%]
+analyst/tests/test_analyst.py ..............                              [ 78%]
+sensors/discovery/tests/test_discovery.py ......                          [ 90%]
+analyst/tests/test_intent_matcher.py .....                                [100%]
 
-============================== 43 passed in 13.08s ==============================
+============================== 50 passed in 38.90s ==============================
 ```
 
 ---

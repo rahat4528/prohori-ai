@@ -77,10 +77,10 @@
 
 - **Slide Title**: Unified Defensive Ingestion Architecture
 - **Visual Blueprint**: Horizontal dataflow diagram:
-  - 3 Defensive Sensors (Honeypot, API Abuse Guard, Allowlisted Scanner) &rarr; Event Ingestion Bus (PII Redaction) &rarr; PostgreSQL + pgvector RAG &rarr; AI SOC Analyst Engine &rarr; WebSocket Console.
+  - 3 Defensive Sensors (Honeypot, API Abuse Guard, Allowlisted Scanner) &rarr; Event Ingestion Bus (PII Redaction) &rarr; Sovereign In-Memory RAG &rarr; AI SOC Analyst Engine &rarr; WebSocket Console.
 - **Slide Body Text (Strictly < 15 words)**:
   - 3 sensors feed unified bus
-  - Scrubbed telemetry into pgvector RAG
+  - Scrubbed telemetry into sovereign RAG
   - Real-time operator WebSocket stream
 - **Speaker Script (1:10 - 1:30)**:
   > "Here is our architecture. Three lightweight defensive sensors feed our unified bus: an isolated deception honeypot, an API abuse guard, and an allowlisted scanner. Telemetry passes through an automated PII and credential scrubber before entering our local knowledge base. The AI Analyst correlates the data against local MITRE ATT&CK intelligence and streams prioritized incidents to the operator console in real time."
@@ -204,7 +204,7 @@ Empirically calibrated using the live dress rehearsal measurements (tool executi
    - Sits or stands at the presentation podium with the laptop connected to the projector.
    - Responsible for slide transitions via remote or keyboard.
    - On Slide 5, executes the live demo or switches seamlessly to the pre-loaded 60-second backup video if the projector or network glitches.
-   - Leads technical judge questions regarding database indexing, pgvector RAG, and microservice isolation.
+   - Leads technical judge questions regarding database indexing, in-memory token RAG (and pgvector roadmap), and microservice isolation.
 
 ### Option B: Solo Presenter Variant
 

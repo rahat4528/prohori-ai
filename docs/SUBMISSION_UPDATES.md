@@ -41,7 +41,7 @@ Following a strict mentor review, Prohori AI underwent a comprehensive engineeri
 
 ### A. Pytest Suite Execution
 - **Command**: `.venv\Scripts\python -m pytest`
-- **Result**: `38 passed in 13.08s` (100% pass rate)
+- **Result**: `50 passed in 38.90s` (100% pass rate)
 - **Coverage**:
   - `api/tests/`: Event ingestion, PII redaction, schema validation, rate limit middleware, opt-in header auth, JSON-grammar failover, grounding validation, and decoupled background LLM upgrading
   - `sensors/deception/tests/`: Simulated honeypot traps, isolated response generation, telemetry streaming

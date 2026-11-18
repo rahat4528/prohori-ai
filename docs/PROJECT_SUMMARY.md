@@ -224,10 +224,10 @@ cd web; npm audit; cd ..
 | `scripts/check_palette.py` | 19 source files | **19** | 0 | 0 | **PASS (100% 90/10 compliance)** |
 | `scripts/check_runtime_palette.py` | 375 DOM elements | **375** | 0 | 0 | **PASS (100% runtime compliance)** |
 | `pip-audit` | 42 packages | **42** | 0 | 0 | **PASS (0 vulnerabilities)** |
-| `npm audit` | 134 packages | **134** | 0 | 0 | **PASS (0 vulnerabilities)** |
+| `npm audit` | 134 packages | 129 | 0 | 5 | **ADVISORY (5 dev-only advisories in picomatch/vite; 0 runtime bundle impact)** |
 | `scripts/demo_replay.py` | 5 stages | **5** | 0 | 0 | **PASS (100%)** |
 
-**Summary**: **Zero failing automated tests**. All 43 pytest items (including dedicated AI chatbot intent and validation suites), 15 end-to-end checks, 19 endpoint tests, and security audits passed.
+**Summary**: **Zero failing automated tests**. All 50 pytest items, 15 end-to-end checks, 19 endpoint tests, and security audits passed.
 
 ---
 

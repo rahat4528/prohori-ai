@@ -86,16 +86,20 @@ Start-Process powershell -ArgumentList "-ExecutionPolicy", "Bypass", "-NoExit", 
 # Service 3: API Abuse Guard Rate Limiter (Port 8082)
 Start-Process powershell -ArgumentList "-ExecutionPolicy", "Bypass", "-NoExit", "-Command", "Set-Location '$scriptDir'; `$env:PYTHONPATH='$scriptDir\api;$scriptDir'; `$env:UPSTREAM_URL='http://127.0.0.1:8000'; `$env:EVENT_API_URL='http://127.0.0.1:8000'; & '$venvPython' -m uvicorn sensors.ratelimiter.main:app --host 0.0.0.0 --port 8082 --reload"
 
-# Service 4: React Operator Console (Port 3000)
+# Service 4: Asset Discovery Sensor (Port 8083)
+Start-Process powershell -ArgumentList "-ExecutionPolicy", "Bypass", "-NoExit", "-Command", "Set-Location '$scriptDir'; `$env:PYTHONPATH='$scriptDir\api;$scriptDir'; `$env:EVENT_API_URL='http://127.0.0.1:8000'; & '$venvPython' -m uvicorn sensors.discovery.main:app --host 0.0.0.0 --port 8083 --reload"
+
+# Service 5: React Operator Console (Port 3000)
 Start-Process powershell -ArgumentList "-ExecutionPolicy", "Bypass", "-NoExit", "-Command", "Set-Location '$scriptDir'; npm --prefix web run dev"
 
 Write-Host "======================================================================" -ForegroundColor Cyan
-Write-Host "[SUCCESS] All 4 Prohori AI microservices launched!" -ForegroundColor Green
-Write-Host "  - Operator Console:    http://localhost:3000" -ForegroundColor White
-Write-Host "  - Event API & Core:    http://localhost:8000" -ForegroundColor White
-Write-Host "  - Interactive Docs:    http://localhost:8000/docs" -ForegroundColor White
-Write-Host "  - Deception Honeypot:  http://localhost:8081" -ForegroundColor White
-Write-Host "  - API Abuse Guard:     http://localhost:8082" -ForegroundColor White
+Write-Host "[SUCCESS] All 5 Prohori AI microservices launched!" -ForegroundColor Green
+Write-Host "  - Operator Console:        http://localhost:3000" -ForegroundColor White
+Write-Host "  - Event API & Core:        http://localhost:8000" -ForegroundColor White
+Write-Host "  - Interactive Docs:        http://localhost:8000/docs" -ForegroundColor White
+Write-Host "  - Deception Honeypot:      http://localhost:8081" -ForegroundColor White
+Write-Host "  - API Abuse Guard:         http://localhost:8082" -ForegroundColor White
+Write-Host "  - Asset Discovery Sensor:  http://localhost:8083" -ForegroundColor White
 Write-Host "======================================================================" -ForegroundColor Cyan
 
 Start-Sleep -Seconds 3

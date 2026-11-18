@@ -5,10 +5,9 @@ and broadcasts synchronized device state over WebSocket to all connected operato
 """
 
 import asyncio
-import json
 import logging
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from fastapi import WebSocket
@@ -16,7 +15,6 @@ from fastapi import WebSocket
 from .network_discovery import (
     discover_lan_endpoints,
     get_default_gateway_ip,
-    get_host_device_info,
     get_primary_lan_ip,
 )
 
@@ -114,7 +112,7 @@ class ConnectionManager:
         user_agent: str = ""
     ) -> dict[str, Any]:
         """Register or update a client web console session associated with a WebSocket."""
-        now_iso = datetime.now(timezone.utc).isoformat()
+        now_iso = datetime.now(UTC).isoformat()
         real_ip, is_local = self.normalize_client_ip(client_ip)
 
         if not device_id or str(device_id).strip() == "":
@@ -166,7 +164,7 @@ class ConnectionManager:
         user_agent: str = ""
     ) -> dict[str, Any]:
         """Register or update a client device session over HTTP."""
-        now_iso = datetime.now(timezone.utc).isoformat()
+        now_iso = datetime.now(UTC).isoformat()
         real_ip, is_local = self.normalize_client_ip(client_ip)
 
         if not device_id or str(device_id).strip() == "":
@@ -192,7 +190,7 @@ class ConnectionManager:
 
     async def heartbeat(self, websocket: WebSocket | None = None, device_id: str | None = None) -> None:
         """Update last seen timestamp for a session."""
-        now_iso = datetime.now(timezone.utc).isoformat()
+        now_iso = datetime.now(UTC).isoformat()
         target_id = device_id
         if not target_id and websocket:
             target_id = self.ws_to_device.get(websocket)
@@ -215,7 +213,7 @@ class ConnectionManager:
                 if target_id in self.sessions:
                     self.sessions[target_id]["status"] = "offline"
                     self.sessions[target_id]["has_active_console"] = False
-                    self.sessions[target_id]["last_seen"] = datetime.now(timezone.utc).isoformat()
+                    self.sessions[target_id]["last_seen"] = datetime.now(UTC).isoformat()
 
                 await self.broadcast_device_update()
 
@@ -336,7 +334,7 @@ class ConnectionManager:
             "local_ip": local_ip,
             "default_gateway": gateway,
             "subnet": subnet,
-            "timestamp": datetime.now(timezone.utc).isoformat()
+            "timestamp": datetime.now(UTC).isoformat()
         }
 
     async def broadcast_device_update(self) -> None:

@@ -70,26 +70,30 @@ echo Launching Prohori AI microservices in dedicated terminal windows...
 echo ======================================================================
 
 :: Launch 1: Event API and AI Core [Port 8000]
-start "Prohori [1/4] - Event API and AI Core (Port 8000)" cmd /k "cd /d "%PROHORI_ROOT%" && set "PYTHONPATH=%PROHORI_ROOT%\api;%PROHORI_ROOT%" && "%PROHORI_ROOT%\.venv\Scripts\python.exe" -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+start "Prohori [1/5] - Event API and AI Core (Port 8000)" cmd /k "cd /d "%PROHORI_ROOT%" && set "PYTHONPATH=%PROHORI_ROOT%\api;%PROHORI_ROOT%" && "%PROHORI_ROOT%\.venv\Scripts\python.exe" -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
 
 :: Launch 2: Deception Honeypot Sensor [Port 8081]
-start "Prohori [2/4] - Deception Honeypot (Port 8081)" cmd /k "cd /d "%PROHORI_ROOT%" && set "PYTHONPATH=%PROHORI_ROOT%\api;%PROHORI_ROOT%" && "%PROHORI_ROOT%\.venv\Scripts\python.exe" -m uvicorn sensors.deception.main:app --host 0.0.0.0 --port 8081 --reload"
+start "Prohori [2/5] - Deception Honeypot (Port 8081)" cmd /k "cd /d "%PROHORI_ROOT%" && set "PYTHONPATH=%PROHORI_ROOT%\api;%PROHORI_ROOT%" && "%PROHORI_ROOT%\.venv\Scripts\python.exe" -m uvicorn sensors.deception.main:app --host 0.0.0.0 --port 8081 --reload"
 
 :: Launch 3: API Abuse Guard Rate Limiter [Port 8082]
-start "Prohori [3/4] - API Abuse Guard (Port 8082)" cmd /k "cd /d "%PROHORI_ROOT%" && set "PYTHONPATH=%PROHORI_ROOT%\api;%PROHORI_ROOT%" && set "UPSTREAM_URL=http://127.0.0.1:8000" && set "EVENT_API_URL=http://127.0.0.1:8000" && "%PROHORI_ROOT%\.venv\Scripts\python.exe" -m uvicorn sensors.ratelimiter.main:app --host 0.0.0.0 --port 8082 --reload"
+start "Prohori [3/5] - API Abuse Guard (Port 8082)" cmd /k "cd /d "%PROHORI_ROOT%" && set "PYTHONPATH=%PROHORI_ROOT%\api;%PROHORI_ROOT%" && set "UPSTREAM_URL=http://127.0.0.1:8000" && set "EVENT_API_URL=http://127.0.0.1:8000" && "%PROHORI_ROOT%\.venv\Scripts\python.exe" -m uvicorn sensors.ratelimiter.main:app --host 0.0.0.0 --port 8082 --reload"
 
-:: Launch 4: React Operator Console [Port 3000]
-start "Prohori [4/4] - React Web Console (Port 3000)" cmd /k "cd /d "%PROHORI_ROOT%" && call npm --prefix web run dev"
+:: Launch 4: Asset Discovery Sensor [Port 8083]
+start "Prohori [4/5] - Asset Discovery Sensor (Port 8083)" cmd /k "cd /d "%PROHORI_ROOT%" && set "PYTHONPATH=%PROHORI_ROOT%\api;%PROHORI_ROOT%" && set "EVENT_API_URL=http://127.0.0.1:8000" && "%PROHORI_ROOT%\.venv\Scripts\python.exe" -m uvicorn sensors.discovery.main:app --host 0.0.0.0 --port 8083 --reload"
+
+:: Launch 5: React Operator Console [Port 3000]
+start "Prohori [5/5] - React Web Console (Port 3000)" cmd /k "cd /d "%PROHORI_ROOT%" && call npm --prefix web run dev"
 
 echo.
 echo ======================================================================
-echo [SUCCESS] All 4 Prohori AI services are running!
+echo [SUCCESS] All 5 Prohori AI services are running!
 echo ======================================================================
-echo   - Operator Console:    http://localhost:3000
-echo   - Event API and Core:  http://localhost:8000
-echo   - Interactive Docs:    http://localhost:8000/docs
-echo   - Deception Honeypot:  http://localhost:8081
-echo   - API Abuse Guard:     http://localhost:8082
+echo   - Operator Console:        http://localhost:3000
+echo   - Event API and Core:      http://localhost:8000
+echo   - Interactive Docs:        http://localhost:8000/docs
+echo   - Deception Honeypot:      http://localhost:8081
+echo   - API Abuse Guard:         http://localhost:8082
+echo   - Asset Discovery Sensor:  http://localhost:8083
 echo ======================================================================
 echo.
 echo Opening Web Console in browser...

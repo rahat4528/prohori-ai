@@ -12,7 +12,8 @@ import time
 
 import httpx
 
-API_BASE = "http://localhost:8000"
+API_BASE = os.getenv("API_BASE") or os.getenv("EVENT_API_URL") or "http://127.0.0.1:8000"
+DISCOVERY_URL = os.getenv("DISCOVERY_URL") or "http://127.0.0.1:8083"
 PROHORI_API_KEY = os.getenv("PROHORI_API_KEY")
 HEADERS = {"Content-Type": "application/json"}
 if PROHORI_API_KEY:
@@ -115,21 +116,27 @@ def run_replay():
      Pushing timed 5-stage attack sequence to Event API & WebSocket
 ======================================================================
     """)
-    # Health check
-    try:
-        r = httpx.get(f"{API_BASE}/healthz", timeout=3.0)
-        print(f"[+] Event API Online: {r.json()}\n")
-    except Exception as e:
-        print(f"[-] Could not connect to API at {API_BASE}: {e}")
-        print("    Ensure the backend is running.")
-        sys.exit(1)
+    # Health check with retry
+    r = None
+    for attempt in range(2):
+        try:
+            r = httpx.get(f"{API_BASE}/healthz", timeout=10.0)
+            if r.status_code == 200:
+                break
+        except Exception as e:
+            if attempt == 1:
+                print(f"[-] Could not connect to API at {API_BASE}: {e}")
+                print("    Ensure the backend is running (start the stack first: scripts\\run_all.ps1 or .\\start_all.bat).")
+                sys.exit(1)
+            time.sleep(1.0)
+    print(f"[+] Event API Online: {r.json()}\n")
 
     for i, stage in enumerate(STAGED_CAMPAIGN, 1):
         print(f"\n>>> [{i}/{len(STAGED_CAMPAIGN)}] {stage['title']} (delay {stage['delay']}s)...")
         time.sleep(stage["delay"])
 
         try:
-            resp = httpx.post(f"{API_BASE}/events", json=stage["payload"], headers=HEADERS, timeout=5.0)
+            resp = httpx.post(f"{API_BASE}/events", json=stage["payload"], headers=HEADERS, timeout=10.0)
             if resp.status_code == 201:
                 ev = resp.json()
                 analyst = ev.get("analyst") or {}
@@ -147,7 +154,7 @@ def run_replay():
     print("\n" + "="*70)
     print("[+] All 5 stages emitted! Checking live Asset Discovery Sensor (port 8083)...")
     try:
-        disc_res = httpx.post("http://localhost:8083/scan", json={"target": "127.0.0.1", "ports": [22, 80, 8000, 8081]}, timeout=2.0)
+        disc_res = httpx.post(f"{DISCOVERY_URL}/scan", json={"target": "127.0.0.1", "ports": [22, 80, 8000, 8081]}, timeout=5.0)
         if disc_res.status_code == 200:
             print(f"[+] Discovery Sensor scanned allowlisted target 127.0.0.1: {disc_res.json().get('open_ports_count')} open services found.")
     except Exception:
@@ -155,7 +162,7 @@ def run_replay():
 
     print("\n[+] Checking correlated incidents in Prohori...")
     try:
-        inc_res = httpx.get(f"{API_BASE}/analyst/incidents", timeout=3.0)
+        inc_res = httpx.get(f"{API_BASE}/analyst/incidents", timeout=10.0)
         data = inc_res.json()
         print(f"[+] Correlated Attack Incidents: {data['total_incidents']}")
         for inc in data.get("incidents", []):

@@ -12,7 +12,7 @@ import os
 import re
 import socket
 import subprocess
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 logger = logging.getLogger("prohori.discovery.network")
@@ -517,7 +517,7 @@ async def discover_lan_endpoints() -> list[dict[str, Any]]:
         "is_local_host": True,
         "is_gateway": False,
         "has_active_console": False,
-        "last_seen": datetime.now(timezone.utc).isoformat()
+        "last_seen": datetime.now(UTC).isoformat()
     })
     seen_ips.add(local_ip)
 
@@ -560,7 +560,7 @@ async def discover_lan_endpoints() -> list[dict[str, Any]]:
             "is_local_host": False,
             "is_gateway": is_gw,
             "has_active_console": False,
-            "last_seen": datetime.now(timezone.utc).isoformat()
+            "last_seen": datetime.now(UTC).isoformat()
         })
 
     return discovered

@@ -3,13 +3,12 @@ Tests for Connected Device Discovery and Real-Time Tracking
 """
 
 import os
-import pytest
+
 from starlette.testclient import TestClient
 
 os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///:memory:"
 
 from app.main import app
-from app.connection_mgr import ws_manager
 
 
 def test_device_rest_endpoints():

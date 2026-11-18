@@ -6,14 +6,15 @@ Generates controlled, benign test traffic to demonstrate:
 2. API Abuse Guard (rate limiter: burst traffic, 429 block, progressive escalation)
 """
 
+import os
 import sys
 import time
 
 import httpx
 
-EVENT_API = "http://localhost:8000"
-DECEPTION_URL = "http://localhost:8081"
-GUARD_URL = "http://localhost:8082"
+EVENT_API = os.getenv("EVENT_API_URL") or "http://127.0.0.1:8000"
+DECEPTION_URL = os.getenv("DECEPTION_URL") or "http://127.0.0.1:8081"
+GUARD_URL = os.getenv("GUARD_URL") or "http://127.0.0.1:8082"
 
 
 def print_step(title: str):

@@ -3,11 +3,12 @@ Prohori AI - Event Seeder Script
 Emits sample test events for each source and severity to verify the API pipeline.
 """
 
+import os
 import sys
 
 import httpx
 
-API_BASE = "http://localhost:8000"
+API_BASE = os.getenv("API_BASE") or os.getenv("EVENT_API_URL") or "http://127.0.0.1:8000"
 
 SAMPLE_EVENTS = [
     {

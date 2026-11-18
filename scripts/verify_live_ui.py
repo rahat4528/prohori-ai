@@ -5,9 +5,8 @@ tests every core interactive feature, and captures step-by-step screenshots.
 """
 
 import asyncio
-import os
-import sys
 from pathlib import Path
+
 from playwright.async_api import async_playwright
 
 ROOT = Path(__file__).resolve().parent.parent

@@ -3,12 +3,13 @@ Prohori AI - Analysis Latency Benchmark Script
 Times 20 real alerts through the Event API and AI Triage engine.
 """
 
+import os
 import statistics
 import time
 
 import httpx
 
-API_BASE = "http://localhost:8000"
+API_BASE = os.getenv("API_BASE") or os.getenv("EVENT_API_URL") or "http://127.0.0.1:8000"
 
 def run_benchmark():
     latencies = []

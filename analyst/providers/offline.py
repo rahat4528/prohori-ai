@@ -395,7 +395,7 @@ class DeterministicOfflineProvider(LLMProvider):
                     f"# Cisco Edge ACL:\n"
                     f"access-list 100 deny ip host {source_ip} any\n"
                     f"```\n\n"
-                    f"**Prohori Automated Enforcement:** Clicking **'Approve Defense Countermeasure'** in this console immediately adds `{source_ip}` to the active rate-limiter blocklist with cryptographic audit trail.\n\n"
+                    f"**Prohori Automated Enforcement:** Clicking **'Approve Defense Countermeasure'** in this console immediately adds `{source_ip}` to the active rate-limiter blocklist with append-only audit trail.\n\n"
                     f"**Knowledge Citation:** [{technique_id}] [{cwe_id}]"
                 )
             return answer, citations

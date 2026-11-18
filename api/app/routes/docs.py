@@ -73,8 +73,8 @@ HTML_PRESENTATION = """<!DOCTYPE html>
       <ul>
         <li>A self-hostable, AI-native Security Operations Center. Four defensive sensors feed one unified event bus.</li>
         <li><strong>The AI SOC Analyst:</strong> Real-time autonomous triage, correlation, and natural language explanations in <strong>English and Bengali (বাংলা)</strong>.</li>
-        <li><strong>RAG Grounding:</strong> Every verdict cites MITRE ATT&CK techniques (e.g. [T1110.001]) and CVEs with zero hallucination.</li>
-        <li><strong>Zero-Cloud Sovereignty:</strong> Runs 100% on-premises with local models (Ollama / Llama 3.2).</li>
+        <li><strong>RAG Grounding:</strong> Every verdict cites MITRE ATT&CK techniques (e.g. [T1110.001]) and CVEs with citation-grounded validation.</li>
+        <li><strong>Data Sovereignty:</strong> Runs in local sovereign mode with on-premises models (Ollama / Llama 3.2).</li>
       </ul>
       <div class="callout">Key Difference: An active agentic reasoning core, not a surface-level dashboard.</div>
     </div>

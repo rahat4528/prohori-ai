@@ -34,14 +34,14 @@ const SLIDES = [
     bulletPointsEn: [
       "Not just a colored-light dashboard: Prohori is an active agentic AI SOC Analyst.",
       "Four defensive sensors feed a single unified bus; the AI Analyst triages, correlates, and explains threats in English and Bengali (বাংলা).",
-      "Grounded in MITRE ATT&CK and NVD CVE knowledge bases: every verdict is cited with zero hallucination.",
-      "Runs 100% on-premises with local models (Ollama Llama 3.2): zero telemetry leaves the organization."
+      "Grounded in MITRE ATT&CK and NVD CVE knowledge bases: every verdict is cited with citation-grounded validation.",
+      "Runs in local sovereign mode with on-premises models (Ollama Llama 3.2): zero telemetry leaves the organization."
     ],
     bulletPointsBn: [
       "সাধারণ ড্যাশবোর্ড নয়: প্রহরী একটি সক্রিয় এজেন্টভিত্তিক এআই এসওসি অ্যানালিস্ট।",
       "৪টি ডিফেন্সিভ সেন্সর একটি বাস-এ ডেটা পাঠায়; এআই অ্যানালিস্ট স্বয়ংক্রিয়ভাবে ট্রায়াজ ও কোরিলেশন সম্পন্ন করে বাংলা ও ইংরেজিতে ব্যাখ্যা প্রদান করে।",
-      "MITRE ATT&CK এবং NVD CVE নলেজ বেসের সাথে গ্রাউন্ডেড: প্রতিটি সিদ্ধান্তের সাথে নির্ভুল উদ্ধৃতি সংযুক্ত।",
-      "লোকাল মডেল (Ollama Llama 3.2) দিয়ে ১০০% নিজস্ব সার্ভারে চলে: কোনো ডেটা দেশের বাইরে যায় না।"
+      "MITRE ATT&CK এবং NVD CVE নলেজ বেসের সাথে গ্রাউন্ডেড: প্রতিটি সিদ্ধান্তের সাথে যাচাইকৃত উদ্ধৃতি সংযুক্ত।",
+      "লোকাল মডেল (Ollama Llama 3.2) দিয়ে নিজস্ব সার্ভারে চলে: কোনো ডেটা দেশের বাইরে যায় না।"
     ],
     highlight: "SOC-in-a-box for every enterprise and university in Bangladesh."
   },
@@ -73,13 +73,13 @@ const SLIDES = [
     icon: Database,
     bulletPointsEn: [
       "Defensive Layer: Deception Honeypot (Port 8081), API Abuse Guard (Port 8082), Asset Discovery (Port 8083).",
-      "Core Ingestion Bus: FastAPI + PostgreSQL (pgvector embeddings for ATT&CK techniques & CVEs).",
+      "Core Ingestion Bus: FastAPI + In-Memory Token RAG / PostgreSQL (pgvector schema ready for enterprise).",
       "Intelligence Core: Redaction engine -> Retrieval -> Autonomous Triage -> Kill-Chain Correlation -> Human-in-the-Loop Advisor.",
       "Local-First Sovereignty: Hot-swappable between Ollama (Llama 3.2), Gemini API, and Deterministic Offline Engine."
     ],
     bulletPointsBn: [
       "ডিফেন্সিভ সেন্সর: ডিসেপশন হানিপট (পোর্ট ৮০৮১), রেট লিমিটার (পোর্ট ৮০৮২), এসেট স্ক্যানার (পোর্ট ৮০৮৩)।",
-      "কোর বাস: FastAPI + PostgreSQL (MITRE ও CVE এর জন্য pgvector এম্বেডিং)।",
+      "কোর বাস: FastAPI + ইন-মেমোরি টোকেন RAG / PostgreSQL (এন্টারপ্রাইজের জন্য pgvector স্কিমা প্রস্তুত)।",
       "ইন্টেলিজেন্স ইঞ্জিন: রিডাকশন -> রিট্রিভাল -> স্বয়ংক্রিয় ট্রায়াজ -> কিল-চেইন কোরিলেশন -> রেসপন্স অ্যাডভাইজর।",
       "সার্বভৌমত্ব: লোকাল Ollama (Llama 3.2), জেমিনি এবং অফলাইন ইঞ্জিনের মধ্যে হট-সোয়াপ।"
     ],
@@ -91,13 +91,13 @@ const SLIDES = [
     titleBn: "দায়িত্বশীল এআই, নিরাপত্তা ও ডেটা সার্বভৌমত্ব",
     icon: ShieldAlert,
     bulletPointsEn: [
-      "Zero Hallucination: AI reasoning strictly grounded in MITRE ATT&CK & CVE knowledge vectors.",
+      "Citation-Grounded: AI reasoning strictly grounded in MITRE ATT&CK & CVE knowledge vectors.",
       "Zero Offensive Execution: Honeypot is simulated; never executes commands; Scanner strictly limited to allowlisted targets.",
       "Mandatory PII Scrubbing: Redacts credentials, tokens, and emails before model processing.",
       "Human-in-the-Loop & Immutable Audit: Countermeasures require human approval; all actions logged to append-only database."
     ],
     bulletPointsBn: [
-      "শূন্য হ্যালুসিনেশন: এআই সিদ্ধান্ত ১০০% MITRE ATT&CK এবং CVE ভেক্টরের উপর গ্রাউন্ডেড।",
+      "উদ্ধৃতি-ভিত্তিক যুক্তি: এআই সিদ্ধান্ত MITRE ATT&CK এবং CVE নলেজ বেসের সাথে গ্রাউন্ডেড।",
       "নিরাপদ ডিফেন্স: হানিপট সম্পূর্ণ বিচ্ছিন্ন ও নিয়ন্ত্রিত; স্ক্যানার অনুমোদিত ল্যাব সীমার বাইরে স্ক্যান করতে পারে না।",
       "স্বয়ংক্রিয় পিআইআই স্ক্রাবিং: মডেল প্রসেসিংয়ের পূর্বে সব পাসওয়ার্ড ও টোকেন ফিল্টার করা হয়।",
       "হিউম্যান-ইন-দ্য-লুপ ও অডিট লগ: কাউন্টারমেজার অনুমোদনে মানব নজরদারি বাধ্যতামূলক এবং প্রতিটি সিদ্ধান্ত অপরিবর্তনীয় অডিটে সংরক্ষিত।"

@@ -891,7 +891,7 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
         <p style={{ fontSize: "13px", color: "var(--navy-alpha-85)", margin: 0, lineHeight: 1.5 }}>
           {isBn
             ? "নিরাপত্তা নীতি: উল্লেখিত শেল কমান্ডগুলো আপনার সুবিধার জন্য দেওয়া হয়েছে। প্রহরী এআই আপনার সম্মতি ছাড়া নিজে থেকে কোনো কমান্ড চালায় না। নিচে অনুমোদন করলে এই আইপিটি অবিলম্বে এপিআই অপব্যবহার প্রতিরোধ তালিকায় যুক্ত হবে এবং অডিট ট্রেইলে সংরক্ষিত হবে।"
-            : "Safety Guarantee: Suggested terminal commands above are never executed automatically by PROHORI. Approving below instantly adds this IP to the API Abuse Guard denylist and records an immutable cryptographic entry in the audit trail."}
+            : "Safety Guarantee: Suggested terminal commands above are never executed automatically by PROHORI. Approving below instantly adds this IP to the API Abuse Guard denylist and records an immutable entry in the append-only audit trail."}
         </p>
 
         {/* WORKFLOW STATES */}
@@ -1016,7 +1016,7 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                 animation: "spin 0.8s linear infinite"
               }}
             />
-            <span>{isBn ? "ব্লক কার্যকর হচ্ছে এবং অডিট লগে এন্ট্রি তৈরি হচ্ছে..." : "Applying denylist block and writing cryptographic audit record..."}</span>
+            <span>{isBn ? "ব্লক কার্যকর হচ্ছে এবং অডিট লগে এন্ট্রি তৈরি হচ্ছে..." : "Applying denylist block and writing append-only audit record..."}</span>
           </div>
         )}
 

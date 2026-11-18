@@ -100,7 +100,7 @@ sudo ufw deny from ${sourceIp}
 access-list 100 deny ip host ${sourceIp} any
 \`\`\`
 
-**Prohori Automated Enforcement:** Clicking **"Approve Defense Countermeasure"** in this console immediately adds \`${sourceIp}\` to the active rate-limiter blocklist with cryptographic audit trail.
+**Prohori Automated Enforcement:** Clicking **"Approve Defense Countermeasure"** in this console immediately adds \`${sourceIp}\` to the active rate-limiter blocklist with append-only audit trail.
 
 **Knowledge Citation:** [${techniqueId}] [${cweId}]`,
       citations: [techniqueId, cweId]

@@ -653,3 +653,70 @@ button {
     padding: 12px;
   }
 }
+
+/* ==========================================================================
+   MOBILE & LAYOUT ENHANCEMENTS (Tasks 1, 2, 3, 4)
+   ========================================================================== */
+
+/* 1. Global Box-Sizing & Horizontal Scroll Prevention */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  max-width: 100%;
+}
+
+pre, code {
+  max-width: 100%;
+}
+
+/* 2. Responsive Mobile Header Navigation (Task 3) */
+.mobile-header-menu-btn {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .mobile-header-menu-btn {
+    display: inline-flex !important;
+  }
+  .desktop-header-badge {
+    display: none !important;
+  }
+  .desktop-header-lang {
+    display: none !important;
+  }
+  .desktop-header-more {
+    display: none !important;
+  }
+
+  .simplified-grid > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .soc-container {
+    padding: 10px 12px 24px;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-nav-drawer {
+    display: none !important;
+  }
+}
+
+/* 3. Minimum Accessible Tap Targets (>= 44px) on Mobile (Task 4) */
+@media (max-width: 768px) {
+  .btn, .mobile-tab-btn, .dropdown-item {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+}
+
+@media (max-width: 414px) {
+  header[role="banner"] {
+    padding: 10px 12px !important;
+  }
+}
+

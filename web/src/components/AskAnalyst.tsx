@@ -47,6 +47,7 @@ const OFFLINE_CITATIONS: Record<string, KnowledgeDoc> = {
 
 export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage }) => {
   const [query, setQuery] = useState("");
+  const [inputError, setInputError] = useState("");
   const [loading, setLoading] = useState(false);
   const [streaming, setStreaming] = useState(false);
   const [response, setResponse] = useState<AskResponse | null>(null);
@@ -68,7 +69,11 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
 
   const handleAsk = async (questionText?: string, langOverride?: "en" | "bn") => {
     const textToSend = questionText || query;
-    if (!textToSend.trim()) return;
+    if (!textToSend.trim()) {
+      setInputError(globalLanguage === "bn" ? "অনুগ্রহ করে প্রশ্ন বা অনুসন্ধান লিখুন।" : "Please enter a question or query before asking.");
+      return;
+    }
+    setInputError("");
 
     setLoading(true);
     setStreaming(true);
@@ -255,11 +260,14 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
       </div>
 
       {/* Input Bar */}
-      <div style={{ display: "flex", gap: "8px", marginBottom: "14px" }}>
+      <div style={{ display: "flex", gap: "8px", marginBottom: inputError ? "6px" : "14px" }}>
         <input
           type="text"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            if (inputError) setInputError("");
+          }}
           onKeyDown={(e) => e.key === "Enter" && handleAsk()}
           placeholder={
             globalLanguage === "bn"
@@ -269,12 +277,14 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
           className="input-control"
           style={{ flex: 1, height: "40px" }}
           disabled={loading}
+          aria-label={globalLanguage === "bn" ? "নিরাপত্তা প্রশ্ন ইনপুট" : "Security question input"}
         />
         <button
           onClick={() => handleAsk()}
           disabled={loading || !query.trim()}
           className="btn btn-primary"
           style={{ padding: "0 16px", height: "40px" }}
+          aria-label={globalLanguage === "bn" ? "জিজ্ঞাসা করুন" : "Ask"}
         >
           {loading ? (
             <RotateCcw size={15} />
@@ -286,6 +296,25 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
           )}
         </button>
       </div>
+
+      {/* Input Error Message (Task 18) */}
+      {inputError && (
+        <div
+          role="alert"
+          style={{
+            color: "var(--coral)",
+            fontSize: "12px",
+            fontWeight: 700,
+            marginBottom: "12px",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px"
+          }}
+        >
+          <ShieldAlert size={14} color="var(--coral)" />
+          <span>{inputError}</span>
+        </div>
+      )}
 
       {/* Response Box */}
       {response && (
@@ -304,6 +333,22 @@ export const AskAnalyst: React.FC<AskAnalystProps> = ({ apiBase, globalLanguage 
               <span className="badge" style={{ background: "var(--navy-alpha-12)", color: "var(--navy)" }}>
                 {response.language.toUpperCase()}
               </span>
+              {/* Success Feedback Badge (Task 17) */}
+              {!streaming && response.provider !== "error" && response.answer && (
+                <span
+                  className="badge"
+                  style={{
+                    background: "var(--navy-alpha-08)",
+                    color: "var(--navy)",
+                    border: "1px solid var(--navy-alpha-25)",
+                    fontSize: "11px",
+                    fontWeight: 700
+                  }}
+                >
+                  <CheckCircle size={12} color="var(--navy)" />
+                  <span>{globalLanguage === "bn" ? "বিশ্লেষণ সফল" : "Analysis Ready"}</span>
+                </span>
+              )}
             </div>
 
             <div style={{ display: "flex", gap: "6px" }}>

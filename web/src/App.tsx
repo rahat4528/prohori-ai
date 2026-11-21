@@ -7,6 +7,7 @@ import { PitchDeckModal } from "./components/PitchDeckModal";
 import { ShortcutsModal } from "./components/ShortcutsModal";
 import { EventDetailDrawer } from "./components/EventDetailDrawer";
 import { ConnectedDevicesModal } from "./components/ConnectedDevicesModal";
+import { NotFoundPage } from "./components/NotFoundPage";
 import type { SecurityEvent, Incident, ConnectedDevice } from "./types";
 import { getDeviceId, getDeviceName } from "./utils/deviceInfo";
 import { Shield, Lock, Cpu, BookOpen, ShieldAlert, Sparkles } from "lucide-react";
@@ -16,6 +17,7 @@ const defaultHost = typeof window !== "undefined" && window.location.hostname ? 
 const API_BASE = import.meta.env.VITE_API_BASE || (isHttps ? `https://${defaultHost}:8000` : `http://${defaultHost}:8000`);
 const WS_URL = import.meta.env.VITE_WS_URL || (isHttps ? `wss://${defaultHost}:8000/stream` : `ws://${defaultHost}:8000/stream`);
 const API_KEY = import.meta.env.VITE_PROHORI_API_KEY || "";
+const CURRENT_YEAR = new Date().getFullYear();
 const jsonHeaders: Record<string, string> = API_KEY
   ? { "Content-Type": "application/json", "X-API-Key": API_KEY }
   : { "Content-Type": "application/json" };
@@ -200,6 +202,11 @@ export const App: React.FC = () => {
   const [activeProvider, setActiveProvider] = useState<string>("deterministic-offline-rag");
   const [activeMobileTab, setActiveMobileTab] = useState<"alerts" | "analysis">("alerts");
   const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [isNotFound] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    const path = window.location.pathname;
+    return path !== "/" && path !== "" && path !== "/index.html";
+  });
   const [connectedDevices, setConnectedDevices] = useState<ConnectedDevice[]>([]);
   const [isDevicesModalOpen, setIsDevicesModalOpen] = useState<boolean>(false);
   const [currentDeviceId] = useState<string>(() => getDeviceId());
@@ -616,6 +623,10 @@ export const App: React.FC = () => {
 
   const isBn = globalLanguage === "bn";
 
+  if (isNotFound) {
+    return <NotFoundPage isBn={isBn} />;
+  }
+
   return (
     <div className="soc-container">
       {/* 1. Top Simplified Header */}
@@ -710,8 +721,9 @@ export const App: React.FC = () => {
         <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap" }}>
           <span style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--cream)", fontWeight: 600 }}>
             <Shield size={16} color="var(--cream)" />
-            <span>Prohori Sentinel &bull; International AI Builders Congress 2026</span>
+            <span>&copy; {CURRENT_YEAR} Prohori Sentinel &bull; International AI Builders Congress 2026</span>
           </span>
+          {/* TODO: If contact phone number (tel:) or email (mailto:) are provided, place them here */}
           <span
             className="badge"
             style={{

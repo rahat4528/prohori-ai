@@ -208,7 +208,11 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
   // Submit query to "Ask the Analyst" (with sovereign fallback)
   const handleExecuteAsk = async (queryText: string) => {
     const text = queryText.trim();
-    if (!text || isStreaming) return;
+    if (!text) {
+      setAskError(isBn ? "অনুগ্রহ করে আপনার প্রশ্ন বা অনুসন্ধান লিখুন।" : "Please enter a question or query before submitting.");
+      return;
+    }
+    if (isStreaming) return;
 
     setQuery(text);
     setIsStreaming(true);
@@ -841,7 +845,8 @@ export const SelectedAlertPanel: React.FC<SelectedAlertPanelProps> = ({
                       color: "var(--cream)",
                       fontSize: "13.5px",
                       fontWeight: 600,
-                      whiteSpace: "pre"
+                      whiteSpace: "pre-wrap",
+                      wordBreak: "break-all"
                     }}
                   >
                     {cmd.command}

@@ -263,6 +263,11 @@ export const EventFeed: React.FC<EventFeedProps> = ({
                     {/* Inspect Icon Action */}
                     <td style={{ padding: "9px 12px", textAlign: "right" }}>
                       <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onSelectEvent(ev);
+                        }}
                         style={{
                           background: isSelected ? "var(--coral)" : "var(--navy-alpha-10)",
                           border: "1px solid var(--navy-alpha-20)",
@@ -273,6 +278,7 @@ export const EventFeed: React.FC<EventFeedProps> = ({
                           display: "inline-flex",
                           alignItems: "center"
                         }}
+                        aria-label="Inspect full event telemetry"
                         title="Inspect full event telemetry"
                       >
                         <Eye size={13} />

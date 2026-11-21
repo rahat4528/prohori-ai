@@ -12,7 +12,9 @@ import {
   Keyboard,
   Cpu,
   RotateCcw,
-  Wifi
+  Wifi,
+  Menu,
+  X
 } from "lucide-react";
 
 interface HeaderProps {
@@ -50,20 +52,38 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const [isRunningDemo, setIsRunningDemo] = useState<boolean>(false);
   const [isMoreOpen, setIsMoreOpen] = useState<boolean>(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLElement>(null);
 
-  // Close dropdown on click outside
+  // Close dropdowns on click outside or Escape
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      if (menuRef.current && !menuRef.current.contains(target)) {
         setIsMoreOpen(false);
       }
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(target)) {
+        // Only close if not clicking the toggle button
+        const isToggleBtn = (target as HTMLElement).closest(".mobile-header-menu-btn");
+        if (!isToggleBtn) {
+          setIsMobileMenuOpen(false);
+        }
+      }
     };
-    if (isMoreOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isMoreOpen]);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsMoreOpen(false);
+        setIsMobileMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   const handleRunDemoClick = async () => {
     setIsRunningDemo(true);
@@ -98,7 +118,13 @@ export const Header: React.FC<HeaderProps> = ({
     >
       {/* 1. Official Prohori AI Brand Identity & Logo */}
       <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap" }}>
-        <ProhoriLogo markSize={36} showSubtitle={true} isBn={isBn} variant="reverse" />
+        <a
+          href="/"
+          style={{ textDecoration: "none", color: "inherit", display: "inline-flex", alignItems: "center" }}
+          aria-label="Prohori AI - Home"
+        >
+          <ProhoriLogo markSize={36} showSubtitle={true} isBn={isBn} variant="reverse" />
+        </a>
 
         {/* Live Status Tactical Beacon */}
         <span
@@ -161,7 +187,7 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* 2. Center: Honest AI Engine Badge (Cream on Navy) */}
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <div className="desktop-header-badge" style={{ display: "flex", alignItems: "center" }}>
         <span
           className="font-mono"
           style={{
@@ -242,10 +268,34 @@ export const Header: React.FC<HeaderProps> = ({
           </span>
         </button>
 
+        {/* Mobile Hamburger Menu Toggle Button (Shows on small screens only) */}
+        <button
+          type="button"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="btn mobile-header-menu-btn"
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "10px 12px",
+            color: "var(--cream)",
+            background: "var(--navy)",
+            border: `1px solid ${isMobileMenuOpen ? "var(--coral)" : "var(--cream-alpha-30)"}`,
+            borderRadius: "8px",
+            cursor: "pointer",
+            minHeight: "44px",
+            minWidth: "44px"
+          }}
+          aria-expanded={isMobileMenuOpen}
+          aria-haspopup="true"
+          aria-label={isBn ? "মোবাইল নেভিগেশন মেনু খুলুন বা বন্ধ করুন" : "Toggle mobile navigation menu"}
+        >
+          {isMobileMenuOpen ? <X size={20} color="var(--cream)" /> : <Menu size={20} color="var(--cream)" />}
+        </button>
+
         {/* Language Switch */}
         <button
           onClick={() => setGlobalLanguage(isBn ? "en" : "bn")}
-          className="btn"
+          className="btn desktop-header-lang"
           style={{
             display: "flex",
             alignItems: "center",
@@ -268,7 +318,7 @@ export const Header: React.FC<HeaderProps> = ({
         </button>
 
         {/* "More" Menu Dropdown */}
-        <div ref={menuRef} style={{ position: "relative" }}>
+        <div ref={menuRef} className="desktop-header-more" style={{ position: "relative" }}>
           <button
             onClick={() => setIsMoreOpen(!isMoreOpen)}
             className="btn"
@@ -456,6 +506,182 @@ export const Header: React.FC<HeaderProps> = ({
           )}
         </div>
       </div>
+
+      {/* 4. Mobile Navigation Drawer (Visible on small screens when hamburger is tapped) */}
+      {isMobileMenuOpen && (
+        <nav
+          ref={mobileMenuRef}
+          className="mobile-nav-drawer"
+          role="navigation"
+          aria-label={isBn ? "মোবাইল নেভিগেশন মেনু" : "Mobile navigation menu"}
+          style={{
+            width: "100%",
+            background: "var(--navy)",
+            borderTop: "1px solid var(--cream-alpha-20)",
+            paddingTop: "12px",
+            marginTop: "6px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px"
+          }}
+        >
+          {/* Mobile Language Switcher */}
+          <button
+            onClick={() => {
+              setGlobalLanguage(isBn ? "en" : "bn");
+              setIsMobileMenuOpen(false);
+            }}
+            className="dropdown-item"
+            style={{ minHeight: "44px" }}
+          >
+            <Languages size={18} color="var(--cream)" />
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span style={{ fontWeight: 700, color: "var(--cream)" }}>
+                {isBn ? "Switch to English" : "বাংলায় পরিবর্তন করুন"}
+              </span>
+              <span style={{ fontSize: "11px", color: "var(--cream-alpha-75)" }}>
+                {isBn ? "Currently in Bengali" : "বর্তমানে ইংরেজিতে প্রদর্শিত"}
+              </span>
+            </div>
+          </button>
+
+          {/* Connected Devices (Mobile) */}
+          {onOpenConnectedDevices && (
+            <button
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                onOpenConnectedDevices();
+              }}
+              className="dropdown-item"
+              style={{ minHeight: "44px" }}
+            >
+              <Wifi size={18} color="var(--cream)" />
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <span style={{ fontWeight: 700, color: "var(--cream)" }}>
+                  {isBn ? "সংযুক্ত ডিভাইসসমূহ" : "Connected Devices"}
+                </span>
+                <span style={{ fontSize: "11px", color: "var(--cream-alpha-75)" }}>
+                  {connectedDevicesCount} {isBn ? "টি ডিভাইস অনলাইন" : connectedDevicesCount === 1 ? "device online" : "devices online"}
+                </span>
+              </div>
+            </button>
+          )}
+
+          {/* Audit Log (Mobile) */}
+          <button
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              onOpenAudit();
+            }}
+            className="dropdown-item"
+            style={{ minHeight: "44px" }}
+          >
+            <Database size={18} color="var(--cream)" />
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span style={{ fontWeight: 700, color: "var(--cream)" }}>{isBn ? "অডিট ট্রেইল" : "Audit Trail"}</span>
+              <span style={{ fontSize: "11px", color: "var(--cream-alpha-75)" }}>
+                {isBn ? "দায়িত্বশীল এআই রেকর্ড" : "Append-only defense log"}
+              </span>
+            </div>
+          </button>
+
+          {/* Pitch Deck (Mobile) */}
+          <button
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              onOpenPitchDeck();
+            }}
+            className="dropdown-item"
+            style={{ minHeight: "44px" }}
+          >
+            <Presentation size={18} color="var(--cream)" />
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span style={{ fontWeight: 700, color: "var(--cream)" }}>{isBn ? "পিচ ডেক" : "Pitch Deck"}</span>
+              <span style={{ fontSize: "11px", color: "var(--cream-alpha-75)" }}>
+                {isBn ? "৮-স্লাইড উপস্থাপনা" : "8-slide presentation"}
+              </span>
+            </div>
+          </button>
+
+          {/* Data Sovereignty Toggle (Mobile) */}
+          <button
+            onClick={() => {
+              onToggleSovereignty();
+              setIsMobileMenuOpen(false);
+            }}
+            className="dropdown-item"
+            style={{ minHeight: "44px" }}
+          >
+            {isLocalSovereignty ? <Lock size={18} color="var(--cream)" /> : <Cloud size={18} color="var(--coral)" />}
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span style={{ fontWeight: 700, color: "var(--cream)" }}>
+                {isLocalSovereignty
+                  ? (isBn ? "সার্বভৌমত্ব: অন-প্রিম" : "Sovereignty: On-Prem")
+                  : (isBn ? "মোড: ক্লাউড হাইব্রিড" : "Mode: Cloud Hybrid")}
+              </span>
+              <span style={{ fontSize: "11px", color: "var(--cream-alpha-75)" }}>
+                {isLocalSovereignty
+                  ? (isBn ? "স্থানীয় ডেটা সুরক্ষা কার্যকর" : "Zero packet egress")
+                  : (isBn ? "ক্লাউড এআই সক্ষম" : "Cloud AI enabled")}
+              </span>
+            </div>
+          </button>
+
+          {/* API Docs Link (Mobile) */}
+          <a
+            href={`${apiBase}/docs`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="dropdown-item"
+            style={{ textDecoration: "none", minHeight: "44px" }}
+          >
+            <BookOpen size={18} color="var(--cream)" />
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span style={{ fontWeight: 700, color: "var(--cream)" }}>{isBn ? "এপিআই ডকুমেন্টস" : "API Documentation"}</span>
+              <span style={{ fontSize: "11px", color: "var(--cream-alpha-75)" }}>FastAPI Swagger UI</span>
+            </div>
+          </a>
+
+          {/* Reset Demo State (Mobile) */}
+          {onResetDemo && (
+            <button
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                onResetDemo();
+              }}
+              className="dropdown-item"
+              style={{ minHeight: "44px" }}
+            >
+              <RotateCcw size={18} color="var(--coral)" />
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <span style={{ fontWeight: 700, color: "var(--coral)" }}>
+                  {isBn ? "ডেমো রিসেট করুন" : "Reset Demo (Clean Slate)"}
+                </span>
+                <span style={{ fontSize: "11px", color: "var(--cream-alpha-75)" }}>
+                  {isBn ? "নতুন সেশনের জন্য তালিকা পরিষ্কার" : "Clear alerts for clean run"}
+                </span>
+              </div>
+            </button>
+          )}
+
+          {/* Keyboard Shortcuts (Mobile) */}
+          <button
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              onOpenShortcuts();
+            }}
+            className="dropdown-item"
+            style={{ minHeight: "44px" }}
+          >
+            <Keyboard size={18} color="var(--cream)" />
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span style={{ fontWeight: 700, color: "var(--cream)" }}>{isBn ? "কিবোর্ড শর্টকাট" : "Shortcuts (?)"}</span>
+              <span style={{ fontSize: "11px", color: "var(--cream-alpha-75)" }}>Shift+D, Shift+A, Shift+P</span>
+            </div>
+          </button>
+        </nav>
+      )}
     </header>
   );
 };

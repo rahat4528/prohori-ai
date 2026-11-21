@@ -31,7 +31,7 @@ export const TopCounters: React.FC<TopCountersProps> = ({
   return (
     <div style={{
       display: "grid",
-      gridTemplateColumns: "repeat(auto-fit, minmax(185px, 1fr))",
+      gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 155px), 1fr))",
       gap: "12px",
       marginBottom: "16px"
     }}>

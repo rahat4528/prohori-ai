@@ -45,6 +45,7 @@ export const ConnectedDevicesModal: React.FC<ConnectedDevicesModalProps> = ({
   const isBn = globalLanguage === "bn";
   const [activeTab, setActiveTab] = useState<"all" | "consoles" | "lan">("all");
   const [isScanning, setIsScanning] = useState<boolean>(false);
+  const [scanStatus, setScanStatus] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [showNetworkInfo, setShowNetworkInfo] = useState<boolean>(false);
 
   useEffect(() => {
@@ -62,10 +63,21 @@ export const ConnectedDevicesModal: React.FC<ConnectedDevicesModalProps> = ({
   const handleScanClick = async () => {
     if (isScanning || !onTriggerLanScan) return;
     setIsScanning(true);
+    setScanStatus(null);
     try {
       await onTriggerLanScan();
+      setScanStatus({
+        type: "success",
+        text: isBn ? "ল্যান স্ক্যান সফলভাবে সম্পন্ন হয়েছে।" : "LAN scan completed successfully."
+      });
+    } catch {
+      setScanStatus({
+        type: "error",
+        text: isBn ? "ল্যান স্ক্যান সম্পন্ন করা যায়নি।" : "Could not complete LAN discovery scan."
+      });
     } finally {
       setTimeout(() => setIsScanning(false), 800);
+      setTimeout(() => setScanStatus(null), 4000);
     }
   };
 
@@ -231,6 +243,23 @@ export const ConnectedDevicesModal: React.FC<ConnectedDevicesModalProps> = ({
               >
                 <RefreshCw size={13} color="var(--cream)" />
               </button>
+            )}
+
+            {scanStatus && (
+              <span
+                role="status"
+                style={{
+                  fontSize: "11px",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  background: scanStatus.type === "success" ? "var(--cream-alpha-20)" : "var(--coral-alpha-20)",
+                  color: scanStatus.type === "success" ? "var(--cream)" : "var(--coral)",
+                  border: `1px solid ${scanStatus.type === "success" ? "var(--cream-alpha-30)" : "var(--coral)"}`,
+                  fontWeight: 700
+                }}
+              >
+                {scanStatus.text}
+              </span>
             )}
 
             <button

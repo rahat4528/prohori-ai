@@ -1,85 +1,104 @@
-# Prohori AI ("প্রহরী") — Official 3-Minute Video Pitch Script & Narration Guide
+# PROHORI AI ("প্রহরী") — Official Demo Teleprompter & Speaking Script
 
-**Team**: Team Orionids  
-**Event**: International AI Builders Congress 2026 (Venue: Daffodil International University)  
-**Track**: InfraSphere AI &rarr; SecureAI  
-**Target Duration**: Exactly 180 seconds (3 minutes)  
-**Tone**: Confident, technically precise, authoritative, grounded, accessible.
-
----
-
-## 1. 3-Minute Second-by-Second Shot List (Total: 180 Seconds)
-
-| Time Window | Duration | Screen Action | Visual Focus | Narration Theme |
-|:---:|:---:|---|---|---|
-| **0:00 – 0:25** | 25s | Open Operator Console (`http://localhost:3000`) in full-screen (`F11`). Show Prohori brand, clean 2-column layout, and Navy/Cream/Coral palette. | Header, system status, clean empty or baseline state. | **Hook & The Problem**: Why developing institutions cannot afford \$100k/year commercial SOCs and why sovereign AI defense is necessary. |
-| **0:25 – 0:50** | 25s | Briefly introduce the 3 defensive lab sensors (Honeypot Decoy, API Abuse Guard, Asset Discovery Scanner). Show that they feed a unified event bus. | Sensor architecture diagram or live sensor status badges. | **Architecture Overview**: Commodity sensors feeding a centralized, sovereign event bus in under 35 ms. |
-| **0:50 – 1:25** | 35s | Click **"Run demo"** (`Shift+D`). Watch live attack event arrive over WebSocket. Point to dynamic severity badge (`High`) and plain-language title (`Brute Force Attack Detected`). | Left feed alert card, timestamp, RFC 1918 internal tag. | **Autonomous AI Triage**: Real-time event ingestion, PII redaction, dynamic calculated severity scoring, and immediate bilingual narrative generation. |
-| **1:25 – 1:55** | 30s | Inspect right panel: Analyst Verdict, Evidence, and MITRE citation chip `[T1110.001]`. Toggle language to **বাংলা**. Point to copyable firewall commands (`iptables`, `ufw`, Cisco ACL). | Right threat panel, Bengali explanation, interactive citation badges. | **Explainability & Grounding**: Grounded citations over MITRE ATT&CK and CVEs; zero ungrounded hallucinations; native Bengali parity. |
-| **1:55 – 2:30** | 35s | Click **"Approve Defense Countermeasure"** (`Shift+A` or button). Show confirmation card, active denylist update, and open Audit Log drawer. | Confirmation card, Audit Log drawer, SHA-256 audit entry. | **Human-in-the-Loop Governance**: Strict operator authorization gate; instant containment enforcement; immutable audit trail. |
-| **2:30 – 3:00** | 30s | Open "More ▾" menu &rarr; Data Sovereignty. Show 100% on-premise local Ollama / offline deterministic engine status. Show QR code / GitHub repo. | Sovereignty modal, engine badge, team credentials. | **Data Sovereignty & Wrap-up**: Zero external data egress; local CPU inference; empowering national cyber resilience. |
+**Exact Video Duration**: `02:20.72` (140.7 Seconds — perfectly within the 120–150s requirement)  
+**Presenter Tone**: Confident, authoritative, professional, steady, natural English.  
+**Video Reference**:  
+- Version 1 (With Title & Cards): `C:\diu\docs\backup\prohori_demo_with_titles_4k.mp4` (154.9 MB)  
+- Version 2 (Without Title): `C:\diu\docs\backup\prohori_demo_without_titles_4k.mp4` (149.7 MB)  
+**PDF Printable Script**: [PROHORI_DEMO_SPEAKING_SCRIPT.pdf](file:///C:/diu/docs/PROHORI_DEMO_SPEAKING_SCRIPT.pdf) (4 Pages)
 
 ---
 
-## 2. Bilingual Narration Script (English & Bengali)
+## 📊 140-Second Video Architecture (Evaluator Rubric Map)
 
-> [!WARNING]
-> **Bengali Review Notice**: The Bengali text below has been machine-synthesized and calibrated for duration, but is **UNREVIEWED by a native speaker**. Have a native Bengali speaker from Team Orionids rehearse and verify pronunciation before recording.
-
-### Segment 1: The Problem & Vision (0:00 – 0:25)
-- **English**:
-  > *"Every 39 seconds, an institution faces a cyberattack. But small universities, hospitals, and public offices in emerging nations cannot afford a 50,000-dollar commercial SIEM or a 24/7 dedicated security operations center. Enter Prohori AI — an autonomous, self-hostable, bilingual AI SOC Analyst engineered to democratize sovereign cyber defense."*
-- **Bengali (UNREVIEWED)**:
-  > *"প্রতি ৩৯ সেকেন্ডে একটি প্রতিষ্ঠান সাইবার আক্রমণের শিকার হয়। কিন্তু উন্নয়নশীল দেশের ছোট বিশ্ববিদ্যালয়, হাসপাতাল বা সরকারি দপ্তরগুলোর পক্ষে লাখ টাকার কমার্শিয়াল সিকিউরিটি বা ২৪/৭ সিকিউরিটি টিম রাখা অসম্ভব। এই সংকট সমাধানে আমরা তৈরি করেছি 'প্রহরী এআই'—একটি স্বনির্ভর, দ্বিভাষিক এআই এসওসি অ্যানালিস্ট।"*
-
-### Segment 2: Sensor Architecture (0:25 – 0:50)
-- **English**:
-  > *"Prohori deploys three lightweight defensive sensors: an isolated deception honeypot that traps credential probes, an API rate-limiter that throttles resource exhaustion attacks, and an allowlist-restricted asset discovery scanner. All three feed our unified event bus in under 35 milliseconds with zero external data leakage."*
-- **Bengali (UNREVIEWED)**:
-  > *"প্রহরী তিনটি হালকা প্রতিরক্ষামূলক সেন্সর ব্যবহার করে: একটি ডিকয় হানিপট যা পাসওয়ার্ড অনুমানের চেষ্টা ট্র্যাপ করে, একটি রেট লিমিটার যা এপিআই ফ্লাডিং ঠেকায়, এবং একটি স্ক্যানার। এই সেন্সরগুলো মাত্র ৩৫ মিলিসেকেন্ডের মধ্যে কোনো তথ্য বাইরে না পাঠিয়ে মূল ইঞ্জিনে টেলিমেট্রি প্রদান করে।"*
-
-### Segment 3: Live Ingestion & Autonomous Triage (0:50 – 1:25)
-- **English**:
-  > *"Let's trigger a simulated credential stuffing attack. Instantly, the alert streams over WebSockets into our high-contrast operator console. Before any analysis occurs, our PII scrubbing engine redacts all credentials and secrets. Prohori's triage engine dynamically calculates threat severity based on attempt frequency and attack vectors."*
-- **Bengali (UNREVIEWED)**:
-  > *"চলুন একটি সিমুলেটেড আক্রমণ চালিয়ে দেখি। রিয়েল-টাইম ওয়েবসকেটের মাধ্যমে সতর্কবার্তাটি সাথে সাথে কনসোলে চলে এলো। বিশ্লেষণের আগেই সিস্টেমটি পাসওয়ার্ড ও গোপন তথ্য স্বয়ংক্রিয়ভাবে মুছে ফেলে। এরপর প্রহরীর ট্রায়াজ ইঞ্জিন আক্রমণের তীব্রতা সঠিকভাবে পরিমাপ করে।"*
-
-### Segment 4: Explainability & Bengali Parity (1:25 – 1:55)
-- **English**:
-  > *"Here is Prohori's true differentiator: explainability. The analyst explains what happened with verifiable citations to MITRE ATT&CK Technique T1110.001 and CWE-307. Switching to Bangla provides full linguistic parity for local operators. It also provides ready-to-deploy firewall rules for iptables, UFW, and Cisco edge ACLs."*
-- **Bengali (UNREVIEWED)**:
-  > *"এখানেই প্রহরীর আসল শক্তি: ব্যাখ্যাযোগ্যতা। এটি মনগড়া কিছু না বলে MITRE ATT&CK T1110.001 এবং CWE-307 এর তথ্যসূত্র দিয়ে ঘটনা ব্যাখ্যা করে। বাংলা ইন্টারফেসে স্থানীয় অপারেটররা নিজেদের ভাষায় তাৎক্ষণিক বুঝতে পারেন এবং ফায়ারওয়াল রুল কপি করতে পারেন।"*
-
-### Segment 5: Human-in-the-Loop Governance (1:55 – 2:30)
-- **English**:
-  > *"Crucially, Prohori never executes autonomous blocks. We enforce strict Human-in-the-Loop governance. The human operator clicks 'Approve Defense', which immediately pushes the malicious IP to the active perimeter denylist and records the operator ID, timestamp, and verdict into an immutable append-only audit log."*
-- **Bengali (UNREVIEWED)**:
-  > *"সবচেয়ে গুরুত্বপূর্ণ বিষয়, প্রহরী নিজে থেকে কোনো ক্ষতিকর সিদ্ধান্ত কার্যকর করে না। হিউম্যান-ইন-দ্য-লুপ নীতির অধীনে অপারেটর যখন 'প্রতিরক্ষা অনুমোদন' ক্লিক করেন, তখনই কেবল আইপি-টি পেরিমিটার ফায়ারওয়ালে ব্লক হয় এবং একটি অপরিবর্তনীয় অডিট লগে তা সংরক্ষিত হয়।"*
-
-### Segment 6: Sovereignty & Conclusion (2:30 – 3:00)
-- **English**:
-  > *"Operating completely offline using our deterministic RAG engine or a local Ollama model on standard CPU hardware, zero bytes of sensitive telemetry ever leave your infrastructure. Prohori AI: sovereign, explainable defense for resilient digital nations. Thank you."*
-- **Bengali (UNREVIEWED)**:
-  > *"সম্পূর্ণ অফলাইনে সাধারণ সিপিইউ-তে লোকাল ওলামা বা অফলাইন ইঞ্জিনে কাজ করায় কোনো সংবেদনশীল সিকিউরিটি লগ দেশের বাইরে যায় না। জাতীয় সাইবার নিরাপত্তার সার্বভৌম প্রহরী—'প্রহরী এআই'। ধন্যবাদ।"*
+| Time Slot | Segment | What You Show On Screen | Key Evaluator Message |
+|---|---|---|---|
+| **0:00 – 0:18** | **1. Problem (The Vibe)** | 4K Splash Card &rarr; Sovereign air-gapped dashboard & status counters | *"This problem matters: Foreign clouds leak national logs"* |
+| **0:18 – 0:38** | **2. Solution (Discovery)** | Devices modal opens &rarr; Live Layer-2 ARP sweep populates subnet hosts | *"This is how we solve it: Zero-agent live network baseline"* |
+| **0:38 – 0:56** | **3. Demo (Threat Mesh)** | "Run demo" clicked &rarr; Honeypot & rate limiter events stream over WebSockets | *"This is how it works: Multi-sensor edge telemetry under 35ms"* |
+| **0:56 – 1:18** | **4. AI Approach (RAG)** | Critical alert inspection &rarr; AI Root Cause Evidence & MITRE [T1110.001] | *"This is real AI thinking: Zero hallucinations, verified citations"* |
+| **1:18 – 1:38** | **5. Localization (Bangla)** | Language toggle clicked &rarr; Full UI & threat narrative transforms to Bengali | *"Accessible defense: Native Bangla narratives for local admins"* |
+| **1:38 – 1:56** | **6. Safety Gate (HITL)** | Surgical iptables rules &rarr; "Approve Defense" clicked &rarr; Enforced | *"Responsible AI: Mandatory human confirmation for firewall cuts"* |
+| **1:56 – 2:12** | **7. Auditability (Audit Log)** | Drawer opened &rarr; Immutable records of model IDs, prompt hashes, sign-offs | *"Accountability: Cryptographic ledger for compliance & forensics"* |
+| **2:12 – 2:20** | **8. Impact & Vision** | Pitch Deck modal previewed &rarr; Return to clean live dashboard | *"We can build and scale this: Deployable on commodity hardware"* |
 
 ---
 
-## 3. Video Upload & Public Verification Instructions
+## 🎬 Word-for-Word Teleprompter Narration (With Screen Cues)
 
-When your recording is complete, follow these exact steps to host and link it for the judges:
+---
 
-### Option A: YouTube Upload (Recommended)
-1. Go to [YouTube Studio](https://studio.youtube.com).
-2. Click **Create** &rarr; **Upload Videos** and select your recorded `.mp4` file.
-3. Title: `Prohori AI — Autonomous Bilingual AI SOC Analyst (Team Orionids · DIU 2026)`
-4. Description: Include your GitHub repo link (`https://github.com/rahat4528/prohori-ai`) and track name (`InfraSphere AI -> SecureAI`).
-5. **Visibility**: Select **Unlisted** (anyone with the link can view; not publicly searchable).
-6. Copy the video URL (e.g. `https://youtu.be/abc123xyz`).
-7. **Verification Test**: Open an **Incognito / Private browser window**, paste the URL, and verify that the video plays smoothly without requiring a Google sign-in.
+### Scene 1: The Problem & Sovereign Mission (18s)
+* **Time Slot**: `0:00 – 0:18`
+* **Screen Action**: Opening 4K pitch card displays *PROHORI AI* with three core pillars (0:00–0:05). The card fades into the live dark-mode console. Operator smooth-scrolls down through the alert feed (0:05–0:12) and scrolls back up to the top status counters and green "Sovereign Mode" pill (0:12–0:18).
+* **Word-for-Word Spoken Narration**:
+  > *"Every thirty-nine seconds, an institution somewhere in the world faces a cyberattack. But regional banks, universities, and hospitals across Bangladesh cannot afford hundred-thousand-dollar commercial SIEMs or twenty-four-seven security teams. Worse, sending internal network logs to foreign clouds violates national data sovereignty. [breathe]*  
+  > *This is **PROHORI AI** — Bangladesh's first self-hostable, bilingual AI SOC analyst, engineered to deliver autonomous cyber defense entirely on local infrastructure."*
 
-### Option B: Google Drive Upload
-1. Upload `prohori_demo_backup.mp4` to your Google Drive.
-2. Right-click the file &rarr; select **Share** &rarr; **Share**.
-3. Under "General access", change from "Restricted" to **"Anyone with the link"** and ensure role is set to **Viewer**.
-4. Click **Copy link**.
-5. **Verification Test**: Open an **Incognito / Private browser window**, paste the link, and verify that the video preview loads and streams without asking for access permissions.
+---
+
+### Scene 2: Layer-2 Network Asset Discovery (20s)
+* **Time Slot**: `0:18 – 0:38`
+* **Screen Action**: Operator moves cursor to header and clicks **"Devices"** (0:18). The modal opens listing subnet IPs, MAC addresses, and hostnames. Operator hovers over the gateway and clicks **"Scan LAN"** (0:24). The active ARP sweep pulses and discovers connected devices. Operator clicks **"Close"** (0:34) to return to the dashboard.
+* **Word-for-Word Spoken Narration**:
+  > *"Before defending a perimeter, you must know what is on your network. Prohori features automated Layer-Two ARP asset discovery. With a single click, **[SYNC: CLICK SCAN]** it scans the local subnet, identifying workstations, routers, and IoT devices with zero agents required. Unknown or rogue devices are cataloged immediately, establishing an authoritative baseline in seconds."*
+
+---
+
+### Scene 3: Multi-Sensor Live Attack Ingestion (18s)
+* **Time Slot**: `0:38 – 0:56`
+* **Screen Action**: Operator clicks **"Run demo"** in the top navigation bar (0:38). Attacks hit the Deception Honeypot (Port 8081) and Rate Limiter (Port 8082). Incoming alerts stream via WebSockets into the feed. Top counters increment in real time. Operator scrolls down to observe the alerts (0:48–0:56).
+* **Word-for-Word Spoken Narration**:
+  > *"Now, let's watch Prohori respond to an active multi-vector attack. **[SYNC: CLICK RUN DEMO]** As adversaries probe our perimeter, our edge sensors respond. Our deception honeypot traps unauthorized credential probes, while our rate limiter blocks aggressive reconnaissance floods. In under thirty-five milliseconds, raw telemetry is ingested, scrubbed of passwords and secrets, and streamed live to the operator."*
+
+---
+
+### Scene 4: Grounded AI Triage & MITRE ATT&CK Citations (22s)
+* **Time Slot**: `0:56 – 1:18`
+* **Screen Action**: Operator clicks the top critical alert card (0:56). The Incident Detail panel opens on the right. Operator smooth-scrolls down through the AI SOC Analyst Verdict, Root Cause Evidence, and pauses directly over the verified MITRE ATT&CK citation pills (`[T1110.001]`, `[CWE-307]`) (1:10–1:18).
+* **Word-for-Word Spoken Narration**:
+  > *"Here is Prohori's greatest breakthrough: hallucination-free, explainable AI. Operating through an on-premise Offline RAG engine, Prohori reconciles threat severity by cross-referencing telemetry with curated MITRE ATT&CK techniques and NVD CVE records. Every single diagnostic claim is backed by verified technique citations like **T-eleven-ten**. [pause] No hallucinations—only grounded, defensible intelligence."*
+
+---
+
+### Scene 5: 100% Native Bengali Linguistic Parity (20s)
+* **Time Slot**: `1:18 – 1:38`
+* **Screen Action**: Operator scrolls to the header and clicks the language toggle button (**"বাংলায় পরিবর্তন করুন"**) (1:18). The entire UI transforms into natural Bengali. Threat titles, root causes, and containment guidance render in Bangla (`অননুমোদিত প্রবেশ চেষ্টা`). Operator scrolls to demonstrate parity, then clicks back to English (1:33).
+* **Word-for-Word Spoken Narration**:
+  > *"Traditional security tools overwhelm junior sysadmins with cryptic English telemetry. Prohori bridges this national talent gap with one-hundred-percent native Bengali linguistic parity. At the touch of a button, **[SYNC: CLICK BANGLA TOGGLE]** root causes, impact assessments, and remediation playbooks are translated into clear, professional Bangla—empowering local IT administrators across regional institutions to respond with confidence."*
+
+---
+
+### Scene 6: Human-in-the-Loop Active Containment (18s)
+* **Time Slot**: `1:38 – 1:56`
+* **Screen Action**: Operator scrolls down in the threat panel to the **Recommended Countermeasures** section (1:38). Precision `iptables` and Windows netsh commands are displayed with an amber "Pending Human Approval" badge. Operator hovers and clicks **"Approve Defense"** (1:46). The card transitions to green **"Contained / Enforced"**.
+* **Word-for-Word Spoken Narration**:
+  > *"Responsible AI is non-negotiable. Prohori strictly enforces Human-in-the-Loop governance. It never executes destructive autonomous actions. Instead, the AI generates precision OS-level containment scripts—such as iptables rules or Windows firewall commands—and pauses for operator approval. When the analyst clicks **'Approve Defense'**, **[SYNC: CLICK APPROVE]** the adversary is instantly severed at the firewall."*
+
+---
+
+### Scene 7: Cryptographic Append-Only Audit Trail (16s)
+* **Time Slot**: `1:56 – 2:12`
+* **Screen Action**: Operator scrolls up, clicks **"More"** in header, then clicks **"Audit Trail"** (1:56). The audit drawer slides open. Operator smooth-scrolls through immutable log entries showing timestamps, model IDs, citation hashes, and operator approval stamps. Operator closes the drawer (2:10).
+* **Word-for-Word Spoken Narration**:
+  > *"For compliance and forensic accountability, every event triage, prompt trace, model version, and human approval is cryptographically committed to an immutable, append-only audit ledger. Institutional leadership and auditors can verify exactly why an alert was triggered and who authorized containment."*
+
+---
+
+### Scene 8: Pitch Deck & Sovereign Vision Conclusion (8s)
+* **Time Slot**: `2:12 – 2:20`
+* **Screen Action**: Operator clicks **"More"** &rarr; **"Pitch Deck"** modal showing the architecture diagram and team credentials (2:12). Operator closes the modal to finish on the clean, live, running Prohori console (2:18–2:20).
+* **Word-for-Word Spoken Narration**:
+  > *"**PROHORI AI**: one-hundred-percent sovereign, self-hostable in under five minutes, and accessible in our mother tongue. Empowering Bangladesh with resilient digital defense. [smile] Thank you."*
+
+---
+
+## 🎙️ Presenter Pre-Flight Checklist
+- **Natural Cadence**: 308 words total over 140 seconds (~132 words per minute). Do not rush.
+- **Screen Sync**: The yellow **`[SYNC]`** tags in the script indicate the exact moments when button clicks occur on screen.
+- **Pronunciations**:
+  - *SIEM* &rarr; pronounce as *"Sim"*
+  - *SOC* &rarr; pronounce as *"Sock"*
+  - *T1110.001* &rarr; pronounce as *"T-eleven-ten"*
+  - *ARP* &rarr; pronounce letters *"A-R-P"*
+  - *RAG* &rarr; pronounce as *"Rag"*
